@@ -6,8 +6,8 @@ on:
   
 env: 
     REGISTRY: "registry.digitalocean.com/henar"
-    IMAGE_NAME: "henar-backend"
-    CONTAINER_NAME: "henar-backend"
+    IMAGE_NAME: "henar-frontend"
+    CONTAINER_NAME: "henar-frontend"
   
 jobs:
     build:
@@ -48,6 +48,6 @@ jobs:
   
               docker rm $(echo $CONTAINER_NAME) || true
   
-              docker run -d --name $(echo $CONTAINER_NAME) -p 8080:8080 $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)              
+              docker run -d --name $(echo $CONTAINER_NAME) -p 3000:3000 $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)              
               # docker run -d -e DB_URI="${{ secrets.DB_URI }}" --name $(echo $CONTAINER_NAME) -p 8080:8080 $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)              
   
