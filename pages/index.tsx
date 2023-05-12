@@ -135,7 +135,7 @@ const Home = () => {
                     <div className='flex flex-1 lg:flex-[0.62] h-[420px] bg-accent1 lg:rounded-r-[0] rounded-r-xll rounded-l-xll bg-opacity-10 pl-5 pr-5 lg:pr-0 lg:pl-8 flex-col justify-between'>
                         <div>
                             <h3 className='font-body mt-8 lg:mt-10 text-h-xl-m lg:text-h-xl-d font-bold lg:w-[470px] leading-[100%] mb-3 lg:mb-[19px]'>
-                                Единаяя платформа для диаспоральных врачей армении
+                                Единая платформа для диаспоральных врачей армении
                             </h3>
                             <span className='text-m mb-[100px]'>
                                 Некоммерческий проект, помогающий врачам <br /> реализовывать
