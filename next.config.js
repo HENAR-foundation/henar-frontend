@@ -12,9 +12,6 @@ const nextConfig = {
       },
     ],
   },
-  tslint: {
-    ignoreDuringBuilds: true
-  },
   reactStrictMode: true,
   i18n: {
     locales: ['en', 'ru', 'hy'],
