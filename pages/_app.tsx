@@ -14,12 +14,11 @@ import Head from 'next/head';
 import localFont from '@next/font/local';
 import Footer from 'components/Footer';
 import { useRouter } from 'next/router';
-import CheckHealth from './CheckHealth';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Notification from 'components/Notification';
 import { NextIntlProvider } from 'next-intl';
-import { GetServerSideProps } from 'next';
 import ContactInfoModal from 'components/ContactInfoModal';
+import { GetStaticProps } from 'next';
 
 const PtRoot = localFont({
   variable: '--font-pt-root',
@@ -95,7 +94,7 @@ const App = ({ Component, pageProps }: AppProps) => {
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen />
       <Hydrate state={pageProps.dehydratedState}>
-        <NextIntlProvider messages={pageProps.messages}>
+        <NextIntlProvider onError={() => false} messages={pageProps.messages}>
           <Head>
             <meta
               name='viewport'
@@ -107,6 +106,7 @@ const App = ({ Component, pageProps }: AppProps) => {
             value={{ interfaceState, setInterfaceState }}
           >
             <HeaderNavigation />
+
             <HeaderNavigationM />
             <main
               className={`flex justify-center min-h-[100vh] h-full px-4 lg:px-0 overflow-x-hidden relative ${

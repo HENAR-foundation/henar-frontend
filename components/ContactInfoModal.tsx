@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { checkSignIn } from 'api/user';
 import { useRouter } from 'next/router';
-import AboutModal from 'pages/registration/AboutModal';
-import React, { FC, ReactNode } from 'react';
+import AboutModal from './AboutModal';
+import React, { FC } from 'react';
 
 const protectedRoutes = ['/events'] as any;
 

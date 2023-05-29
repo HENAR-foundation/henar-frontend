@@ -6,7 +6,6 @@ import Link from 'next/link';
 import React from 'react';
 import { useToggle } from 'usehooks-ts';
 import * as Yup from 'yup';
-import AboutModal from './AboutModal';
 import { signUp } from 'api/mutations/auth';
 import { GetServerSideProps } from 'next';
 import { useTranslations } from 'next-intl';

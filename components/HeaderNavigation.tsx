@@ -65,7 +65,7 @@ const NavNotifications: FC<{ onClose: () => void }> = ({ onClose }) => {
         </span>
       </div>
       <div className='flex flex-col mt-4'>
-        {notificationsMock.map(({ avatar, id, name }, index) => (
+        {/* {notificationsMock.map(({ avatar, id, name }, index) => (
           <div className='flex' key={index}>
             <div
               className={`flex items-center h-[60px] ${
@@ -97,7 +97,7 @@ const NavNotifications: FC<{ onClose: () => void }> = ({ onClose }) => {
               />
             </div>
           </div>
-        ))}
+        ))} */}
       </div>
     </div>
   );
@@ -174,11 +174,15 @@ const ProfileNav: FC<{ onShowSettings: () => void }> = ({ onShowSettings }) => {
 };
 
 export const HeaderNavigation = () => {
+  const t = useTranslations();
+
   const { push, route } = useRouter();
   const [showSettings, toggleSettings] = useToggle();
 
-  const { data } = useQuery({ queryKey: ['isSignedIn'], queryFn: checkSignIn });
-  const t = useTranslations();
+  const { data } = useQuery({
+    queryKey: ['isSignedIn'],
+    queryFn: checkSignIn,
+  });
 
   return (
     <header className='sticky z-50 top-0 w-full bg-white h-20 justify-center shadow-l lg:flex hidden'>
