@@ -1,7 +1,9 @@
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import React from 'react';
 
 const Footer = () => {
+//   const t = useTranslations();
   return (
     <footer className='bg-white'>
       <div className='flex lg:ml-20 lg:h-[197px] pt-4 lg:flex-row flex-col h-auto  '>
@@ -16,10 +18,10 @@ const Footer = () => {
         </div>
         <div className='flex flex-col mb-14 lg:mb-0'>
           <div className='flex lg:space-x-20 font-bodyLight text-accent1 lg:font-thin lg:leading-3 lg:flex-row flex-col lg:text-left text-center space-y-6 lg:space-y-0'>
-            <span>Проекты</span>
-            <span>Специалисты</span>
-            <span>Мероприятия</span>
-            <span>Исследования</span>
+            {/* <span>{t('projects')}</span>
+            <span>{t('experts')}</span>
+            <span>{t('events')}</span>
+            <span>{t('analytics')}</span> */}
           </div>
         </div>
       </div>

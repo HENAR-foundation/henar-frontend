@@ -44,7 +44,7 @@ const SelectMaterial: FC<{
       {icon && (
         <div className='flex h-[45px] justify-center align-center mr-3'>
           <Image
-            src={Icons[icon]}
+            src={`/${Icons[icon]}`}
             width={17}
             height={17}
             alt={`${icon} icon`}

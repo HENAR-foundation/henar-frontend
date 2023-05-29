@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import { getUserByEmail } from 'api/events';
 import { useQuery } from '@tanstack/react-query';
 
 const withAuth = (Component: any) => {

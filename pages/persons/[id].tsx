@@ -1,13 +1,17 @@
+import { useQuery } from '@tanstack/react-query';
+import { getProjects } from 'api/projects';
 import ButtonPrimary from 'components/ButtonPrimary';
-import ProfileModal from 'components/ProfileModal';
 import ProjectCard from 'components/ProjectCard';
 import SpecialistCard from 'components/SpecialistCard';
 import Tag from 'components/Tag';
+import { GetServerSideProps } from 'next';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import React from 'react';
-import { useToggle } from 'usehooks-ts';
 
 const SpecialistPage = () => {
+  const { data } = useQuery({ queryFn: getProjects, queryKey: ['projects'] });
+  const t = useTranslations();
 
   return (
     <>
@@ -44,23 +48,22 @@ const SpecialistPage = () => {
                 kind='M'
                 icon='arrow'
                 className='lg:mt-0 mt-9 text-left text-m'
-
               >
-                Запросить контакты
+                {t('request_contacts')}
               </ButtonPrimary>
             </div>
             <div className='flex flex-col bg-white rounded-s py-6 px-5 justify-between'>
               <div>
-                <h2 className='text-a-xl mb-5'>Информация</h2>
+                <h2 className='text-a-xl mb-5'>{t('information')}</h2>
                 <p className='flex justify-between'>
-                  <span className='text-tetriary'>Страна</span>
+                  <span className='text-tetriary'>{t('country')}</span>
                   <span>Россия</span>
                 </p>
                 <p className='mt-4 flex justify-between'>
-                  <span className='text-tetriary'>Специальность</span>
+                  <span className='text-tetriary'>{t('specialty')}</span>
                   <span>Радиология</span>
                 </p>
-                <h3 className='mt-6 text-a-xl mb-4'>Интересы</h3>
+                <h3 className='mt-6 text-a-xl mb-4'>{t('interests')}</h3>
                 <div className='inline-flex flex-wrap gap-2 lg:mb-8'>
                   <Tag name='Радиология' />
                   <Tag name='Первая помощь' />
@@ -71,9 +74,9 @@ const SpecialistPage = () => {
           </div>
           <h2 className='font-bold text-h-m-d mb-9'>Учавствует в 3 проектах</h2>
           <div className='w-full grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-4 mb-[85px]'>
-            <ProjectCard />
-            <ProjectCard />
-            <ProjectCard />
+            {data?.map((item, index) => (
+              <ProjectCard key={index} data={item} />
+            ))}
           </div>
           <div className='lg:inline-block hidden'>
             <SpecialistCard
@@ -89,6 +92,22 @@ const SpecialistPage = () => {
       </div>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+  // const queryClient = new QueryClient();
+
+  // await queryClient.fetchQuery({
+  //   queryKey: ['projects'],
+  //   queryFn: getProjects,
+  // });
+
+  return {
+    props: {
+      messages: (await import(`../../messages/${locale}.json`)).default,
+      // dehydratedState: dehydrate(queryClient),
+    },
+  };
 };
 
 export default SpecialistPage;

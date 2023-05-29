@@ -1,11 +1,36 @@
 import axios from 'axios';
+const env = process.env.NODE_ENV;
 
 const instance = axios.create({
-  baseURL: 'http://134.209.95.248:8080/v1/',
+  baseURL: 'http://localhost:8080/v1',
   withCredentials: true,
   timeout: 1000,
-  //   headers: { 'X-Custom-Header': 'foobar' },
 });
+
+const protectedRoutes = ['/'];
+
+instance.interceptors.response.use(
+  function (config) {
+    // Do something before request is sent
+    // console.log(config, 'WWWWW');
+    return config;
+  },
+  function (error) {
+    const status = error.response?.status || 500;
+    if (
+      typeof window !== 'undefined' &&
+      status === 401 &&
+      window.location.pathname !== '/login'
+    ) {
+      console.info('WWWWwwwwwwzWW');
+
+      //   window.location =
+      //     window.location.protocol + '//' + window.location.host + '/login';
+    } else {
+      return Promise.reject(error); // Delegate error to calling side
+    }
+  }
+);
 
 instance.defaults.withCredentials = true;
 

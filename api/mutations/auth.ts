@@ -17,6 +17,15 @@ export const signIn = async (email: string, password: string) => {
     );
     return result;
   } catch (error: any) {
+    throw error;
+  }
+};
+
+export const signOut = async () => {
+  try {
+    const result = await axios.get('/auth/signout');
+    return result;
+  } catch (error: any) {
     throw error.response;
   }
 };

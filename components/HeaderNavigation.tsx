@@ -7,25 +7,28 @@ import { useRouter } from 'next/router';
 import { useToggle } from 'usehooks-ts';
 import AvatarCircle from './AvatarCircle';
 import ProfileModal from './ProfileModal';
-import { useQuery } from '@tanstack/react-query';
+import LangToggle from './LangToggle';
+import { useTranslations } from 'next-intl';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { checkSignIn } from 'api/user';
+import { signOut } from 'api/mutations/auth';
 
 const links = [
   {
     link: '/projects',
-    label: 'Проекты',
+    label: 'projects',
   },
   {
     link: '/specialists',
-    label: 'Специалисты',
+    label: 'experts',
   },
   {
     link: '/events',
-    label: 'Мероприятия',
+    label: 'events',
   },
   {
     link: '/researches',
-    label: 'Исследования',
+    label: 'analytics',
   },
 ];
 
@@ -63,7 +66,7 @@ const NavNotifications: FC<{ onClose: () => void }> = ({ onClose }) => {
       </div>
       <div className='flex flex-col mt-4'>
         {notificationsMock.map(({ avatar, id, name }, index) => (
-          <div className='flex'>
+          <div className='flex' key={index}>
             <div
               className={`flex items-center h-[60px] ${
                 index !== notificationsMock.length - 1
@@ -100,12 +103,24 @@ const NavNotifications: FC<{ onClose: () => void }> = ({ onClose }) => {
   );
 };
 
-const ProfileNav: FC<{ onShowSettings: () => void; onLogOut: () => void }> = ({
-  onLogOut,
-  onShowSettings,
-}) => {
+const ProfileNav: FC<{ onShowSettings: () => void }> = ({ onShowSettings }) => {
   const [opened, toggleOpen] = useToggle();
   const [notificationsOpened, toggleNotifications] = useToggle();
+  const t = useTranslations();
+  const { refetch } = useQuery({
+    queryFn: checkSignIn,
+    queryKey: ['isSignedIn'],
+  });
+  const queryClient = useQueryClient();
+
+  const handleSignOut = () => {
+    signOut()
+      .then(() => {
+        queryClient.invalidateQueries({ queryKey: ['isSignedIn'] });
+        refetch();
+      })
+      .catch((e) => console.info(e, 'FAILED'));
+  };
 
   return (
     <div className='flex relative'>
@@ -144,10 +159,10 @@ const ProfileNav: FC<{ onShowSettings: () => void; onLogOut: () => void }> = ({
             }}
             className='text-a-ss leading-[140%] cursor-pointer'
           >
-            Настройки
+            {t('settings')}
           </span>
           <span
-            onClick={onLogOut}
+            onClick={handleSignOut}
             className='text-a-ss leading-[140%] text-error cursor-pointer'
           >
             Выйти
@@ -160,11 +175,10 @@ const ProfileNav: FC<{ onShowSettings: () => void; onLogOut: () => void }> = ({
 
 export const HeaderNavigation = () => {
   const { push, route } = useRouter();
-  const [loggedIn, toggleLogin] = useToggle();
   const [showSettings, toggleSettings] = useToggle();
 
   const { data } = useQuery({ queryKey: ['isSignedIn'], queryFn: checkSignIn });
-  console.info(data, 'SIGNEDIN');
+  const t = useTranslations();
 
   return (
     <header className='sticky z-50 top-0 w-full bg-white h-20 justify-center shadow-l lg:flex hidden'>
@@ -173,42 +187,42 @@ export const HeaderNavigation = () => {
           <Link href='/'>
             <Image alt='Logo' src='/logo.svg' width={140} height={35} />
           </Link>
-          <div className='ml-14 flex items-center space-x-9 text-primary h-full'>
-            {links.map((item) => (
+          <div className='ml-7 flex items-center space-x-9 text-primary h-full'>
+            {links.map((item, index) => (
               <div
+                key={index}
                 className={`h-full items-center flex ${
                   route === item.link &&
                   'text-accent1 border-b-[2px] border-solid border-accent1'
                 }`}
               >
-                <Link href={item.link}>{item.label}</Link>
+                <Link href={item.link}>{t(item.label as any)}</Link>
               </div>
             ))}
           </div>
         </section>
-        <section className='flex'>
-          {loggedIn ? (
-            <ProfileNav
-              onShowSettings={toggleSettings}
-              onLogOut={toggleLogin}
-            />
-          ) : (
-            <>
-              <ButtonPrimary
-                onClick={() => push('/registration')}
-                className='min-w-[138px]'
-              >
-                Регистрация
-              </ButtonPrimary>
-              <ButtonOutline
-                onClick={toggleLogin}
-                className='ml-2 min-w-[137px]'
-              >
-                Вход
-              </ButtonOutline>
-            </>
-          )}
-        </section>
+        <div className='flex items-center'>
+          <LangToggle />
+          <section className='flex'>
+            {data ? (
+              <ProfileNav onShowSettings={toggleSettings} />
+            ) : (
+              <>
+                <ButtonPrimary
+                  onClick={() => push('/registration')}
+                  className='min-w-[138px]'
+                >
+                  {t('registration')}
+                </ButtonPrimary>
+                <Link href='/login'>
+                  <ButtonOutline className='ml-2 min-w-[137px]'>
+                    {t('sign_in')}
+                  </ButtonOutline>
+                </Link>
+              </>
+            )}
+          </section>
+        </div>
       </div>
       {showSettings && <ProfileModal onClose={toggleSettings} />}
     </header>
@@ -230,6 +244,8 @@ export const HeaderNavigationM = () => {
       document.body.style.overflow = 'auto';
     }
   }, [opened]);
+
+  const t = useTranslations();
 
   return (
     <header className='sticky top-0 w-full bg-white h-[55px] shadow-l lg:hidden px-5 z-50'>
@@ -256,29 +272,34 @@ export const HeaderNavigationM = () => {
               />
             </div>
             <div className='flex flex-1 flex-col mt-[74px] items-center space-y-11'>
-              {links.map((item) => (
+              {links.map(({ link, label }) => (
                 <div
                   className={`items-center flex text-xl ${
-                    route === item.link &&
+                    route === link &&
                     'text-accent1 border-b-[2px] border-solid border-accent1'
                   }`}
                 >
-                  <Link href={item.link}>{item.label}</Link>
+                  <Link href={link}>{t(label as any)}</Link>
                 </div>
               ))}
             </div>
           </div>
           <div className='flex flex-col mt-5 mx-[31px]'>
-            <ButtonPrimary kind='M'>Регистрация</ButtonPrimary>
-            <ButtonOutline kind='M' className='mt-3 mb-[33px]'>
-              Вход
-            </ButtonOutline>
+            <ButtonPrimary kind='M'>{t('registration')}</ButtonPrimary>
+            <Link href='/login'>
+              <ButtonOutline kind='M' className='mt-3 mb-[33px]'>
+                {t('sign_in')}
+              </ButtonOutline>
+            </Link>
             <span className='text-accent1 text-xl leading-[140%] text-center'>
               +7 800 555 35 35
             </span>
-            <span className='font-bodyLight text-s text-secondary text-center mb-[80px]'>
+            <span className='font-bodyLight text-s text-secondary text-center '>
               Ответим на любой вопрос
             </span>
+            <div className='flex justify-center mb-[40px] mt-6'>
+              <LangToggle />
+            </div>
           </div>
         </div>
       )}

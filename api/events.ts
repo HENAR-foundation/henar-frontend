@@ -1,11 +1,7 @@
 import axios from './axios';
+import { Event } from './types';
 
-export const getEvents = async () => {
+export const getEvents = async (): Promise<Event[]> => {
   const { data } = await axios.get('/events');
-  return data;
-};
-
-export const getUserByEmail = async (email: string) => {
-  const { data } = await axios.get(`/user?email=${email}`);
   return data;
 };

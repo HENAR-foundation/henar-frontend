@@ -3,14 +3,18 @@ import React, { FC } from 'react';
 import AvatarCircle from './AvatarCircle';
 import FishImage from './FishImage';
 import Tag from './Tag';
+import { Project } from 'api/types';
+import Image from 'next/image';
 
-const ProjectCard: FC<{ image?: string; withShadow?: boolean }> = ({
-  image,
-  withShadow,
-}) => {
+const ProjectCard: FC<{
+  image?: string;
+  withShadow?: boolean;
+  data: Project;
+}> = ({ image, withShadow, data }) => {
   const { push } = useRouter();
+
   const handleClick = () => {
-    push('/projects/1');
+    push(`/projects/${data.slug}`);
   };
 
   return (
@@ -21,18 +25,26 @@ const ProjectCard: FC<{ image?: string; withShadow?: boolean }> = ({
       onClick={handleClick}
       role='button'
     >
-      {image && (
-        <div className='relative aspect-[1.7/1] mb-6'>
+      <div className='relative aspect-[1.7/1] mb-6'>
+        {data.covers ? (
+          <Image
+            fill
+            src={data.covers[0]}
+            alt='project cover'
+            className='object-cover'
+          />
+        ) : (
           <FishImage />
-        </div>
-      )}
+        )}
+      </div>
       <div className='flex p-5 flex-col'>
         <div className='flex justify-between w-full mb-2 text-a-ss text-accent1'>
-          <span>125 просмотров</span>
-          <span>3 отклика</span>
+          <span>{data.views} просмотров</span>
+          <span>{data.successful_applicants} отклика</span>
         </div>
         <span className='mb-3 text-m font-medium'>
-          Разработка новой системы анализа медицинских снимков
+          {data.title.en ||
+            'Разработка новой системы анализа медицинских снимков'}
         </span>
         <div className='inline-flex flex-wrap gap-2 mb-6'>
           <Tag name='Медицина' />

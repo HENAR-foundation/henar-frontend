@@ -5,6 +5,8 @@ import ButtonOutline from './ButtonOutline';
 import FishImage from './FishImage';
 import Icon, { Icons } from './Icon';
 import Tag from './Tag';
+import { useTranslations } from 'next-intl';
+import { GetServerSideProps } from 'next';
 
 const SpecialistCard: FC<{
   avatar: string;
@@ -15,6 +17,8 @@ const SpecialistCard: FC<{
   tags: string[];
 }> = ({ avatar, fullName, description, location, job, tags }) => {
   const { push } = useRouter();
+  const t = useTranslations();
+
   return (
     <div className='shadow-l p-4 lg:p-0 w-full h-full rounded-xl  flex min-h-[218px] bg-white overflow-hidden lg:flex-row flex-col'>
       <div className='flex justify-center items-center'>
@@ -57,11 +61,27 @@ const SpecialistCard: FC<{
           onClick={() => push('/persons/1')}
           className='lg:w-auto w-full lg:mr-8'
         >
-          Запросить контакты
+            {t('request_contacts')}
         </ButtonOutline>
       </div>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+  // const queryClient = new QueryClient();
+
+  // await queryClient.fetchQuery({
+  //   queryKey: ['projects'],
+  //   queryFn: getProjects,
+  // });
+
+  return {
+    props: {
+      messages: (await import(`../messages/${locale}.json`)).default,
+      // dehydratedState: dehydrate(queryClient),
+    },
+  };
 };
 
 export default SpecialistCard;

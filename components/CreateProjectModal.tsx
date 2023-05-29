@@ -6,8 +6,16 @@ import TextAreaMaterial from './TextAreaMaterial';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import ButtonOutline from './ButtonOutline';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
+import SelectMaterial from './SelectMaterial';
+import { createProject } from 'api/mutations/projects';
+import { checkSignIn } from 'api/user';
+import { getProjects } from 'api/projects';
+import ProjectFilesUploader from './ProjectFilesUploader';
+import { uploadPhotos } from 'api/mutations/files';
 
-const SignupSchema = Yup.object().shape({
+const CreateProjectSchema = Yup.object().shape({
   title: Yup.string()
     .min(5, 'Название должно содержать минимум 5 символов')
     .max(50, 'Название может содержать максимум 50 символов')
@@ -15,23 +23,70 @@ const SignupSchema = Yup.object().shape({
   description: Yup.string().required('Пожалуйста заполните поле'),
   tasks: Yup.string().required('Пожалуйста заполните поле'),
   request: Yup.string().required('Пожалуйста заполните поле'),
+  photos: Yup.mixed().required('Required'),
 });
 
 const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
-    
+  const { data: user } = useQuery({
+    queryFn: checkSignIn,
+    queryKey: ['isSignedIn'],
+  });
+
+  const { refetch: refetchProjects } = useQuery({
+    queryKey: ['projects'],
+    queryFn: getProjects,
+  });
+
+  const queryClient = useQueryClient();
+
+  const handleCreateProject = (photos: string[] = []) => {
+    const { description, request, title } = formik.values;
+    if (user) {
+      createProject({
+        covers: photos,
+        author: user.full_name.ru,
+        description,
+        title,
+        objective: 'OBJECTIVe',
+        tags: [],
+        whoIsNeeded: request,
+      }).then(() => {
+        queryClient.invalidateQueries({ queryKey: ['projects'] });
+        refetchProjects();
+      });
+    }
+  };
+
+  const mutationPhotos = useMutation({
+    mutationFn: (photos: FileList) => {
+      return uploadPhotos(photos);
+    },
+    onSuccess: (data) => handleCreateProject(data),
+  });
+
   const formik = useFormik({
     initialValues: {
       title: '',
       description: '',
       tasks: '',
       request: '',
+      photos: [],
     },
     validateOnChange: false,
-    validationSchema: SignupSchema,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    validationSchema: CreateProjectSchema,
+    onSubmit: ({ description, photos, request, title }) => {
+      console.info('PHOTOS', photos, user);
+      if (user) {
+        if (photos.length) {
+          mutationPhotos.mutate(photos as unknown as FileList);
+        } else {
+          handleCreateProject();
+        }
+      }
     },
   });
+  console.info(formik);
+  const t = useTranslations();
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -39,10 +94,6 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
       document.body.style.overflow = 'auto';
     };
   }, []);
-
-  const handleClose = (e: any) => {
-    onClose();
-  };
 
   return (
     <div
@@ -54,23 +105,23 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
         data-overlay='true'
         className='flex w-full h-full items-center justify-center opacity-1 overflow-auto'
       >
-        <div className='flex flex-col w-[850px] mt-[200px] lg:mt-0 relative'>
+        <div className='flex-col h-full w-full flex items-center overflow-auto  lg:mt-0 relative'>
           <Image
             src='/cross-white.svg'
             width={20}
             height={20}
             alt=''
-            className='right-[-50px] top-4 absolute cursor-pointer'
-            onClick={handleClose}
+            className='right-[50px] fixed top-4 cursor-pointer'
+            onClick={onClose}
           />
-          <div className='rounded-xl overflow-hidden'>
-            <div className='flex lg:flex-row flex-col justify-between  bg-accent1  w-full pb-6 pt-10 lg:px-8 px-4'>
+          <div className=' w-[850px] mt-[100px] min-h-full '>
+            <div className='rounded-t-xl overflow-hidden flex lg:flex-row flex-col justify-between  bg-accent1  w-full pb-6 pt-10 lg:px-8 px-4'>
               <div className='text-white flex flex-col'>
                 <h3 className='lg:leading-8 leading-7 font-bold text-h-m-m lg:text-h-m-d mb-2'>
-                  Новый проект
+                  {t('new_project')}
                 </h3>
                 <span className='font-bodyLight'>
-                  Для публикации проекта заполните анкету
+                  {t('fill_form_for_project')}
                 </span>
               </div>
               <div className='lg:mt-0 mt-7'>
@@ -85,7 +136,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
                 </ButtonPrimary>
               </div>
             </div>
-            <div className='space-y-10 flex flex-col bg-white lg:px-8 px-4 py-6'>
+            <div className='rounded-b-xl overflow-hidden  space-y-10 flex flex-col bg-white lg:px-8 px-4 py-6'>
               <div className='flex justify-between lg:flex-row flex-col'>
                 <div className='flex flex-col lg:w-[160px]'>
                   <span className='text-l'>Название</span>
@@ -111,9 +162,28 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
                   </span>
                 </div>
                 <div className='w-full max-w-[480px]'>
-                  <ButtonOutline className='w-[163px] lg:mt-0 mt-[30px]'>
-                    Загрузите фото
-                  </ButtonOutline>
+                  <ProjectFilesUploader
+                    onChange={formik.setFieldValue}
+                    name='photos'
+                    value={formik.values.photos}
+                  />
+                </div>
+              </div>
+              <div className='lg:flex-row flex-col flex justify-between'>
+                <div className='flex flex-col lg:w-[160px]'>
+                  <span className='text-l'>Стадия проекта</span>
+                  <span className='font-bodyLight text-a-ss'>
+                    На каком этапе находится проект ?
+                  </span>
+                </div>
+                <div className='w-full max-w-[480px]'>
+                  <SelectMaterial
+                    options={[
+                      { label: 'Сделан', val: 'rus' },
+                      { label: 'Не сделан', val: 'us' },
+                    ]}
+                    defaultVal='Выберите стадию'
+                  />
                 </div>
               </div>
               <div className='lg:flex-row flex-col flex justify-between'>
@@ -167,6 +237,23 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
                     onChange={formik.handleChange}
                     value={formik.values.request}
                     placeholder='Запрос'
+                  />
+                </div>
+              </div>
+              <div className='lg:flex-row flex-col flex justify-between'>
+                <div className='flex flex-col lg:w-[160px]'>
+                  <span className='text-l'>Как помочь проекту ?</span>
+                  <span className='font-bodyLight text-a-ss'>
+                    Как можно почучаствовать в проекте?
+                  </span>
+                </div>
+                <div className='w-full max-w-[480px]'>
+                  <SelectMaterial
+                    options={[
+                      { label: 'Сделан', val: 'rus' },
+                      { label: 'Не сделан', val: 'us' },
+                    ]}
+                    defaultVal='Возможности для участия'
                   />
                 </div>
               </div>

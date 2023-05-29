@@ -10,11 +10,14 @@ const Icons = {
 const SortingSelect: FC<{
   icon?: keyof typeof Icons;
   options: { label: string; val: string | number }[];
+  onChange?: (newVal: string) => void;
   defaultVal?: string;
-}> = ({ defaultVal, options, icon }) => {
+}> = ({ defaultVal, onChange, options, icon }) => {
   const handleOptionClick = (e: any) => {
     if (e.currentTarget.dataset['index']) {
       toggleOption(e.currentTarget.dataset['index']);
+      onChange &&
+        onChange(options[e.currentTarget.dataset['index']].val.toString());
       toggleOpen();
     }
   };

@@ -4,25 +4,46 @@ import Head from 'next/head';
 import { getEvents } from 'api/events';
 import { getTags } from 'api/tags';
 import React from 'react';
-import { QueryClient, dehydrate, useQuery } from '@tanstack/react-query';
+import { QueryClient, useQuery } from '@tanstack/react-query';
+import { GetServerSideProps } from 'next';
+import { useTranslations } from 'next-intl';
 
 const EventsPage = () => {
-  const { data } = useQuery({ queryKey: ['events'], queryFn: getEvents });
+  const { data: events } = useQuery({
+    queryKey: ['events'],
+    queryFn: getEvents,
+  });
+
+  const handleClick = () => {
+    PubSub.publish(
+      'notification',
+      'Проект отправлен на модерацию. Обычно проверка занимает не более двух дней'
+    );
+  };
+
+  const t = useTranslations();
 
   return (
     <>
       <Head>
-        <title>Мероприятия</title>
+        <title>{t('events')}</title>
       </Head>
-      <h1 className='mb-2 text-h-xl-m mt-[59px] font-bold'>Мероприятия</h1>
+      <h1
+        // onClick={handleClick}
+        className='mb-2 text-h-xl-m mt-[59px] font-bold'
+      >
+        {t('events')}
+      </h1>
       <span className='mb-4 font-bodyLight text-l'>
-        В этом разделе собраны все мероприятия в сфере медицины Армении
+        {t('all_events_related')}
       </span>
       <div className='w-[676px] mt-7 mb-10'>
-        <InputMaterial icon='search' placeholder='Найти мероприятие' />
+        <InputMaterial icon='search' placeholder={t('find_an_event')} />
       </div>
       <section>
-        <h2 className='mb-2 text-h-s-d -m mt-[59px] font-bold'>Предстоящие</h2>
+        <h2 className='mb-2 text-h-s-d -m mt-[59px] font-bold'>
+          {t('upcoming')}
+        </h2>
 
         <div className='mt-6 space-x-0  w-full mb-9 lg:gap-x-9 columns-1 lg:columns-3 space-y-[28px]'>
           <EventCard image />
@@ -35,9 +56,12 @@ const EventsPage = () => {
         </div>
       </section>
       <section>
-        <h2 className='mb-2 text-h-s-d -m mt-9 font-bold'>Прошедшие</h2>
+        <h2 className='mb-2 text-h-s-d -m mt-9 font-bold'>{t('past')}</h2>
 
         <div className='mt-6 space-x-0  w-full mb-9 lg:gap-x-9 columns-1 lg:columns-3 space-y-[28px]'>
+          {events?.map(() => (
+            <EventCard />
+          ))}
           <EventCard />
           <EventCard image />
           <EventCard />
@@ -51,16 +75,20 @@ const EventsPage = () => {
   );
 };
 
-export const getServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   const queryClient = new QueryClient();
 
-  // prefetch data on the server
   await queryClient.fetchQuery({ queryFn: getTags, queryKey: ['tags'] });
+
+  await queryClient.fetchQuery({
+    queryKey: ['events'],
+    queryFn: getEvents,
+  });
 
   return {
     props: {
-      // dehydrate query cache
-      dehydratedState: dehydrate(queryClient),
+      messages: (await import(`../../messages/${locale}.json`)).default,
+      //   dehydratedState: dehydrate(queryClient),
     },
   };
 };

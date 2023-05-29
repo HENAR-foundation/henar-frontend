@@ -2,16 +2,17 @@ import Image from 'next/image';
 import React, { FC, InputHTMLAttributes, useState } from 'react';
 
 const Icons = {
-  search: 'search.svg',
+  search: '/search.svg',
 } as const;
 
 const InputMaterial: FC<
   InputHTMLAttributes<HTMLInputElement> & {
     label?: string;
+    onChange?: React.ChangeEventHandler<HTMLInputElement>;
     error?: string;
     icon?: keyof typeof Icons;
   }
-> = ({ label, type, error, icon, className, ...rest }) => {
+> = ({ label, type, onChange, error, icon, className, ...rest }) => {
   const [inputType, toggleType] = useState(type);
 
   const handleToggleType = () => {
@@ -43,6 +44,7 @@ const InputMaterial: FC<
             className={`relative border-b-[1px] border-solid w-full ${borderColor}`}
           >
             <input
+              onChange={onChange}
               type={inputType}
               id='input'
               className={`w-full mb-3 bg-transparent  text-m outline-none ${className} ${
