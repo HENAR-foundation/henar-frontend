@@ -12,6 +12,7 @@ const nextConfig = {
       },
     ],
   },
+  output: 'standalone',
   reactStrictMode: true,
   i18n: {
     locales: ['en', 'ru', 'hy'],
