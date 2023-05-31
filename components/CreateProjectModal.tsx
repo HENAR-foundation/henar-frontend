@@ -5,7 +5,6 @@ import InputMaterial from './InputMaterial';
 import TextAreaMaterial from './TextAreaMaterial';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import ButtonOutline from './ButtonOutline';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import SelectMaterial from './SelectMaterial';
@@ -74,8 +73,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
     },
     validateOnChange: false,
     validationSchema: CreateProjectSchema,
-    onSubmit: ({ description, photos, request, title }) => {
-      console.info('PHOTOS', photos, user);
+    onSubmit: ({ photos }) => {
       if (user) {
         if (photos.length) {
           mutationPhotos.mutate(photos as unknown as FileList);
@@ -85,7 +83,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
       }
     },
   });
-  console.info(formik);
+
   const t = useTranslations();
 
   useEffect(() => {
@@ -106,15 +104,15 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
         className='flex w-full h-full items-center justify-center opacity-1 overflow-auto'
       >
         <div className='flex-col h-full w-full flex items-center overflow-auto  lg:mt-0 relative'>
+          <div className=' w-[850px] mt-[100px] min-h-full relative'>
           <Image
             src='/cross-white.svg'
             width={20}
             height={20}
             alt=''
-            className='right-[50px] fixed top-4 cursor-pointer'
+            className='lg:right-[-40px] absolute lg:top-0 top-[-50px] right-[25px] cursor-pointer'
             onClick={onClose}
           />
-          <div className=' w-[850px] mt-[100px] min-h-full '>
             <div className='rounded-t-xl overflow-hidden flex lg:flex-row flex-col justify-between  bg-accent1  w-full pb-6 pt-10 lg:px-8 px-4'>
               <div className='text-white flex flex-col'>
                 <h3 className='lg:leading-8 leading-7 font-bold text-h-m-m lg:text-h-m-d mb-2'>

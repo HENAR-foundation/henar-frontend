@@ -39,8 +39,8 @@ const personsMock: {
 
 const SpecialistsPage = () => {
   const t = useTranslations();
-  const {data} = useQuery({ queryFn: getUsers, queryKey: ['users'] });
-  console.info(data)
+  const { data } = useQuery({ queryFn: getUsers, queryKey: ['users'] });
+  console.info(data);
   return (
     <>
       <Head>
@@ -79,7 +79,7 @@ const SpecialistsPage = () => {
         />
       </div>
       <div className='max-w-[1054px] w-full h-full space-y-5'>
-        {personsMock.map((person) => (
+        {data?.map((person) => (
           <SpecialistCard key={person.description} {...person} />
         ))}
       </div>

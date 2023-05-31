@@ -106,7 +106,6 @@ const App = ({ Component, pageProps }: AppProps) => {
             value={{ interfaceState, setInterfaceState }}
           >
             <HeaderNavigation />
-
             <HeaderNavigationM />
             <main
               className={`flex justify-center min-h-[100vh] h-full px-4 lg:px-0 overflow-x-hidden relative ${

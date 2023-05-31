@@ -57,7 +57,7 @@ const notificationsMock = [
 
 const NavNotifications: FC<{ onClose: () => void }> = ({ onClose }) => {
   return (
-    <div className='flex flex-col bg-white rounded-b-l pt-[18px] pl-5 pr-[17px] w-[383px] absolute bottom-[-365px] left-[-335px] pb-10 border-t-[1px] border-accent2'>
+    <div className='flex flex-col bg-white rounded-b-l pt-[18px] pl-5 pr-[17px] w-[383px] absolute top-[58px] left-[-335px] pb-10 border-t-[1px] border-accent2'>
       <div className='flex justify-between'>
         <span className='text-l'>Уведомления</span>
         <span className='text-accent1 cursor-pointer' onClick={onClose}>
@@ -65,6 +65,7 @@ const NavNotifications: FC<{ onClose: () => void }> = ({ onClose }) => {
         </span>
       </div>
       <div className='flex flex-col mt-4'>
+        Нет новых уведомлений
         {/* {notificationsMock.map(({ avatar, id, name }, index) => (
           <div className='flex' key={index}>
             <div
@@ -104,20 +105,20 @@ const NavNotifications: FC<{ onClose: () => void }> = ({ onClose }) => {
 };
 
 const ProfileNav: FC<{ onShowSettings: () => void }> = ({ onShowSettings }) => {
+  const { push } = useRouter();
   const [opened, toggleOpen] = useToggle();
   const [notificationsOpened, toggleNotifications] = useToggle();
   const t = useTranslations();
-  const { refetch } = useQuery({
-    queryFn: checkSignIn,
-    queryKey: ['isSignedIn'],
-  });
+
   const queryClient = useQueryClient();
 
   const handleSignOut = () => {
     signOut()
       .then(() => {
-        queryClient.invalidateQueries({ queryKey: ['isSignedIn'] });
-        refetch();
+        queryClient.invalidateQueries({ queryKey: ['isSignedIn'] }).then(() => {
+          PubSub.publish('notification', 'Вы успешно вышли');
+          push('/');
+        });
       })
       .catch((e) => console.info(e, 'FAILED'));
   };

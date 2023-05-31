@@ -12,6 +12,17 @@ import { GetServerSideProps } from 'next';
 import { useTranslations } from 'next-intl';
 
 const ResearchesPage = () => {
+//   const formik = useFormik({
+//     initialValues: {
+//       title: '',
+//       lastName: '',
+//       location: '',
+//       job: '',
+//     },
+//     validateOnChange: false,
+//     onSubmit: () => {},
+//   });
+
   const { data: stats } = useQuery({
     queryFn: getStatistics,
     queryKey: ['statistics'],

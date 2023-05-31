@@ -9,10 +9,6 @@ export const uploadPhotos = async (files: FileList) => {
       uploaders.push(axios.post('/files/upload', bodyFormData));
     }
     return Promise.all(uploaders).then((result) => {
-      console.info(
-        'UPLOADED',
-        result.map(({ data }: any) => data.url)
-      );
       return result.map(({ data }: any) => data.url);
     });
   } catch (error: any) {

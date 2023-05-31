@@ -39,7 +39,7 @@ const Notification = () => {
           height={20}
           alt=''
         />
-        {notificationMessage|| 'TEST'}
+        {notificationMessage}
       </div>
     )) ||
     null

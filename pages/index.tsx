@@ -3,20 +3,9 @@ import withAuth from 'hocs/withAuth';
 import ButtonPrimary from 'components/ButtonPrimary';
 import Image from 'next/image';
 import { FC } from 'react';
-import InputMaterial from 'components/InputMaterial';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import { GetServerSideProps } from 'next';
 import { useTranslations } from 'next-intl';
-
-const SignupSchema = Yup.object().shape({
-  name: Yup.string()
-    .min(5, 'Имя должно содержать минимум 5 символов')
-    .max(50, 'Имя может содержать максимум 50 символов')
-    .required('Пожалуйста заполните поле'),
-  location: Yup.string().required('Пожалуйста заполните поле'),
-  job: Yup.string().required('Пожалуйста заполните поле'),
-});
+import { useRouter } from 'next/router';
 
 const Specialist: FC<{
   name: string;
@@ -55,18 +44,21 @@ const Specialist: FC<{
 );
 
 const RegForm = () => {
-  const formik = useFormik({
-    initialValues: {
-      name: '',
-      location: '',
-      job: '',
-    },
-    validateOnChange: false,
-    validationSchema: SignupSchema,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
-    },
-  });
+  //   const formik = useFormik({
+  //     initialValues: {
+  //       name: '',
+  //       location: '',
+  //       job: '',
+  //     },
+  //     validateOnChange: false,
+  //     validationSchema: SignupSchema,
+  //     onSubmit: (values) => {
+  //       alert(JSON.stringify(values, null, 2));
+  //     },
+  //   });
+
+  const { push } = useRouter();
+  const t = useTranslations();
   return (
     <div className='lg:flex w-full mt-[57px] lg:mt-14 relative lg:h-[724px] justify-center items-center'>
       <div className='flex bg-mint rounded-xll justify-between lg:flex-row flex-col'>
@@ -84,8 +76,8 @@ const RegForm = () => {
             <span className='mt-3'>
               Начните регистрацию, чтобы стать частью <br /> сообщества
             </span>
-            <form className='flex flex-col' onSubmit={formik.handleSubmit}>
-              <span className='mt-11 text-l'>Как вас зовут?</span>
+            {/* <form className='flex flex-col' onSubmit={formik.handleSubmit}> */}
+            {/* <span className='mt-11 text-l'>Как вас зовут?</span>
               <InputMaterial
                 name='name'
                 error={formik.errors.name}
@@ -108,16 +100,16 @@ const RegForm = () => {
                 onChange={formik.handleChange}
                 value={formik.values.job}
                 placeholder='Выберите должность'
-              />
-              <ButtonPrimary
-                type='submit'
-                className='mt-11 w-full'
-                kind='M'
-                icon='arrow'
-              >
-                Зарегистрироваться
-              </ButtonPrimary>
-            </form>
+              /> */}
+            <ButtonPrimary
+              onClick={() => push('/registration')}
+              className='mt-11 w-full'
+              kind='M'
+              icon='arrow'
+            >
+              {t('register')}
+            </ButtonPrimary>
+            {/* </form> */}
           </div>
         </div>
       </div>

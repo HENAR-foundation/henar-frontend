@@ -11,3 +11,14 @@ export const updateUser = async (user: User) => {
     throw error.response;
   }
 };
+
+export const requesUserContact = async (id: string) => {
+  try {
+    const result = await axios.get('/users/' + id, {
+      withCredentials: true,
+    });
+    return result;
+  } catch (error: any) {
+    throw error.response;
+  }
+};

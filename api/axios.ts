@@ -2,7 +2,10 @@ import axios from 'axios';
 const env = process.env.NODE_ENV;
 
 const instance = axios.create({
-  baseURL: 'https://healthnet.am/api/v1',
+  baseURL:
+    env === 'production'
+      ? 'https://healthnet.am/api/v1'
+      : 'http://localhost:8080/v1',
   withCredentials: true,
   timeout: 1000,
 });
@@ -22,8 +25,6 @@ instance.interceptors.response.use(
       status === 401 &&
       window.location.pathname !== '/login'
     ) {
-      console.info('WWWWwwwwwwzWW');
-
       //   window.location =
       //     window.location.protocol + '//' + window.location.host + '/login';
     } else {

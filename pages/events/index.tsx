@@ -7,6 +7,9 @@ import React from 'react';
 import { QueryClient, useQuery } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { useTranslations } from 'next-intl';
+import Calendar from 'components/Calendar';
+import { checkSignIn } from 'api/user';
+import ButtonPrimary from 'components/ButtonPrimary';
 
 const EventsPage = () => {
   const { data: events } = useQuery({
@@ -14,12 +17,10 @@ const EventsPage = () => {
     queryFn: getEvents,
   });
 
-  const handleClick = () => {
-    PubSub.publish(
-      'notification',
-      'Проект отправлен на модерацию. Обычно проверка занимает не более двух дней'
-    );
-  };
+  const { data: user } = useQuery({
+    queryKey: ['isSignedIn'],
+    queryFn: checkSignIn,
+  });
 
   const t = useTranslations();
 
@@ -28,15 +29,16 @@ const EventsPage = () => {
       <Head>
         <title>{t('events')}</title>
       </Head>
-      <h1
-        // onClick={handleClick}
-        className='mb-2 text-h-xl-m mt-[59px] font-bold'
-      >
-        {t('events')}
-      </h1>
-      <span className='mb-4 font-bodyLight text-l'>
-        {t('all_events_related')}
-      </span>
+      <div className='flex mt-[59px]'>
+        <div>
+          <h1 className='mb-2 text-h-xl-m  font-bold'>{t('events')}</h1>
+          <span className='mb-4 font-bodyLight text-l'>
+            {t('all_events_related')}
+          </span>
+          {user && <ButtonPrimary kind='M'>Создать мероприятие</ButtonPrimary>}
+        </div>
+        <Calendar />
+      </div>
       <div className='w-[676px] mt-7 mb-10'>
         <InputMaterial icon='search' placeholder={t('find_an_event')} />
       </div>

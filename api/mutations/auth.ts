@@ -26,6 +26,6 @@ export const signOut = async () => {
     const result = await axios.get('/auth/signout');
     return result;
   } catch (error: any) {
-    throw error.response;
+    throw error;
   }
 };

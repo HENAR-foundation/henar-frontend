@@ -1,20 +1,40 @@
 import { useQuery } from '@tanstack/react-query';
 import { getProjects } from 'api/projects';
+import { FullName } from 'api/types';
+import { getUser } from 'api/user';
 import ButtonPrimary from 'components/ButtonPrimary';
 import ProjectCard from 'components/ProjectCard';
+import RequestContactInfoModal from 'components/RequestContactInfoModal';
 import SpecialistCard from 'components/SpecialistCard';
 import Tag from 'components/Tag';
 import { GetServerSideProps } from 'next';
 import { useTranslations } from 'next-intl';
+import Head from 'next/head';
 import Image from 'next/image';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { FC } from 'react';
+import { useToggle } from 'usehooks-ts';
 
-const SpecialistPage = () => {
+const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
+  const router = useRouter();
+  const { id } = router.query;
+  const [contactModal, toggleModal] = useToggle();
+
   const { data } = useQuery({ queryFn: getProjects, queryKey: ['projects'] });
-  const t = useTranslations();
+  const { data: user } = useQuery({
+    queryFn: () => getUser(id?.toString() || ''),
+    queryKey: ['person', id],
+  });
 
+  const t = useTranslations();
+  console.info(user);
   return (
     <>
+      <Head>
+        <title>
+          {user?.full_name[locale as keyof FullName] || t('experts')}
+        </title>
+      </Head>
       <div>
         <div className='absolute w-full top-14 left-0 lg:hidden flex aspect-[1.45/1] mb-5'>
           <Image
@@ -25,7 +45,7 @@ const SpecialistPage = () => {
             fill
           />
         </div>
-
+        {contactModal && <RequestContactInfoModal onClose={toggleModal} />}
         <div className='flex flex-col'>
           <div className='grid lg:grid-cols-3 grid-cols-1 gap-[20px] my-[60px] z-20 lg:mt-10 mt-[240px]'>
             <div className='aspect-[1/1] min-h-[325px] relative rounded-xl overflow-hidden lg:inline-block hidden'>
@@ -38,7 +58,7 @@ const SpecialistPage = () => {
             </div>
             <div className='flex flex-col bg-white rounded-s py-6 px-5 justify-between'>
               <div>
-                <h2 className='text-a-xl mb-3'>Иванов Александр Аркадьевич</h2>
+                <h2 className='text-a-xl mb-3'>{user?.full_name.en}</h2>
                 <p className='font-bodyLight text-a-m'>
                   Помогаю врачам находить нужные контакты в медиасреде,
                   консультирую всех бесплатно
@@ -48,6 +68,7 @@ const SpecialistPage = () => {
                 kind='M'
                 icon='arrow'
                 className='lg:mt-0 mt-9 text-left text-m'
+                onClick={toggleModal}
               >
                 {t('request_contacts')}
               </ButtonPrimary>
@@ -79,14 +100,18 @@ const SpecialistPage = () => {
             ))}
           </div>
           <div className='lg:inline-block hidden'>
-            <SpecialistCard
-              fullName='Иванов Пётр Александрович'
+            {/* <SpecialistCard
+              full_name={{
+                en: 'Иванов Пётр Александрович',
+                ru: 'TEST',
+                hy: 'HY TEST',
+              }}
               avatar='avatar.jpg'
               description='Кандидат наук, преподаватель кафедры врачебной медицины в НИУ ВШЭ'
               job='Врач радиолог'
               location='Москва, Россия'
               tags={['Радиология', 'Первая помощь', 'КТ']}
-            />
+            /> */}
           </div>
         </div>
       </div>

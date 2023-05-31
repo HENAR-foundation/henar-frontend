@@ -19,10 +19,10 @@ const ResearchCard: FC<Research> = ({ title, description, link }) => {
           <span>{title.en}</span>
         </div>
         <span className='mb-3 text-a-m font-medium'>{description.en}</span>
-        <div className='inline-flex flex-wrap gap-2 mb-6'>
+        {/* <div className='inline-flex flex-wrap gap-2 mb-6'>
           <Tag name='Медицина' />
           <Tag name='Медицина' />
-        </div>
+        </div> */}
         <div className='space-x-1 flex'>
           <Image src='/external-link-alt.svg' width={16} height={16} alt='' />
           <Link

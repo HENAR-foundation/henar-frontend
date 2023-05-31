@@ -5,12 +5,8 @@ import Head from 'next/head';
 import * as Yup from 'yup';
 import React from 'react';
 import { signIn } from 'api/mutations/auth';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { GetServerSideProps } from 'next';
 import {
-  QueryClient,
-  dehydrate,
-  useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 import { checkSignIn } from 'api/user';
@@ -27,11 +23,6 @@ const SigninSchema = Yup.object().shape({
 const LoginPage = () => {
   const { push } = useRouter();
 
-  const { data } = useQuery({
-    queryFn: checkSignIn,
-    queryKey: ['signedIn'],
-  });
-  
   const queryClient = useQueryClient();
   const formik = useFormik({
     initialValues: {
@@ -47,8 +38,8 @@ const LoginPage = () => {
             queryClient
               .invalidateQueries({ queryKey: ['isSignedIn'] })
               .then(() => {
-                //   refetch();
-                //   push('/projects');
+                push('/projects');
+                PubSub.publish('notification', 'Вы успешно вошли');
               });
           }
         })
@@ -101,7 +92,7 @@ export const getServerSideProps: GetServerSideProps = async ({
   locale,
   req,
 }) => {
-//   const sessionId = req.cookies['session_id'];
+  //   const sessionId = req.cookies['session_id'];
 
   return {
     props: {

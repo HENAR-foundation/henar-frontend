@@ -7,15 +7,17 @@ import Icon, { Icons } from './Icon';
 import Tag from './Tag';
 import { useTranslations } from 'next-intl';
 import { GetServerSideProps } from 'next';
+import { User } from 'api/types';
 
-const SpecialistCard: FC<{
-  avatar: string;
-  fullName: string;
-  description: string;
-  location: string;
-  job: string;
-  tags: string[];
-}> = ({ avatar, fullName, description, location, job, tags }) => {
+const SpecialistCard: FC<User> = ({
+  _id,
+  avatar,
+  full_name,
+  description,
+  location,
+  job,
+  tags,
+}) => {
   const { push } = useRouter();
   const t = useTranslations();
 
@@ -27,7 +29,7 @@ const SpecialistCard: FC<{
         </div>
       </div>
       <div className='h-full lg:ml-6 pt-6 lg:pt-[21px] flex-col flex items-baseline'>
-        <h2 className='text-a-m lg:text-l lg:mb-0 mb-2'>{fullName}</h2>
+        <h2 className='text-a-m lg:text-l lg:mb-0 mb-2'>{full_name.en}</h2>
         <div className='lg:flex mt-2 hidden space-x-7'>
           {job && (
             <span className='flex'>
@@ -50,7 +52,7 @@ const SpecialistCard: FC<{
           {description}
         </span>
         <div className='flex space-x-1.5  mb-[20px]'>
-          {tags.map((tag) => (
+          {tags?.map((tag) => (
             <Tag key={tag} name={tag} />
           ))}
         </div>
@@ -58,10 +60,10 @@ const SpecialistCard: FC<{
       <div className='flex items-start lg:pt-4 lg:justify-end flex-1'>
         <ButtonOutline
           icon='mail'
-          onClick={() => push('/persons/1')}
+          onClick={() => push('/persons/' + _id)}
           className='lg:w-auto w-full lg:mr-8'
         >
-            {t('request_contacts')}
+          {t('request_contacts')}
         </ButtonOutline>
       </div>
     </div>

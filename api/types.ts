@@ -69,7 +69,7 @@ export interface User {
   role: string;
   job: string;
   language: string;
-  tags: string[];
+  tags?: string[];
   contacts_request: ContactsRequest;
   user_projects: UserProjects;
 }
