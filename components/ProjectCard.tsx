@@ -25,18 +25,16 @@ const ProjectCard: FC<{
       onClick={handleClick}
       role='button'
     >
-      <div className='relative aspect-[1.7/1] mb-6'>
-        {data.covers ? (
+      {data.covers.length !== 0 && (
+        <div className='relative aspect-[1.7/1] mb-6'>
           <Image
             fill
             src={data.covers[0]}
             alt='project cover'
             className='object-cover'
           />
-        ) : (
-          <FishImage />
-        )}
-      </div>
+        </div>
+      )}
       <div className='flex p-5 flex-col'>
         <div className='flex justify-between w-full mb-2 text-a-ss text-accent1'>
           <span>{data.views} просмотров</span>

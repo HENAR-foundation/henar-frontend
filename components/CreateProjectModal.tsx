@@ -104,7 +104,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
         className='flex w-full h-full items-center justify-center opacity-1 overflow-auto'
       >
         <div className='flex-col h-full w-full flex items-center overflow-auto  lg:mt-0 relative'>
-          <div className=' w-[850px] mt-[100px] min-h-full relative'>
+          <div className=' lg:w-[850px] mt-[100px] min-h-full relative'>
             <Image
               src='/cross-white.svg'
               width={20}

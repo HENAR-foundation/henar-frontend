@@ -10,6 +10,8 @@ import PhotoUploader from './PhotoUploader';
 import { checkSignIn } from 'api/user';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { updateUser } from 'api/mutations/user';
+import ButtonPrimary from './ButtonPrimary';
 
 enum tabTypes {
   Profile = 'profile',
@@ -31,6 +33,17 @@ const AboutTab: FC = () => {
   const { data: user } = useQuery({
     queryFn: checkSignIn,
     queryKey: ['isSignedIn'],
+    onSuccess: () => {
+      if (user) {
+        formik.setValues({
+          name: user?.full_name.en.split(' ')[0],
+          about: user.description,
+          lastName: user.full_name.en.split(' ')[1],
+          location: user.location,
+          job: user.job,
+        });
+      }
+    },
   });
 
   const queryClient = useQueryClient();
@@ -45,61 +58,97 @@ const AboutTab: FC = () => {
     },
     validateOnChange: false,
     validationSchema: UpdateProfileSchema,
-    onSubmit: ({ name, lastName }) => {
+    onSubmit: ({ name, lastName, job, about, location }) => {
+      console.info('TEST');
       if (user) {
-        // updateUser({
-        //   ...user,
-        //   full_name: { ...user.full_name, en: `${name} ${lastName}` },
-        // }).then(() => {
+        updateUser({
+          ...user,
+          full_name: { ...user.full_name, en: `${name} ${lastName}` },
+          job,
+          location,
+          description: about,
+        }).then(() => {
         //   queryClient
         //     .invalidateQueries({ queryKey: ['isSignedIn'] })
         //     .then(() => {
-        //       PubSub.publish('notification', 'Профиль успешно обновлен');
         //     });
-        // });
+            PubSub.publish('notification', 'Профиль успешно обновлен');
+        });
       }
     },
   });
+
+  console.info(formik)
   return (
-    <div className='flex flex-col lg:space-y-8 space-y-[20px]'>
-      <div className='flex w-full lg:flex-row flex-col'>
-        <span className='w-[230px] mt-2 lg:mb-0 mb-3'>Фотография</span>
-        <div className='flex flex-1 w-full flex-col'>
-          <PhotoUploader />
+    <form onSubmit={formik.handleSubmit}>
+      <div className='flex flex-col lg:space-y-8 space-y-[20px]'>
+        <div className='flex w-full lg:flex-row flex-col'>
+          <span className='w-[230px] mt-2 lg:mb-0 mb-3'>Фотография</span>
+          <div className='flex flex-1 w-full flex-col'>
+            <PhotoUploader />
+          </div>
+        </div>
+        <div className='flex w-full lg:flex-row flex-col'>
+          <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
+            {t('what_is_your_name')}
+          </span>
+          <div className='flex flex-1 space-y-3 w-full flex-col'>
+            <InputMaterial
+              name='name'
+              value={formik.values.name}
+              error={formik.errors.name}
+              onChange={formik.handleChange}
+              label={t('name')}
+            />
+            <InputMaterial
+              name='lastName'
+              value={formik.values.lastName}
+              error={formik.errors.lastName}
+              onChange={formik.handleChange}
+              label={t('last_name')}
+            />
+          </div>
+        </div>
+        <div className='flex w-full lg:flex-row flex-col'>
+          <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
+            {t('where_are_you_from')}
+          </span>
+          <div className='flex flex-1 flex-col w-full'>
+            <InputMaterial label={t('input_city')} />
+          </div>
+        </div>
+        <div className='flex w-full lg:flex-row flex-col'>
+          <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
+            {t('your_occupation')}
+          </span>
+          <div className='flex flex-1 flex-col w-full'>
+            <InputMaterial
+              name='job'
+              value={formik.values.job}
+              error={formik.errors.job}
+              onChange={formik.handleChange}
+              label={t('current_position')}
+            />
+          </div>
+        </div>
+        <div className='flex w-full lg:flex-row flex-col'>
+          <span className='w-[230px] mt-2 lg:mb-0 mb-3'>{t('about')}</span>
+          <div className='flex flex-1 flex-col w-full'>
+            <TextAreaMaterial
+               name='about'
+               value={formik.values.about}
+               error={formik.errors.about}
+               onChange={formik.handleChange}
+                label={t('about')} />
+          </div>
         </div>
       </div>
-      <div className='flex w-full lg:flex-row flex-col'>
-        <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
-          {t('what_is_your_name')}
-        </span>
-        <div className='flex flex-1 space-y-3 w-full flex-col'>
-          <InputMaterial defaultValue={user?.full_name.en} label={t('name')} />
-          <InputMaterial label={t('last_name')} />
-        </div>
+      <div className='flex flex-row-reverse mt-[65px] w-full'>
+        <ButtonPrimary type='submit' kind='M' className='w-[170px]'>
+          Сохранить
+        </ButtonPrimary>
       </div>
-      <div className='flex w-full lg:flex-row flex-col'>
-        <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
-          {t('where_are_you_from')}
-        </span>
-        <div className='flex flex-1 flex-col w-full'>
-          <InputMaterial label={t('input_city')} />
-        </div>
-      </div>
-      <div className='flex w-full lg:flex-row flex-col'>
-        <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
-          {t('your_occupation')}
-        </span>
-        <div className='flex flex-1 flex-col w-full'>
-          <InputMaterial label={t('current_position')} />
-        </div>
-      </div>
-      <div className='flex w-full lg:flex-row flex-col'>
-        <span className='w-[230px] mt-2 lg:mb-0 mb-3'>{t('about')}</span>
-        <div className='flex flex-1 flex-col w-full'>
-          <TextAreaMaterial label={t('about')} />
-        </div>
-      </div>
-    </div>
+    </form>
   );
 };
 
