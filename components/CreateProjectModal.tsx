@@ -163,7 +163,6 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
                   <ProjectFilesUploader
                     onChange={formik.setFieldValue}
                     name='photos'
-                    value={formik.values.photos}
                   />
                 </div>
               </div>

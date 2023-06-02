@@ -37,7 +37,6 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
     !!user?.contacts_request?.outgoing_contact_requests[id as any];
 
   const t = useTranslations();
-  console.info(expert);
   return (
     <>
       <Head>
@@ -58,8 +57,7 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
         <div className='flex flex-col'>
           <div className='grid lg:grid-cols-3 grid-cols-1 gap-[20px] my-[60px] z-20 lg:mt-10 mt-[240px]'>
             <div className='aspect-[1/1] min-h-[325px] relative rounded-xl overflow-hidden lg:inline-block hidden'>
-          <FishImage />
-
+              <FishImage />
               {/* <Image
                 alt='avatar'
                 src='/avatar.jpg'

@@ -3,7 +3,7 @@ import React, { FC, useEffect, useState } from 'react';
 import InputMaterial from './InputMaterial';
 import ProjectCard from './ProjectCard';
 import TextAreaMaterial from './TextAreaMaterial';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getProjects } from 'api/projects';
 import { useTranslations } from 'next-intl';
 import PhotoUploader from './PhotoUploader';
@@ -12,6 +12,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { updateUser } from 'api/mutations/user';
 import ButtonPrimary from './ButtonPrimary';
+import { uploadPhotos } from 'api/mutations/files';
 
 enum tabTypes {
   Profile = 'profile',
@@ -41,16 +42,37 @@ const AboutTab: FC = () => {
           lastName: user.full_name.en.split(' ')[1],
           location: user.location,
           job: user.job,
+          avatar: user.avatar,
         });
       }
     },
   });
 
   const queryClient = useQueryClient();
+  const mutationPhotos = useMutation({
+    mutationFn: (photos: FileList) => uploadPhotos(photos),
+    onSuccess: (data) => handlUpdateUser(data),
+  });
+
+  const handlUpdateUser = (avatar: string) => {
+    const { name, lastName, job, about, location } = formik.values;
+    if (user) {
+      updateUser({
+        ...user,
+        full_name: { ...user.full_name, en: `${name} ${lastName}` },
+        job,
+        location,
+        description: about,
+      }).then(() => {
+        PubSub.publish('notification', 'Профиль успешно обновлен');
+      });
+    }
+  }
 
   const formik = useFormik({
     initialValues: {
       name: '',
+      avatar: '',
       lastName: '',
       location: '',
       job: '',
@@ -68,24 +90,24 @@ const AboutTab: FC = () => {
           location,
           description: about,
         }).then(() => {
-        //   queryClient
-        //     .invalidateQueries({ queryKey: ['isSignedIn'] })
-        //     .then(() => {
-        //     });
-            PubSub.publish('notification', 'Профиль успешно обновлен');
+          //   queryClient
+          //     .invalidateQueries({ queryKey: ['isSignedIn'] })
+          //     .then(() => {
+          //     });
+          PubSub.publish('notification', 'Профиль успешно обновлен');
         });
       }
     },
   });
 
-  console.info(formik)
+  console.info(formik);
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className='flex flex-col lg:space-y-8 space-y-[20px]'>
         <div className='flex w-full lg:flex-row flex-col'>
           <span className='w-[230px] mt-2 lg:mb-0 mb-3'>Фотография</span>
           <div className='flex flex-1 w-full flex-col'>
-            <PhotoUploader />
+            <PhotoUploader onChange={formik.setFieldValue} name='avatar' />
           </div>
         </div>
         <div className='flex w-full lg:flex-row flex-col'>
@@ -135,11 +157,12 @@ const AboutTab: FC = () => {
           <span className='w-[230px] mt-2 lg:mb-0 mb-3'>{t('about')}</span>
           <div className='flex flex-1 flex-col w-full'>
             <TextAreaMaterial
-               name='about'
-               value={formik.values.about}
-               error={formik.errors.about}
-               onChange={formik.handleChange}
-                label={t('about')} />
+              name='about'
+              value={formik.values.about}
+              error={formik.errors.about}
+              onChange={formik.handleChange}
+              label={t('about')}
+            />
           </div>
         </div>
       </div>

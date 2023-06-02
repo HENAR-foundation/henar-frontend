@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { updateUser } from 'api/mutations/user';
-import { User } from 'api/types';
 import { checkSignIn } from 'api/user';
 import ButtonPrimary from 'components/ButtonPrimary';
 import InputMaterial from 'components/InputMaterial';

@@ -32,3 +32,13 @@ export const createProject = async (project: {
     throw error.response;
   }
 };
+
+export const applyForProject = (id: string) => {
+  try {
+    return axios.get('/projects/respond/' + id, {
+      withCredentials: true,
+    });
+  } catch (error: any) {
+    throw error.response;
+  }
+};

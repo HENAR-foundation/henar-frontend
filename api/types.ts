@@ -98,7 +98,7 @@ export interface ConfirmedContactsRequests {}
 export interface BlockedUsers {}
 
 export interface UserProjects {
-  projects_applications: ProjectsApplications;
+  projects_applications: Record<string, boolean>[];
   confirmed_applications: ConfirmedApplications;
   rejected_applicants: RejectedApplicants;
   created_projects: CreatedProjects;

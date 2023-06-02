@@ -91,7 +91,7 @@ const ProjectsPage = () => {
       </div>
 
       <h1 className='mb-4 text-h-m-d font-bold'>
-        {t('projects_plural', { count: 120 })}
+        {t('projects_plural', { count: projects?.length })}
       </h1>
 
       <div className='space-y-5 space-x-0 lg:space-y-0 flex flex-1 flex-col lg:flex-row w-full mb-9 lg:space-x-4 items-end'>

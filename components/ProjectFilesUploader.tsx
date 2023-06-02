@@ -75,8 +75,7 @@ const ProjectFilesUploader: FC<{
         }>
       >;
   name: string;
-  value: any;
-}> = ({ onChange, name, value }) => {
+}> = ({ onChange, name,  }) => {
   const hiddenFileInput = useRef<any>(null);
   const [selectedFiles, setSelectedFile] = useState<any>();
   const [preview, setPreview] = useState<any[]>();

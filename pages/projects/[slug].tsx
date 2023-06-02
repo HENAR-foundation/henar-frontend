@@ -6,6 +6,8 @@ import {
 } from '@tanstack/react-query';
 import { getProject } from 'api/projects';
 import { Translations } from 'api/types';
+import { checkSignIn } from 'api/user';
+import ApplyForProjectModal from 'components/ApplyForProjectModal';
 import AvatarCircle from 'components/AvatarCircle';
 import BreadCrumbs from 'components/BreadCrumbs';
 import ButtonPrimary from 'components/ButtonPrimary';
@@ -16,6 +18,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
+import { useToggle } from 'usehooks-ts';
 
 const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
   const router = useRouter();
@@ -26,11 +29,24 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
     queryKey: ['project', slug],
   });
 
+  const { data: user } = useQuery({
+    queryFn: () => checkSignIn(),
+    queryKey: ['isSignedIn'],
+  });
+
+  const alreadyApplied = !!Object.keys(
+    user?.user_projects.projects_applications || {}
+  ).find((key) => key === project?._id);
+
+  
+  const [applyProjectModal, toggleModal] = useToggle();
+
   return (
     <>
       <Head>
         <title>{project?.title[locale as keyof Translations] || ''}</title>
       </Head>
+      {applyProjectModal && <ApplyForProjectModal onClose={toggleModal} />}
       <div>
         <div className='absolute w-full top-0 left-0 lg:hidden flex aspect-[1.25/1] mb-5'>
           {project?.covers ? (
@@ -81,11 +97,14 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                   </div>
                 </div>
                 <h2 className='text-l leading-6 mb-3 font-medium'>
-                  {project?.title.en ||
-                    'Разработка новой системы анализа медицинских снимков'}
+                  {project?.title.en}
                 </h2>
-                <ButtonPrimary kind='M' className='w-full text-left'>
-                  Откликнуться
+                <ButtonPrimary
+                  kind='M'
+                  className='w-full text-left'
+                  onClick={toggleModal}
+                >
+                  Apply for project
                 </ButtonPrimary>
               </div>
               <div className='col-span-1 mb-4 lg:mb-0'>
