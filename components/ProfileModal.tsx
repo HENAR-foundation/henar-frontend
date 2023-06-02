@@ -51,22 +51,22 @@ const AboutTab: FC = () => {
   const queryClient = useQueryClient();
   const mutationPhotos = useMutation({
     mutationFn: (photos: FileList) => uploadPhotos(photos),
-    onSuccess: (data) => handlUpdateUser(data),
+    onSuccess: (data) => handlUpdateUser(''),
   });
 
   const handlUpdateUser = (avatar: string) => {
     const { name, lastName, job, about, location } = formik.values;
-    if (user) {
-      updateUser({
-        ...user,
-        full_name: { ...user.full_name, en: `${name} ${lastName}` },
-        job,
-        location,
-        description: about,
-      }).then(() => {
-        PubSub.publish('notification', 'Профиль успешно обновлен');
-      });
-    }
+    // if (user) {
+    //   updateUser({
+    //     ...user,
+    //     full_name: { ...user.full_name, en: `${name} ${lastName}` },
+    //     job,
+    //     location,
+    //     description: about,
+    //   }).then(() => {
+    //     PubSub.publish('notification', 'Профиль успешно обновлен');
+    //   });
+    // }
   }
 
   const formik = useFormik({
