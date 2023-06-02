@@ -10,6 +10,11 @@ const nextConfig = {
         port: '',
         // pathname: '/image/upload/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.pexels.com',
+        port: ''
+      }
     ],
   },
   output: 'standalone',

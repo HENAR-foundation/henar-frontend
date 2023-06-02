@@ -20,7 +20,9 @@ const SpecialistCard: FC<User> = ({
 }) => {
   const { push } = useRouter();
   const t = useTranslations();
-
+const handleRequestContactModal = () => {
+    push('/persons/' + _id)
+}
   return (
     <div className='shadow-l p-4 lg:p-0 w-full h-full rounded-xl  flex min-h-[218px] bg-white overflow-hidden lg:flex-row flex-col'>
       <div className='flex justify-center items-center'>
@@ -60,7 +62,7 @@ const SpecialistCard: FC<User> = ({
       <div className='flex items-start lg:pt-4 lg:justify-end flex-1'>
         <ButtonOutline
           icon='mail'
-          onClick={() => push('/persons/' + _id)}
+          onClick={handleRequestContactModal}
           className='lg:w-auto w-full lg:mr-8'
         >
           {t('request_contacts')}
