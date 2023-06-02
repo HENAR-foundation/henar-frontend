@@ -8,6 +8,8 @@ import Tag from './Tag';
 import { useTranslations } from 'next-intl';
 import { GetServerSideProps } from 'next';
 import { User } from 'api/types';
+import { useQuery } from '@tanstack/react-query';
+import { checkSignIn } from 'api/user';
 
 const SpecialistCard: FC<User> = ({
   _id,
@@ -20,9 +22,17 @@ const SpecialistCard: FC<User> = ({
 }) => {
   const { push } = useRouter();
   const t = useTranslations();
-const handleRequestContactModal = () => {
-    push('/persons/' + _id)
-}
+  const { data: user } = useQuery({
+    queryFn: checkSignIn,
+    queryKey: ['isSignedIn'],
+  });
+  const handleRequestContactModal = () => {
+    if (user) {
+      push('/persons/' + _id);
+    } else {
+      push('/registration');
+    }
+  };
   return (
     <div className='shadow-l p-4 lg:p-0 w-full h-full rounded-xl  flex min-h-[218px] bg-white overflow-hidden lg:flex-row flex-col'>
       <div className='flex justify-center items-center'>
