@@ -78,14 +78,14 @@ const EventsPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
-  const queryClient = new QueryClient();
+//   const queryClient = new QueryClient();
 
-  await queryClient.fetchQuery({ queryFn: getTags, queryKey: ['tags'] });
+//   await queryClient.fetchQuery({ queryFn: getTags, queryKey: ['tags'] });
 
-  await queryClient.fetchQuery({
-    queryKey: ['events'],
-    queryFn: getEvents,
-  });
+//   await queryClient.fetchQuery({
+//     queryKey: ['events'],
+//     queryFn: getEvents,
+//   });
 
   return {
     props: {

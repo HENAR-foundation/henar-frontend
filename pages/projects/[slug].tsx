@@ -32,8 +32,17 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
         <title>{project?.title[locale as keyof Translations] || ''}</title>
       </Head>
       <div>
-        <div className='absolute w-full top-14 left-0 lg:hidden flex aspect-[1.45/1] mb-5'>
-          <FishImage />
+        <div className='absolute w-full top-0 left-0 lg:hidden flex aspect-[1.25/1] mb-5'>
+          {project?.covers ? (
+            <Image
+              fill
+              src={project.covers[0]}
+              alt='project cover'
+              className='object-cover'
+            />
+          ) : (
+            <FishImage />
+          )}
         </div>
         <div className='mt-10 hidden lg:flex'>
           <BreadCrumbs
@@ -49,8 +58,17 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
         <div className='flex flex-col z-20 lg:mt-10 mt-[240px] mb-[140px]'>
           <div className='grid grid-cols-1 lg:grid-cols-3 lg:gap-8 lg:mb-0 mb-4'>
             <div className=' order-2 lg:order-1 lg:col-span-2 space-y-5'>
-              <span className='hidden lg:flex aspect-[2/1] relative mb-5'>
-                {project?.covers ? <Image fill src={project.covers[0]} alt='project cover' className='object-cover' /> : <FishImage />}
+              <span className='hidden lg:flex aspect-[2/1] relative mb-5 rounded-xl overflow-hidden'>
+                {project?.covers ? (
+                  <Image
+                    fill
+                    src={project.covers[0]}
+                    alt='project cover'
+                    className='object-cover'
+                  />
+                ) : (
+                  <FishImage />
+                )}
               </span>
             </div>
             <div className='lg:order-2 col-span-1 space-y-4 lg:space-y-5 z-20'>
@@ -66,17 +84,16 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                   {project?.title.en ||
                     'Разработка новой системы анализа медицинских снимков'}
                 </h2>
-                <h3 className='text-a-m mb-10 font-bodyLight'>
-                  Ищем специалистов для помощи в разработке и осуществления
-                  поддержки нового AI-Powered продукта
-                </h3>
                 <ButtonPrimary kind='M' className='w-full text-left'>
                   Откликнуться
                 </ButtonPrimary>
               </div>
+              <div className='col-span-1 mb-4 lg:mb-0'>
+                <FeedbacksBlock />
+              </div>
             </div>
           </div>
-          <div className='grid grid-cols-1 lg:grid-cols-3 lg:gap-8'>
+          <div className='z-20 grid grid-cols-1 lg:grid-cols-3 lg:gap-8'>
             <div className='order-2 lg:order-1 lg:col-span-2 space-y-4 lg:space-y-5'>
               <div className='bg-white rounded-s px-6 pt-6 pb-8'>
                 <h3 className='text-a-l mb-4'>Описание проекта</h3>
@@ -95,9 +112,6 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                 </span>
               </div>
             </div>
-            <div className='lg:order-2 col-span-1 mb-4 lg:mb-0'>
-              <FeedbacksBlock />
-            </div>
           </div>
         </div>
       </div>
@@ -109,18 +123,18 @@ export const getServerSideProps: GetServerSideProps = async ({
   query,
   locale,
 }) => {
-  const { slug } = query;
-  const queryClient = new QueryClient();
+  //   const { slug } = query;
+  //   const queryClient = new QueryClient();
 
-  await queryClient.fetchQuery({
-    queryFn: () => getProject(slug as any),
-    queryKey: ['project', slug],
-  });
-  
+  //   await queryClient.fetchQuery({
+  //     queryFn: () => getProject(slug as any),
+  //     queryKey: ['project', slug],
+  //   });
+
   return {
     props: {
       locale,
-      dehydratedState: dehydrate(queryClient),
+      //   dehydratedState: dehydrate(queryClient),
       messages: (await import(`../../messages/${locale}.json`)).default,
     },
   };

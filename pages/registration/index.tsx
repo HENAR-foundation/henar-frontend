@@ -9,6 +9,8 @@ import * as Yup from 'yup';
 import { signUp } from 'api/mutations/auth';
 import { GetServerSideProps } from 'next';
 import { useTranslations } from 'next-intl';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
 
 const SignupSchema = Yup.object().shape({
   password: Yup.string()
@@ -25,6 +27,15 @@ const SignupSchema = Yup.object().shape({
 });
 
 const RegistrationPage = () => {
+  const { push } = useRouter();
+  const signUpMutation = useMutation({
+    onSuccess: () => {
+      PubSub.publish('notification', 'Registered successfully');
+      push('/login');
+    },
+    mutationFn: ({ email, password }: { email: string; password: string }) =>
+      signUp(email, password),
+  });
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -33,12 +44,10 @@ const RegistrationPage = () => {
     },
     validateOnChange: false,
     validationSchema: SignupSchema,
-    onSubmit: ({ email, password }) => {
-      signUp(email, password);
+    onSubmit: (data) => {
+      signUpMutation.mutate(data);
     },
   });
-
-  const [nextSlide, toggleSlide] = useToggle(false);
 
   const t = useTranslations();
 

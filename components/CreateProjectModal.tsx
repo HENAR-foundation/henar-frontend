@@ -52,14 +52,14 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
       }).then(() => {
         queryClient.invalidateQueries({ queryKey: ['projects'] });
         refetchProjects();
+        PubSub.publish('notification', 'Проект успешно создал');
+        onClose();
       });
     }
   };
 
   const mutationPhotos = useMutation({
-    mutationFn: (photos: FileList) => {
-      return uploadPhotos(photos);
-    },
+    mutationFn: (photos: FileList) => uploadPhotos(photos),
     onSuccess: (data) => handleCreateProject(data),
   });
 
@@ -105,14 +105,14 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
       >
         <div className='flex-col h-full w-full flex items-center overflow-auto  lg:mt-0 relative'>
           <div className=' w-[850px] mt-[100px] min-h-full relative'>
-          <Image
-            src='/cross-white.svg'
-            width={20}
-            height={20}
-            alt=''
-            className='lg:right-[-40px] absolute lg:top-0 top-[-50px] right-[25px] cursor-pointer'
-            onClick={onClose}
-          />
+            <Image
+              src='/cross-white.svg'
+              width={20}
+              height={20}
+              alt=''
+              className='lg:right-[-40px] absolute lg:top-0 top-[-50px] right-[25px] cursor-pointer'
+              onClick={onClose}
+            />
             <div className='rounded-t-xl overflow-hidden flex lg:flex-row flex-col justify-between  bg-accent1  w-full pb-6 pt-10 lg:px-8 px-4'>
               <div className='text-white flex flex-col'>
                 <h3 className='lg:leading-8 leading-7 font-bold text-h-m-m lg:text-h-m-d mb-2'>

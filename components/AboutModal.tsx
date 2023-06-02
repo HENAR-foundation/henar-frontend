@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { updateUser } from 'api/mutations/user';
 import { User } from 'api/types';
 import { checkSignIn } from 'api/user';
@@ -7,6 +7,8 @@ import InputMaterial from 'components/InputMaterial';
 import { useFormik } from 'formik';
 import { useTranslations } from 'next-intl';
 import * as Yup from 'yup';
+import { getLocationSuggest } from 'api/locationSuggets';
+import { createLocation } from 'api/mutations/location';
 
 const SignupSchema = Yup.object().shape({
   name: Yup.string().required('Пожалуйста заполните поле'),
@@ -28,6 +30,7 @@ const AboutModal = () => {
       name: '',
       lastName: '',
       location: '',
+    //   locationCode: '',
       job: '',
     },
     validateOnChange: false,
@@ -47,6 +50,28 @@ const AboutModal = () => {
       }
     },
   });
+
+  const createLocMutation = useMutation({ mutationFn: createLocation });
+
+  const { data: locSuggests } = useQuery({
+    queryFn: () => getLocationSuggest(formik.values.location, 'ru'),
+    queryKey: ['locSuggest', formik.values.location],
+  });
+
+  console.info(locSuggests);
+  const handleSuggestSelect = (index: number) => {
+    const { data, value } = locSuggests?.suggestions[index] || {};
+    createLocMutation.mutate({
+      city: data?.city || '',
+      country: data?.country || '',
+      extra_info: '',
+      house: data?.house,
+      region: data?.region || '',
+      settlement: data?.settlement || '',
+      street: data?.street || '',
+      value: value || '',
+    });
+  };
 
   return (
     <div className='shadow-sm flex bg-white rounded-s overflow-hidden mt-[100px] w-full max-w-[584px] pt-12 px-8 pb-8 flex-col'>
@@ -75,15 +100,27 @@ const AboutModal = () => {
           </div>
         </div>
         <div className='mt-7 lg:mt-10 flex justify-between flex-col lg:space-y-0 space-y-3'>
-          <div className='flex w-full lg:justify-between lg:items-center lg:flex-row flex-col'>
+          <div className='flex w-full lg:justify-between lg:items-center lg:flex-row flex-col relative'>
             <span>{t('where_are_you_from')}</span>
             <InputMaterial
               name='location'
               error={formik.errors.location}
               onChange={formik.handleChange}
               className='lg:w-[295px]'
-              placeholder={t('input_city')}
+              placeholder={t('where_are_you_from')}
             />
+            {/* {locSuggests && locSuggests?.suggestions.length !== 0 && (
+              <div className='flex flex-col absolute bottom-[-179px] h-[180px] right-0 overflow-auto bg-white z-10 w-[295px] border-t-[1px] border-accent2'>
+                {locSuggests.suggestions.map(({ value }, index) => (
+                  <span
+                    onClick={() => handleSuggestSelect(index)}
+                    className='cursor-pointer font-thin text-m py-[10px] px-3'
+                  >
+                    {value}
+                  </span>
+                ))}
+              </div>
+            )} */}
           </div>
           <div className='flex space-y-3 w-full lg:justify-between lg:items-center lg:flex-row flex-col'>
             <span>{t('your_occupation')}?</span>

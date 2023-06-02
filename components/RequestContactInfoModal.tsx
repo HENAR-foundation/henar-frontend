@@ -6,8 +6,9 @@ import InputMaterial from './InputMaterial';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import TextAreaMaterial from './TextAreaMaterial';
-import { useMutation } from '@tanstack/react-query';
-import { requesUserContact } from 'api/mutations/user';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { requestUserContact } from 'api/mutations/user';
+import { useRouter } from 'next/router';
 
 const MotivationSchema = Yup.object().shape({
   motivation: Yup.string()
@@ -19,10 +20,20 @@ const MotivationSchema = Yup.object().shape({
 const RequestContactInfoModal: FC<{ onClose: VoidFunction }> = ({
   onClose,
 }) => {
+  const router = useRouter();
+  const { id } = router.query;
   const t = useTranslations();
+  const queryClient = useQueryClient();
+
   const requestInfoMutation = useMutation({
-    mutationFn: requesUserContact,
-    onSuccess: () => {},
+    mutationFn: ({ id, message }: { id: string; message: string }) =>
+      requestUserContact(id, message),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['person', id] });
+      queryClient.refetchQueries({ queryKey: ['person', id] });
+      PubSub.publish('notification', 'Реквест успешно отправлен');
+      onClose();
+    },
   });
   const formik = useFormik({
     initialValues: {
@@ -31,7 +42,7 @@ const RequestContactInfoModal: FC<{ onClose: VoidFunction }> = ({
     validateOnChange: false,
     validationSchema: MotivationSchema,
     onSubmit: ({ motivation }) => {
-        // requestInfoMutation.mutate({})
+      requestInfoMutation.mutate({ id: id as string, message: motivation });
     },
   });
   return (

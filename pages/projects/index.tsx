@@ -1,4 +1,4 @@
-import { QueryClient, dehydrate, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { getProjects } from 'api/projects';
 import ButtonPrimary from 'components/ButtonPrimary';
 import CreateProjectModal from 'components/CreateProjectModal';
@@ -12,9 +12,16 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 import { useToggle } from 'usehooks-ts';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/router';
+import { checkSignIn } from 'api/user';
 
 const ProjectsPage = () => {
+  const { push } = useRouter();
   const [modalVisible, toggleModal] = useToggle();
+  const { data: user } = useQuery({
+    queryFn: checkSignIn,
+    queryKey: ['isSignedIn'],
+  });
 
   const { data: projects } = useQuery({
     queryKey: ['projects'],
@@ -42,6 +49,11 @@ const ProjectsPage = () => {
     );
   });
 
+  const handleCreateProjectClick = () => {
+    if (user) toggleModal();
+    else push('/registration');
+  };
+
   return (
     <>
       <Head>
@@ -66,7 +78,7 @@ const ProjectsPage = () => {
             найти финансирование или помощь
           </span>
           <ButtonPrimary
-            onClick={toggleModal}
+            onClick={handleCreateProjectClick}
             className='lg:w-[205px]'
             kind='M'
           >
@@ -78,7 +90,9 @@ const ProjectsPage = () => {
         </div>
       </div>
 
-      <h1 className='mb-4 text-h-m-d font-bold'>{t('projects_plural', {count: 120})}</h1>
+      <h1 className='mb-4 text-h-m-d font-bold'>
+        {t('projects_plural', { count: 120 })}
+      </h1>
 
       <div className='space-y-5 space-x-0 lg:space-y-0 flex flex-1 flex-col lg:flex-row w-full mb-9 lg:space-x-4 items-end'>
         <span className='min-w-full lg:min-w-[368px]'>
@@ -126,17 +140,9 @@ const ProjectsPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
-  const queryClient = new QueryClient();
-
-  await queryClient.fetchQuery({
-    queryKey: ['projects'],
-    queryFn: getProjects,
-  });
-
   return {
     props: {
       messages: (await import(`../../messages/${locale}.json`)).default,
-      dehydratedState: dehydrate(queryClient),
     },
   };
 };

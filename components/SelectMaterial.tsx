@@ -8,17 +8,20 @@ const Icons = {
   microscope: 'microscope.svg',
 } as const;
 
-
 const SelectMaterial: FC<{
+  name?: string;
   icon?: keyof typeof Icons;
   label?: string;
+  onChange?: VoidFunction;
+  className?: string;
   options: { label: string; val: string | number }[];
   defaultVal: string;
-}> = ({ defaultVal, options, icon, label }) => {
+}> = ({ defaultVal, onChange, options, name, icon, className, label }) => {
   const handleOptionClick = (e: any) => {
     if (e.currentTarget.dataset['index']) {
       toggleOption(e.currentTarget.dataset['index']);
       toggleOpen();
+      onChange && onChange();
     }
   };
 
@@ -40,7 +43,7 @@ const SelectMaterial: FC<{
   const [selectedOption, toggleOption] = useState(-1);
   const optionsList = [{ label: defaultVal, val: '' }, ...options];
   return (
-    <div className='w-full font-bodyLight flex items-end'>
+    <div className={'w-full font-bodyLight flex items-end ' + className}>
       {icon && (
         <div className='flex h-[45px] justify-center align-center mr-3'>
           <Image

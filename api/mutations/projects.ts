@@ -15,7 +15,7 @@ export const createProject = async (project: {
     const result = await axios.post(
       '/projects',
       {
-        applicants: [],
+        // applicants: [],
         author,
         covers,
         description: { en: description, ru: description, hy: description },

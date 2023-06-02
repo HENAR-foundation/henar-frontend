@@ -6,9 +6,7 @@ import * as Yup from 'yup';
 import React from 'react';
 import { signIn } from 'api/mutations/auth';
 import { GetServerSideProps } from 'next';
-import {
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { checkSignIn } from 'api/user';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/router';
@@ -35,15 +33,15 @@ const LoginPage = () => {
       signIn(email, password)
         .then((result) => {
           if (result) {
-            queryClient
-              .invalidateQueries({ queryKey: ['isSignedIn'] })
-              .then(() => {
-                push('/projects');
-                PubSub.publish('notification', 'Вы успешно вошли');
-              });
+            queryClient.invalidateQueries({ queryKey: ['isSignedIn'] });
+            queryClient.refetchQueries({ queryKey: ['isSignedIn'] });
+            push('/projects');
+            PubSub.publish('notification', 'Вы успешно вошли');
           }
         })
-        .catch((e) => console.info(e, 'FAILED'));
+        .catch((e) =>
+          formik.setErrors({ password: 'Пароль или email введены неверно' })
+        );
     },
   });
 
@@ -88,12 +86,7 @@ const LoginPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({
-  locale,
-  req,
-}) => {
-  //   const sessionId = req.cookies['session_id'];
-
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   return {
     props: {
       messages: (await import(`../../messages/${locale}.json`)).default,

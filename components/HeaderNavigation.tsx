@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 import ButtonPrimary from './ButtonPrimary';
 import ButtonOutline from './ButtonOutline';
 import { useRouter } from 'next/router';
@@ -10,7 +10,7 @@ import ProfileModal from './ProfileModal';
 import LangToggle from './LangToggle';
 import { useTranslations } from 'next-intl';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { checkSignIn } from 'api/user';
+import { checkSignIn, getUsers } from 'api/user';
 import { signOut } from 'api/mutations/auth';
 
 const links = [
@@ -56,6 +56,26 @@ const notificationsMock = [
 ];
 
 const NavNotifications: FC<{ onClose: () => void }> = ({ onClose }) => {
+  const { data: user } = useQuery({
+    queryFn: checkSignIn,
+    queryKey: ['isSignedIn'],
+  });
+  //   const { data: users } = useQuery({ queryFn: getUsers, queryKey: ['users'] });
+  //   const incomingRequests = useMemo(() => {
+  //     const nots = [];
+  //     if (user) {
+  //       for (const [key, value] of Object.entries(
+  //         user?.contacts_request.incoming_contact_requests
+  //       )) {
+  //         nots.push({ name: users?.find(({ _id }) => _id === key)?._id });
+  //         console.log(`${key}: ${value}`);
+  //       }
+  //       return nots
+  //     }
+  //   }, []);
+
+  const requests = user?.contacts_request.incoming_contact_requests;
+  //   console.info(requests)
   return (
     <div className='flex flex-col bg-white rounded-b-l pt-[18px] pl-5 pr-[17px] w-[383px] absolute top-[58px] left-[-335px] pb-10 border-t-[1px] border-accent2'>
       <div className='flex justify-between'>
@@ -65,40 +85,45 @@ const NavNotifications: FC<{ onClose: () => void }> = ({ onClose }) => {
         </span>
       </div>
       <div className='flex flex-col mt-4'>
-        Нет новых уведомлений
-        {/* {notificationsMock.map(({ avatar, id, name }, index) => (
-          <div className='flex' key={index}>
-            <div
-              className={`flex items-center h-[60px] ${
-                index !== notificationsMock.length - 1
-                  ? 'border-b-[1px] border-borderPrimary'
-                  : ''
-              }`}
-              key={index}
-            >
-              <Image
-                src={avatar}
-                width={32}
-                height={32}
-                alt='avatar'
-                className='rounded-full h-[32px]'
-              />
-              <span className='ml-[9px] text-a-ss'>
-                <span className='text-accent1'>Александр Алексаднров</span>{' '}
-                подтвердил обмен контактамии
-              </span>
-            </div>
-            <div className='flex ml-[13px] w-[13px] justify-center items-center'>
-              <Image
-                className='cursor-pointer'
-                src='/cross-grey.svg'
-                width={10}
-                height={10}
-                alt='delete notification'
-              />
-            </div>
-          </div>
-        ))} */}
+        {!user?.contacts_request.incoming_contact_requests
+          ? 'Нет новых уведомлений'
+          : Object.keys(user?.contacts_request.incoming_contact_requests).map(
+              (text, index) => (
+                <div className='flex' key={index}>
+                  <div
+                    className={`flex items-center h-[60px] ${
+                      index !== notificationsMock.length - 1
+                        ? 'border-b-[1px] border-borderPrimary'
+                        : ''
+                    }`}
+                    key={index}
+                  >
+                    <Image
+                      src={'/fish-person.png'}
+                      width={32}
+                      height={32}
+                      alt='avatar'
+                      className='rounded-full h-[32px]'
+                    />
+                    <span className='ml-[9px] text-a-ss'>
+                      <span className='text-accent1'>
+                        Александр Алексаднров
+                      </span>{' '}
+                      отправил запрос на обмен контактамии
+                    </span>
+                  </div>
+                  <div className='flex ml-[13px] w-[13px] justify-center items-center'>
+                    <Image
+                      className='cursor-pointer'
+                      src='/cross-grey.svg'
+                      width={10}
+                      height={10}
+                      alt='delete notification'
+                    />
+                  </div>
+                </div>
+              )
+            )}
       </div>
     </div>
   );
@@ -122,17 +147,28 @@ const ProfileNav: FC<{ onShowSettings: () => void }> = ({ onShowSettings }) => {
       })
       .catch((e) => console.info(e, 'FAILED'));
   };
+  const { data: user } = useQuery({
+    queryFn: checkSignIn,
+    queryKey: ['isSignedIn'],
+  });
+  const requests = user?.contacts_request.incoming_contact_requests;
 
   return (
     <div className='flex relative'>
-      <Image
-        src='/bell-green.svg'
-        width={20}
-        height={20}
-        className='mr-[14px] cursor-pointer'
-        alt='open notifications'
-        onClick={toggleNotifications}
-      />
+      <div className='flex items-center'>
+        <span className='mr-[14px] cursor-pointer relative'>
+          {requests && (
+            <span className='absolute w-[5px] h-[5px] bg-borderError rounded-full right-0 '></span>
+          )}
+          <Image
+            src='/bell-green.svg'
+            width={20}
+            height={20}
+            alt='open notifications'
+            onClick={toggleNotifications}
+          />
+        </span>
+      </div>
       {notificationsOpened && (
         <NavNotifications onClose={toggleNotifications} />
       )}
@@ -142,7 +178,7 @@ const ProfileNav: FC<{ onShowSettings: () => void }> = ({ onShowSettings }) => {
         className='flex cursor-pointer items-center justify-center'
         onClick={toggleOpen}
       >
-        <span className='mx-[10px] text-a-ss leading-[140%]'>John Doe</span>
+        <span className='mx-[10px] text-a-ss leading-[140%] w-[90px]'>{user?.full_name.en || 'John Doe'}</span>
         <Image
           className={`transform ${opened && 'rotate-180'}`}
           src='/angle-down-grey.svg'
@@ -182,8 +218,11 @@ export const HeaderNavigation = () => {
 
   const { data } = useQuery({
     queryKey: ['isSignedIn'],
+    cacheTime: 0,
     queryFn: checkSignIn,
   });
+
+  console.info(data, 'HEADER DATA');
 
   return (
     <header className='sticky z-50 top-0 w-full bg-white h-20 justify-center shadow-l lg:flex hidden'>
@@ -237,7 +276,7 @@ export const HeaderNavigation = () => {
 export const HeaderNavigationM = () => {
   const { route } = useRouter();
   const [opened, toggleOpen] = useToggle(false);
-
+  const { push } = useRouter();
   useEffect(() => {
     opened && toggleOpen();
   }, [route]);
@@ -291,11 +330,13 @@ export const HeaderNavigationM = () => {
           </div>
           <div className='flex flex-col mt-5 mx-[31px]'>
             <ButtonPrimary kind='M'>{t('registration')}</ButtonPrimary>
-            <Link href='/login'>
-              <ButtonOutline kind='M' className='mt-3 mb-[33px]'>
-                {t('sign_in')}
-              </ButtonOutline>
-            </Link>
+            <ButtonOutline
+              kind='M'
+              className='mt-3 mb-[33px]'
+              onClick={() => push('/login')}
+            >
+              {t('sign_in')}
+            </ButtonOutline>
             <span className='text-accent1 text-xl leading-[140%] text-center'>
               +7 800 555 35 35
             </span>

@@ -41,7 +41,7 @@ const AboutTab: FC = () => {
       lastName: '',
       location: '',
       job: '',
-      about: ''
+      about: '',
     },
     validateOnChange: false,
     validationSchema: UpdateProfileSchema,
@@ -73,7 +73,7 @@ const AboutTab: FC = () => {
           {t('what_is_your_name')}
         </span>
         <div className='flex flex-1 space-y-3 w-full flex-col'>
-          <InputMaterial label={t('name')} />
+          <InputMaterial defaultValue={user?.full_name.en} label={t('name')} />
           <InputMaterial label={t('last_name')} />
         </div>
       </div>

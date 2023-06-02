@@ -12,12 +12,15 @@ export const updateUser = async (user: User) => {
   }
 };
 
-export const requesUserContact = async (id: string) => {
+export const requestUserContact = async (id: string, message: string) => {
   try {
-    const result = await axios.get('/users/' + id, {
-      withCredentials: true,
-    });
-    return result;
+    return axios.post(
+      '/users/request-contacts/' + id,
+      { message },
+      {
+        withCredentials: true,
+      }
+    );
   } catch (error: any) {
     throw error.response;
   }

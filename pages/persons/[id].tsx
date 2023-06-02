@@ -5,7 +5,6 @@ import { getUser } from 'api/user';
 import ButtonPrimary from 'components/ButtonPrimary';
 import ProjectCard from 'components/ProjectCard';
 import RequestContactInfoModal from 'components/RequestContactInfoModal';
-import SpecialistCard from 'components/SpecialistCard';
 import Tag from 'components/Tag';
 import { GetServerSideProps } from 'next';
 import { useTranslations } from 'next-intl';
@@ -14,6 +13,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
 import { useToggle } from 'usehooks-ts';
+import { checkSignIn } from 'api/user';
 
 const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
   const router = useRouter();
@@ -21,19 +21,26 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
   const [contactModal, toggleModal] = useToggle();
 
   const { data } = useQuery({ queryFn: getProjects, queryKey: ['projects'] });
+  
   const { data: user } = useQuery({
+    queryFn: checkSignIn,
+    queryKey: ['isSignedIn'],
+  });
+
+  const { data: expert } = useQuery({
     queryFn: () => getUser(id?.toString() || ''),
     queryKey: ['person', id],
   });
 
+  const isContactAlreadyRequested =
+    !!user?.contacts_request?.outgoing_contact_requests[id as any];
+
   const t = useTranslations();
-  console.info(user);
+  console.info(expert);
   return (
     <>
       <Head>
-        <title>
-          {user?.full_name[locale as keyof FullName] || t('experts')}
-        </title>
+        <title>{expert?._id || t('experts')}</title>
       </Head>
       <div>
         <div className='absolute w-full top-14 left-0 lg:hidden flex aspect-[1.45/1] mb-5'>
@@ -58,19 +65,22 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
             </div>
             <div className='flex flex-col bg-white rounded-s py-6 px-5 justify-between'>
               <div>
-                <h2 className='text-a-xl mb-3'>{user?.full_name.en}</h2>
+                <h2 className='text-a-xl mb-3'>{expert?.full_name.en}</h2>
                 <p className='font-bodyLight text-a-m'>
                   Помогаю врачам находить нужные контакты в медиасреде,
                   консультирую всех бесплатно
                 </p>
               </div>
               <ButtonPrimary
+                disabled={isContactAlreadyRequested}
                 kind='M'
                 icon='arrow'
                 className='lg:mt-0 mt-9 text-left text-m'
                 onClick={toggleModal}
               >
-                {t('request_contacts')}
+                {isContactAlreadyRequested
+                  ? 'Already requested'
+                  : t('request_contacts')}
               </ButtonPrimary>
             </div>
             <div className='flex flex-col bg-white rounded-s py-6 px-5 justify-between'>

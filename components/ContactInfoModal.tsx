@@ -12,7 +12,7 @@ const ContactInfoModal: FC<any> = ({ children }) => {
     queryKey: ['isSignedIn'],
     queryFn: checkSignIn,
   });
-  return children
+//   return children
   if (!protectedRoutes.includes(route)) return children;
   if (isLoading) return null;
   return data && data?.full_name?.en === '' ? (

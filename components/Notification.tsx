@@ -28,7 +28,7 @@ const Notification = () => {
   return (
     (visible && (
       <div
-        className={`w-[700px] left-[calc(50%-350px)] duration-300 ease-in z-[999] flex fixed top-[100px] text-m text-white py-[22px] pr-7  bg-primary rounded-xl ${
+        className={`w-full lg:w-[700px] left-0 lg:left-[calc(50%-350px)] duration-300 ease-in z-[999] flex fixed top-[100px] text-m text-white py-[22px] pr-7  bg-primary rounded-xl ${
           visibleFade ? 'opacity-1' : 'opacity-0'
         }`}
       >
