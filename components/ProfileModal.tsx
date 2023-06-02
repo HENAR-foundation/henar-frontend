@@ -13,6 +13,9 @@ import * as Yup from 'yup';
 import { updateUser } from 'api/mutations/user';
 import ButtonPrimary from './ButtonPrimary';
 import { uploadPhotos } from 'api/mutations/files';
+import NotAllowed from './NotAllowed';
+import Tag from './Tag';
+import AvatarCircle from './AvatarCircle';
 
 enum tabTypes {
   Profile = 'profile',
@@ -48,26 +51,26 @@ const AboutTab: FC = () => {
     },
   });
 
-  const queryClient = useQueryClient();
   const mutationPhotos = useMutation({
     mutationFn: (photos: FileList) => uploadPhotos(photos),
     onSuccess: (data) => handlUpdateUser(''),
   });
 
-  const handlUpdateUser = (avatar: string) => {
+  const handlUpdateUser = (avatar?: string) => {
     const { name, lastName, job, about, location } = formik.values;
-    // if (user) {
-    //   updateUser({
-    //     ...user,
-    //     full_name: { ...user.full_name, en: `${name} ${lastName}` },
-    //     job,
-    //     location,
-    //     description: about,
-    //   }).then(() => {
-    //     PubSub.publish('notification', 'Профиль успешно обновлен');
-    //   });
-    // }
-  }
+    if (user) {
+      updateUser({
+        ...user,
+        avatar: avatar || '',
+        full_name: { ...user.full_name, en: `${name} ${lastName}` },
+        job,
+        location,
+        description: about,
+      }).then(() => {
+        PubSub.publish('notification', 'Профиль успешно обновлен');
+      });
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -80,32 +83,20 @@ const AboutTab: FC = () => {
     },
     validateOnChange: false,
     validationSchema: UpdateProfileSchema,
-    onSubmit: ({ name, lastName, job, about, location }) => {
-      console.info('TEST');
-      if (user) {
-        updateUser({
-          ...user,
-          full_name: { ...user.full_name, en: `${name} ${lastName}` },
-          job,
-          location,
-          description: about,
-        }).then(() => {
-          //   queryClient
-          //     .invalidateQueries({ queryKey: ['isSignedIn'] })
-          //     .then(() => {
-          //     });
-          PubSub.publish('notification', 'Профиль успешно обновлен');
-        });
+    onSubmit: ({ avatar }) => {
+      if (avatar) {
+        mutationPhotos.mutate(avatar as unknown as FileList);
+      } else {
+        handlUpdateUser();
       }
     },
   });
 
-  console.info(formik);
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className='flex flex-col lg:space-y-8 space-y-[20px]'>
         <div className='flex w-full lg:flex-row flex-col'>
-          <span className='w-[230px] mt-2 lg:mb-0 mb-3'>Фотография</span>
+          <span className='w-[230px] mt-2 lg:mb-0 mb-3'>Photo</span>
           <div className='flex flex-1 w-full flex-col'>
             <PhotoUploader onChange={formik.setFieldValue} name='avatar' />
           </div>
@@ -131,14 +122,16 @@ const AboutTab: FC = () => {
             />
           </div>
         </div>
-        <div className='flex w-full lg:flex-row flex-col'>
-          <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
-            {t('where_are_you_from')}
-          </span>
-          <div className='flex flex-1 flex-col w-full'>
-            <InputMaterial label={t('input_city')} />
+        <NotAllowed>
+          <div className='flex w-full lg:flex-row flex-col'>
+            <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
+              {t('where_are_you_from')}
+            </span>
+            <div className='flex flex-1 flex-col w-full'>
+              <InputMaterial disabled label={t('input_city')} />
+            </div>
           </div>
-        </div>
+        </NotAllowed>
         <div className='flex w-full lg:flex-row flex-col'>
           <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
             {t('your_occupation')}
@@ -195,12 +188,45 @@ const PasswordTab: FC<{ t: any }> = ({ t }) => (
 
 const ProfileModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
   const [activeTab, toggleTab] = useState<tabTypes>(tabTypes.Profile);
+  const { data: user } = useQuery({
+    queryFn: checkSignIn,
+    queryKey: ['isSignedIn'],
+  });
   const ProjectsTab = () => {
     const { data } = useQuery({ queryFn: getProjects, queryKey: ['projects'] });
+    const projects = data?.filter(
+      ({ _id }) =>
+        !!Object.keys(user?.user_projects.created_projects || {}).includes(_id)
+    );
+    console.info(
+      Object.keys(user?.user_projects.created_projects || {}),
+      projects,
+      'ASSSS',
+      data
+    );
     return (
       <>
-        {data?.map((item) => (
-          <ProjectCard data={item} withShadow />
+        {projects?.map(({ title, views, successful_applicants }) => (
+          <div className='flex flex-col rounded-l bg-white p-[20px] shadow-sm'>
+            <div className='flex space-x-6'>
+              <span className='text-accent1'>{views || 0} views</span>
+              <span className='text-accent1'>
+                {successful_applicants?.length || 0} views
+              </span>
+              <span className='text-error'>On moderation</span>
+            </div>
+            <span className='text-l mt-2'>{title.en}</span>
+            <span className='mt-3 w-[96px] h-[24px]'>
+              <Tag name='Medicine' />
+            </span>
+            <div className='flex mt-10'>
+              <AvatarCircle />
+              <div className='flex flex-col ml-[15px] mr-6'>
+                <span>{user?.full_name.en}</span>
+                <span className='font-thin text-a-ss'>{user?.job}</span>
+              </div>
+            </div>
+          </div>
         ))}
       </>
     );

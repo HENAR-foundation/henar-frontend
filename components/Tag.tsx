@@ -11,7 +11,7 @@ const Tag: FC<{ name: string; color?: keyof typeof Colors }> = ({
 }) => {
   return (
     <div
-      className={`inline-block text-a-ss rounded-ss text-[#927656] cursor-pointer font-bodyLight ${
+      className={` inline-block text-a-ss rounded-ss text-[#927656] cursor-pointer font-bodyLight ${
         Colors[color || 'default']
       }`}
     >

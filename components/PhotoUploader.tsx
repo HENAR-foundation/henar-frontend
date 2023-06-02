@@ -2,6 +2,7 @@ import { FormikErrors } from 'formik';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import React, { FC, useEffect, useRef, useState } from 'react';
+import NotAllowed from './NotAllowed';
 
 const PhotoUploader: FC<{
   onChange: any;
@@ -10,7 +11,7 @@ const PhotoUploader: FC<{
   const t = useTranslations();
   const hiddenFileInput = useRef<any>(null);
   const [selectedFiles, setSelectedFile] = useState<any>();
-  const [preview, setPreview] = useState<any[]>();
+  const [preview, setPreview] = useState<any>();
 
   useEffect(() => {
     if (!selectedFiles) {
@@ -33,37 +34,38 @@ const PhotoUploader: FC<{
     // I've kept this example simple by using the first image instead of multiple
     setSelectedFile(e.target.files);
   };
+  console.info(preview);
   return (
     <>
-      <div className='flex w-[150px] h-[150px] items-center justify-center bg-peach rounded-xl flex-col text-accent2 cursor-pointer'>
-        {selectedFiles && preview ? (
-          <div className='flex space-x-[20px]'>
-            {preview.map((file: any, index) => (
-              <figure
-                key={index}
-                className='mb-5 w-[82px] h-[82px] relative rounded-s overflow-hidden'
-              >
-                {/* <ImageCross /> */}
-                <Image src={file} alt='' fill className='object-cover' />
-              </figure>
-            ))}
-          </div>
-        ) : (
-          <span
-            className='flex flex-col items-center'
-            onClick={() => hiddenFileInput.current?.click()}
-          >
-            <Image
-              src='/camera-peach.svg'
-              width={20}
-              height={20}
-              alt={t('upload_photo')}
-            />
-            <span className='cursor-default text-a-ss'>
-              {t('upload_photo')}
-            </span>
-          </span>
+      <div
+        className={`relative flex w-[150px] h-[150px] items-center justify-center bg-peach rounded-xl flex-col cursor-pointer ${
+          preview ? 'text-white' : 'text-accent2'
+        }`}
+      >
+        {selectedFiles && preview && (
+          <figure className='w-[150px] h-[150px] relative rounded-s overflow-hidden bg-black'>
+            {/* <ImageCross /> */}
+            <Image src={preview} alt='' fill className='object-cover' />
+          </figure>
         )}
+        <NotAllowed>
+          <div className='absolute top-0 left-0 w-full h-full flex justify-center items-center'>
+            <span
+              className='flex flex-col items-center'
+            //   onClick={() => hiddenFileInput.current?.click()}
+            >
+              <Image
+                src='/camera-peach.svg'
+                width={20}
+                height={20}
+                alt={t('upload_photo')}
+              />
+              <span className='cursor-default text-a-ss'>
+                {t('upload_photo')}
+              </span>
+            </span>
+          </div>
+        </NotAllowed>
       </div>
       <input
         accept='image/*'

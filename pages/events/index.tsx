@@ -35,7 +35,7 @@ const EventsPage = () => {
           <span className='mb-4 font-bodyLight text-l'>
             {t('all_events_related')}
           </span>
-          {user && <ButtonPrimary kind='M'>Создать мероприятие</ButtonPrimary>}
+          {/* {user && <ButtonPrimary kind='M'>Создать мероприятие</ButtonPrimary>} */}
         </div>
         <Calendar />
       </div>

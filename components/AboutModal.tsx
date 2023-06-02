@@ -28,7 +28,7 @@ const AboutModal = () => {
     initialValues: {
       name: '',
       lastName: '',
-      location: '',
+      location: '0000000000000',
     //   locationCode: '',
       job: '',
     },
@@ -103,6 +103,7 @@ const AboutModal = () => {
             <span>{t('where_are_you_from')}</span>
             <InputMaterial
               name='location'
+              value={'0000000000000'}
               error={formik.errors.location}
               onChange={formik.handleChange}
               className='lg:w-[295px]'

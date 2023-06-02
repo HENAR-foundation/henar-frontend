@@ -174,13 +174,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
                   </span>
                 </div>
                 <div className='w-full max-w-[480px]'>
-                  <SelectMaterial
-                    options={[
-                      { label: 'Сделан', val: 'rus' },
-                      { label: 'Не сделан', val: 'us' },
-                    ]}
-                    defaultVal='Выберите стадию'
-                  />
+                  <SelectMaterial options={[]} defaultVal='Select project stadia' />
                 </div>
               </div>
               <div className='lg:flex-row flex-col flex justify-between'>
@@ -239,19 +233,13 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
               </div>
               <div className='lg:flex-row flex-col flex justify-between'>
                 <div className='flex flex-col lg:w-[160px]'>
-                  <span className='text-l'>Как помочь проекту ?</span>
+                  <span className='text-l'>How you can help ?</span>
                   <span className='font-bodyLight text-a-ss'>
                     Как можно почучаствовать в проекте?
                   </span>
                 </div>
                 <div className='w-full max-w-[480px]'>
-                  <SelectMaterial
-                    options={[
-                      { label: 'Сделан', val: 'rus' },
-                      { label: 'Не сделан', val: 'us' },
-                    ]}
-                    defaultVal='Возможности для участия'
-                  />
+                  <SelectMaterial options={[]} defaultVal='How you can help' />
                 </div>
               </div>
             </div>

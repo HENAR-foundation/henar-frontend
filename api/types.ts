@@ -101,7 +101,7 @@ export interface UserProjects {
   projects_applications: Record<string, boolean>[];
   confirmed_applications: ConfirmedApplications;
   rejected_applicants: RejectedApplicants;
-  created_projects: CreatedProjects;
+  created_projects: Record<string, boolean>[];
 }
 
 export interface ProjectsApplications {}

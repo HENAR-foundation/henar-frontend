@@ -125,22 +125,22 @@ const ResearchesPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
-  const queryClient = new QueryClient();
+//   const queryClient = new QueryClient();
 
-  await queryClient.fetchQuery({
-    queryFn: getStatistics,
-    queryKey: ['statistics'],
-  });
+//   await queryClient.fetchQuery({
+//     queryFn: getStatistics,
+//     queryKey: ['statistics'],
+//   });
 
-  await queryClient.fetchQuery({
-    queryFn: getResearches,
-    queryKey: ['researches'],
-  });
+//   await queryClient.fetchQuery({
+//     queryFn: getResearches,
+//     queryKey: ['researches'],
+//   });
 
   return {
     props: {
       messages: (await import(`../../messages/${locale}.json`)).default,
-      dehydratedState: dehydrate(queryClient),
+    //   dehydratedState: dehydrate(queryClient),
     },
   };
 };
