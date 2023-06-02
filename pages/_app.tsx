@@ -18,7 +18,6 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Notification from 'components/Notification';
 import { NextIntlProvider } from 'next-intl';
 import ContactInfoModal from 'components/ContactInfoModal';
-import { GetStaticProps } from 'next';
 
 const PtRoot = localFont({
   variable: '--font-pt-root',
@@ -40,6 +39,32 @@ const PtRoot = localFont({
     },
     {
       path: '../public/fonts/pt-root-ui_regular.woff',
+      weight: '400',
+      style: 'normal',
+    },
+  ],
+});
+
+const HyRoot = localFont({
+  variable: '--font-hy-root',
+  src: [
+    {
+      path: '../public/fonts/Montserratarm-Regular.otf',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/Montserratarm-Regular.otf',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/Montserratarm-Regular.otf',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/Montserratarm-Regular.otf',
       weight: '400',
       style: 'normal',
     },
@@ -81,7 +106,7 @@ export const InterfaceContext = createContext<InterfaceContextProps>({
 const queryClient = new QueryClient();
 
 const App = ({ Component, pageProps }: AppProps) => {
-  const { route } = useRouter();
+  const { route, locale } = useRouter();
 
   const [interfaceState, setInterfaceState] = useState<any>({
     interfaceState: {
@@ -90,6 +115,7 @@ const App = ({ Component, pageProps }: AppProps) => {
     setInterfaceState: () => undefined,
   });
 
+  const RegularFont = locale === 'hy' ? HyRoot.variable : PtRoot.variable;
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen />
@@ -108,11 +134,9 @@ const App = ({ Component, pageProps }: AppProps) => {
             <HeaderNavigation />
             <HeaderNavigationM />
             <main
-              className={`flex justify-center min-h-[100vh] h-full px-4 lg:px-0 overflow-x-hidden relative ${
-                PtRoot.variable
-              } ${PtRootLight.variable} font-sans ${
-                route === '/' ? 'bg-white' : 'bg-[#F7F8F8]'
-              }`}
+              className={`flex justify-center min-h-[100vh] h-full px-4 lg:px-0 overflow-x-hidden relative ${RegularFont} ${
+                PtRootLight.variable
+              } font-sans ${route === '/' ? 'bg-white' : 'bg-[#F7F8F8]'}`}
             >
               <div className='flex flex-col h-full w-full items-center'>
                 <div
