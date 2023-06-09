@@ -73,7 +73,9 @@ const LoginPage = () => {
                 onChange={formik.handleChange}
                 value={formik.values.password}
               />
-              <div className='mt-5 text-m text-accent1'>Забыли пароль ?</div>
+              <div className='mt-5 text-m text-accent1'>
+                {t('forgot_password')}
+              </div>
             </div>
 
             <ButtonPrimary type='submit' icon='arrow' kind='M'>

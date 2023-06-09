@@ -228,7 +228,7 @@ export const HeaderNavigation = () => {
     <header className='sticky z-50 top-0 w-full bg-white h-20 justify-center shadow-l lg:flex hidden'>
       <div className='h-full max-w-[1067px] w-full flex items-center justify-between'>
         <section className='flex h-full items-center'>
-          <Link href='/'>
+          <Link href='/' className='w-[140px]'>
             <Image alt='Logo' src='/logo.svg' width={140} height={35} />
           </Link>
           <div className='ml-7 flex items-center space-x-9 text-primary h-full'>

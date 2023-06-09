@@ -29,16 +29,16 @@ const EventsPage = () => {
       <Head>
         <title>{t('events')}</title>
       </Head>
-      <div className='flex mt-[59px]'>
+      {/* <div className='flex mt-[59px]'>
         <div>
           <h1 className='mb-2 text-h-xl-m  font-bold'>{t('events')}</h1>
           <span className='mb-4 font-bodyLight text-l'>
             {t('all_events_related')}
           </span>
-          {/* {user && <ButtonPrimary kind='M'>Создать мероприятие</ButtonPrimary>} */}
+          {user && <ButtonPrimary kind='M'>Создать мероприятие</ButtonPrimary>}
         </div>
         <Calendar />
-      </div>
+      </div> */}
       <div className='w-[676px] mt-7 mb-10'>
         <InputMaterial icon='search' placeholder={t('find_an_event')} />
       </div>
@@ -57,7 +57,7 @@ const EventsPage = () => {
           <EventCard image />
         </div>
       </section>
-      <section>
+      {/* <section>
         <h2 className='mb-2 text-h-s-d -m mt-9 font-bold'>{t('past')}</h2>
 
         <div className='mt-6 space-x-0  w-full mb-9 lg:gap-x-9 columns-1 lg:columns-3 space-y-[28px]'>
@@ -72,7 +72,7 @@ const EventsPage = () => {
           <EventCard image />
           <EventCard image />
         </div>
-      </section>
+      </section> */}
     </>
   );
 };
