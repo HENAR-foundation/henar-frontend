@@ -40,7 +40,7 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
   return (
     <>
       <Head>
-        <title>{expert?._id || t('experts')}</title>
+        <title>{expert?.full_name.en || t('experts')}</title>
       </Head>
       <div>
         <div className='absolute w-full top-14 left-0 lg:hidden flex aspect-[1.45/1] mb-5'>

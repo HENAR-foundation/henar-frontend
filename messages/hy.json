@@ -45,7 +45,7 @@
   "input_city": "Ձեր քաղաքը/բնակավայրը",
   "current_position": "Ձեր ներկայիս պաշտոնը",
   "save": "Պահպանել",
-  "{amount}_views": "{amount} դիտում",
+  "views_plural": "{count, plural, =0 {# դիտում} =1 {# դիտում} other {# դիտում}}",
   "{amount}_responses": "արձագանք",
   "reset_your_password": "Սահմանել նոր գաղտնաբառ",
   "old_password": "Հին գաղտնաբառը",
@@ -59,7 +59,7 @@
   "rejected_the_application": "Դիմումը մերժվել է",
   "find_an_expert": "Գտնել փորձագետ",
   "find_project": "Գտնել նախագիծ",
-  "projects_plural": "{count, plural, =0 {Նախագծերի} =1 {One follower} other {# Նախագծերի} }",
+  "projects_plural": "{count, plural, =0 {# Նախագծերի} =1 {# project} other {# Նախագծերի} }",
   "upcoming": "Առաջիկա",
   "past": "Անցած",
   "find_an_event": "Գտնել միջոցառում",
@@ -74,5 +74,7 @@
   "where": "Որտեղ",
   "topics": "Թեմաներ",
   "about_the_event": "Միջոցառման մասին",
-  "how_to_attend": "Ինչպե՞ս մասնակցել"
+  "how_to_attend": "Ինչպե՞ս մասնակցել",
+  "project_needs": "Ո՞վ է պետք այս նախագծին",
+  "no_projects_published": "Դեռևս ոչ մի նախագիծ հրապարակված չէ: Եղեք առաջինը. ներկայացրեք Ձեր նախագիծը"
 }

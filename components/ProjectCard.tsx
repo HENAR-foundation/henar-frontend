@@ -5,6 +5,9 @@ import FishImage from './FishImage';
 import Tag from './Tag';
 import { Project } from 'api/types';
 import Image from 'next/image';
+import { useQuery } from '@tanstack/react-query';
+import { getUser } from 'api/user';
+import { useTranslations } from 'next-intl';
 
 const ProjectCard: FC<{
   image?: string;
@@ -16,6 +19,13 @@ const ProjectCard: FC<{
   const handleClick = () => {
     push(`/projects/${data.slug}`);
   };
+
+  const { data: createdBy } = useQuery({
+    queryFn: () => getUser(data.created_by),
+    queryKey: ['user', data.created_by],
+  });
+  
+  const t = useTranslations();
 
   return (
     <div
@@ -37,7 +47,7 @@ const ProjectCard: FC<{
       )}
       <div className='flex p-5 flex-col'>
         <div className='flex justify-between w-full mb-2 text-a-ss text-accent1'>
-          <span>{data.views} просмотров</span>
+          <span>{t('views_plural', { count: data.views || 0 })}</span>
           <span>{data.successful_applicants} отклика</span>
         </div>
         <span className='mb-3 text-m font-medium'>
@@ -50,12 +60,14 @@ const ProjectCard: FC<{
         </div>
         <div className='flex items-center space-x-4'>
           <AvatarCircle />
-          <div className='flex flex-col'>
-            <span className='text-s'>Вячеслав Станиславский</span>
-            <span className='text-a-ss font-bodyLight text-secondary'>
-              Врач рентгенолог
-            </span>
-          </div>
+          {createdBy && (
+            <div className='flex flex-col'>
+              <span className='text-s'>{createdBy?.full_name.en}</span>
+              <span className='text-a-ss font-bodyLight text-secondary'>
+                {createdBy.job}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>

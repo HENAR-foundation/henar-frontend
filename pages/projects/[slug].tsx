@@ -6,7 +6,7 @@ import {
 } from '@tanstack/react-query';
 import { getProject } from 'api/projects';
 import { Translations } from 'api/types';
-import { checkSignIn } from 'api/user';
+import { checkSignIn, getUser } from 'api/user';
 import ApplyForProjectModal from 'components/ApplyForProjectModal';
 import AvatarCircle from 'components/AvatarCircle';
 import BreadCrumbs from 'components/BreadCrumbs';
@@ -14,10 +14,12 @@ import ButtonPrimary from 'components/ButtonPrimary';
 import FeedbacksBlock from 'components/FeedbacksBlock';
 import FishImage from 'components/FishImage';
 import { GetServerSideProps } from 'next';
+import { useTranslations } from 'next-intl';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useToggle } from 'usehooks-ts';
 
 const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
@@ -34,11 +36,18 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
     queryKey: ['isSignedIn'],
   });
 
+  const { data: createdBy } = useQuery({
+    enabled: !!project?.created_by,
+    queryFn: () => getUser(project?.created_by || '0'),
+    queryKey: ['user', project?.created_by],
+  });
+
+  const t = useTranslations();
+
   const alreadyApplied = !!Object.keys(
     user?.user_projects.projects_applications || {}
   ).find((key) => key === project?._id);
 
-  
   const [applyProjectModal, toggleModal] = useToggle();
 
   return (
@@ -92,8 +101,8 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                 <div className='flex items-center space-x-4 mb-6'>
                   <AvatarCircle src='avatar.jpg' />
                   <div className='flex flex-col font-bodyLight'>
-                    <span className='text-s'>Вячеслав Станиславский</span>
-                    <span className='text-a-ss'>Врач рентгенолог</span>
+                    <span className='text-s'>{createdBy?.full_name.en}</span>
+                    <span className='text-a-ss'>{createdBy?.job}</span>
                   </div>
                 </div>
                 <h2 className='text-l leading-6 mb-3 font-medium'>
@@ -108,7 +117,17 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                 </ButtonPrimary>
               </div>
               <div className='col-span-1 mb-4 lg:mb-0'>
-                <FeedbacksBlock />
+                <div className='flex bg-white rounded-s p-6'>
+                  <div className='flex flex-col font-bodyLight'>
+                    <span className='text-a-m'>
+                      Откликнулись {project?.successful_applicants || 0}{' '}
+                      человека
+                    </span>
+                    <span className='text-tetriary text-a-ss'>
+                      {t('views_plural', { count: project?.views || 0 })}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -125,7 +144,7 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                 <span className='font-bodyLight'>{project?.objective.en}</span>
               </div>
               <div className='bg-white rounded-s px-6 pt-6 pb-8'>
-                <h3 className='text-a-l mb-4'>Кто нужен проекту?</h3>
+                <h3 className='text-a-l mb-4'>{t('project_needs')}</h3>
                 <span className='font-bodyLight'>
                   {project?.who_is_needed.en}
                 </span>

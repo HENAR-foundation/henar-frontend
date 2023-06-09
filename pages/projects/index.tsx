@@ -91,45 +91,49 @@ const ProjectsPage = () => {
       </div>
 
       <h1 className='mb-4 text-h-m-d font-bold'>
-        {t('projects_plural', { count: projects?.length })}
+        {t('projects_plural', { count: projects?.length || 0 })}
       </h1>
-
-      <div className='space-y-5 space-x-0 lg:space-y-0 flex flex-1 flex-col lg:flex-row w-full mb-9 lg:space-x-4 items-end'>
-        <span className='min-w-full lg:min-w-[368px]'>
-          <InputMaterial
-            onChange={(newVal) =>
-              setFilters((prev) => ({ ...prev, sortType: newVal as any }))
-            }
-            icon='search'
-            placeholder={t('find_project')}
+      {projects && projects?.length === 0 && (
+        <span className='text-secondary text-m'>{t('no_projects_published')}</span>
+      )}
+      {projects && projects?.length !== 0 && (
+        <div className='space-y-5 space-x-0 lg:space-y-0 flex flex-1 flex-col lg:flex-row w-full mb-9 lg:space-x-4 items-end'>
+          <span className='min-w-full lg:min-w-[368px]'>
+            <InputMaterial
+              onChange={(newVal) =>
+                setFilters((prev) => ({ ...prev, sortType: newVal as any }))
+              }
+              icon='search'
+              placeholder={t('find_project')}
+            />
+          </span>
+          <SelectMaterial
+            options={[
+              { label: 'Россия', val: 'rus' },
+              { label: 'Америка', val: 'us' },
+            ]}
+            icon='globe'
+            defaultVal='Все страны'
+            label={t('country')}
           />
-        </span>
-        <SelectMaterial
-          options={[
-            { label: 'Россия', val: 'rus' },
-            { label: 'Америка', val: 'us' },
-          ]}
-          icon='globe'
-          defaultVal='Все страны'
-          label={t('country')}
-        />
-        <SelectMaterial
-          options={[
-            { label: 'Врач', val: 'rus' },
-            { label: 'Стоматолог', val: 'us' },
-          ]}
-          icon='microscope'
-          defaultVal='Все направления'
-          label='Направление'
-        />
-        <SortingSelect
-          options={[
-            { label: t('by_popularity'), val: 'popularity' },
-            { label: t('by_response'), val: 'views' },
-            { label: t('by_industry'), val: 'field' },
-          ]}
-        />
-      </div>
+          <SelectMaterial
+            options={[
+              { label: 'Врач', val: 'rus' },
+              { label: 'Стоматолог', val: 'us' },
+            ]}
+            icon='microscope'
+            defaultVal='Все направления'
+            label='Направление'
+          />
+          <SortingSelect
+            options={[
+              { label: t('by_popularity'), val: 'popularity' },
+              { label: t('by_response'), val: 'views' },
+              { label: t('by_industry'), val: 'field' },
+            ]}
+          />
+        </div>
+      )}
       <div className='columns-1 lg:columns-3 space-y-4 mb-10'>
         {filteredProjects?.map((project) => (
           <ProjectCard data={project} image='proj_bg.png' />

@@ -6,6 +6,7 @@ export interface Project {
   description: Translations;
   moderation_status: number;
   objective: Translations;
+  created_by: string;
   reason_of_reject: string;
   rejected_applicants: string[];
   slug: string;
