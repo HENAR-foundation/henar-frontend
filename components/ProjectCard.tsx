@@ -24,7 +24,7 @@ const ProjectCard: FC<{
     queryFn: () => getUser(data.created_by),
     queryKey: ['user', data.created_by],
   });
-  
+
   const t = useTranslations();
 
   return (
@@ -48,7 +48,11 @@ const ProjectCard: FC<{
       <div className='flex p-5 flex-col'>
         <div className='flex justify-between w-full mb-2 text-a-ss text-accent1'>
           <span>{t('views_plural', { count: data.views || 0 })}</span>
-          <span>{data.successful_applicants} отклика</span>
+          <span>
+            {t('responses_plural', {
+              count: data?.successful_applicants?.length || 0,
+            })}
+          </span>
         </div>
         <span className='mb-3 text-m font-medium'>
           {data.title.en ||
@@ -62,7 +66,7 @@ const ProjectCard: FC<{
           <AvatarCircle />
           {createdBy && (
             <div className='flex flex-col'>
-              <span className='text-s'>{createdBy?.full_name.en}</span>
+              <span className='text-s'>{createdBy?.full_name?.en}</span>
               <span className='text-a-ss font-bodyLight text-secondary'>
                 {createdBy.job}
               </span>

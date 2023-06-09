@@ -9,7 +9,7 @@ const Footer = () => {
       <div className='flex lg:ml-20 lg:h-[197px] pt-4 lg:flex-row flex-col h-auto  '>
         <div className='flex flex-col lg:mr-20 lg:items-start items-center mb-5 lg:mb-0'>
           <div className='flex flex-col mb-6'>
-            <Image src='/mobile_logo.svg' height={34} width={84} alt='Logo' />
+            <Image src='/logo-footer.svg' height={34} width={118} alt='Logo' />
           </div>
           <span className='text-accent1 text-a-xl'>+8 800 555 35 55</span>
           <span className='text-secondary font-bodyLight font-thin'>

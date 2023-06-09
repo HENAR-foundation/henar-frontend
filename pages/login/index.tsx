@@ -6,22 +6,38 @@ import * as Yup from 'yup';
 import React from 'react';
 import { signIn } from 'api/mutations/auth';
 import { GetServerSideProps } from 'next';
-import { useQueryClient } from '@tanstack/react-query';
-import { checkSignIn } from 'api/user';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/router';
 
 const SigninSchema = Yup.object().shape({
-  password: Yup.string().required('Пожалуйста заполните поле'),
+  password: Yup.string().required('err_missing_fields'),
   email: Yup.string()
-    .email('Не корректный email')
-    .required('Пожалуйста заполните поле'),
+    .email('err_invalid_email_format')
+    .required('err_missing_fields'),
 });
 
 const LoginPage = () => {
   const { push } = useRouter();
 
   const queryClient = useQueryClient();
+
+  const signInMutation = useMutation({
+    onSuccess: (result) => {
+      if (result) {
+        PubSub.publish('notification', 'Вы успешно вошли');
+        queryClient.invalidateQueries({ queryKey: ['isSignedIn'] });
+        queryClient.refetchQueries({ queryKey: ['isSignedIn'] });
+        push('/projects');
+      }
+    },
+    onError: () => {
+      formik.setErrors({ password: 'Пароль или email введены неверно' });
+    },
+    mutationFn: ({ email, password }: { email: string; password: string }) =>
+      signIn(email, password),
+  });
+
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -30,18 +46,7 @@ const LoginPage = () => {
     validateOnChange: false,
     validationSchema: SigninSchema,
     onSubmit: ({ email, password }) => {
-      signIn(email, password)
-        .then((result) => {
-          if (result) {
-            queryClient.invalidateQueries({ queryKey: ['isSignedIn'] });
-            queryClient.refetchQueries({ queryKey: ['isSignedIn'] });
-            push('/projects');
-            PubSub.publish('notification', 'Вы успешно вошли');
-          }
-        })
-        .catch((e) =>
-          formik.setErrors({ password: 'Пароль или email введены неверно' })
-        );
+      signInMutation.mutate({ email, password });
     },
   });
 
@@ -58,15 +63,14 @@ const LoginPage = () => {
             <h1 className='text-h-m-d font-bold mb-4'>{t('log_in')}</h1>
             <div className='space-y-3 mb-14'>
               <InputMaterial
-                error={formik.errors.email}
-                type='email'
+                error={t(formik.errors.email as any)}
                 label='Email'
                 name='email'
                 onChange={formik.handleChange}
                 value={formik.values.email}
               />
               <InputMaterial
-                error={formik.errors.password}
+                error={t(formik.errors.password as any)}
                 type='password'
                 label={t('password')}
                 name='password'
@@ -78,7 +82,12 @@ const LoginPage = () => {
               </div>
             </div>
 
-            <ButtonPrimary type='submit' icon='arrow' kind='M'>
+            <ButtonPrimary
+              busy={signInMutation.isLoading}
+              type='submit'
+              icon='arrow'
+              kind='M'
+            >
               {t('sign_in')}
             </ButtonPrimary>
           </div>
@@ -91,7 +100,10 @@ const LoginPage = () => {
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   return {
     props: {
-      messages: (await import(`../../messages/${locale}.json`)).default,
+      messages: {
+        ...(await import(`../../messages/${locale}.json`)).default,
+        ...(await import(`../../messages/formErrors/${locale}.json`)).default,
+      },
     },
   };
 };

@@ -25,11 +25,11 @@ enum tabTypes {
 type IS = keyof typeof tabTypes;
 
 const UpdateProfileSchema = Yup.object().shape({
-  name: Yup.string().required('Пожалуйста заполните поле'),
-  lastName: Yup.string().required('Пожалуйста заполните поле'),
-  location: Yup.string().required('Пожалуйста заполните поле'),
-  job: Yup.string().required('Пожалуйста заполните поле'),
-  about: Yup.string().required('Пожалуйста заполните поле'),
+  name: Yup.string().required('err_missing_fields'),
+  lastName: Yup.string().required('err_missing_fields'),
+  location: Yup.string().required('err_missing_fields'),
+  job: Yup.string().required('err_missing_fields'),
+  about: Yup.string().required('err_missing_fields'),
 });
 
 const AboutTab: FC = () => {

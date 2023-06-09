@@ -46,7 +46,7 @@
   "current_position": "Ձեր ներկայիս պաշտոնը",
   "save": "Պահպանել",
   "views_plural": "{count, plural, =0 {# դիտում} =1 {# դիտում} other {# դիտում}}",
-  "{amount}_responses": "արձագանք",
+  "responses_plural": "{count, plural, =0 {# մարդ արձագանքել է} =1 {պատասխանել է # անձ} other {պատասխանել է # անձ}}",
   "reset_your_password": "Սահմանել նոր գաղտնաբառ",
   "old_password": "Հին գաղտնաբառը",
   "new_password": "Նոր գաղտնաբառը",

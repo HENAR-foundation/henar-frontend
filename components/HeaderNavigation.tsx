@@ -202,7 +202,7 @@ const ProfileNav: FC<{ onShowSettings: () => void }> = ({ onShowSettings }) => {
             onClick={handleSignOut}
             className='text-a-ss leading-[140%] text-error cursor-pointer'
           >
-            Exit
+            {t('exit')}
           </span>
         </div>
       )}

@@ -18,10 +18,10 @@ const CreateProjectSchema = Yup.object().shape({
   title: Yup.string()
     .min(5, 'Название должно содержать минимум 5 символов')
     .max(50, 'Название может содержать максимум 50 символов')
-    .required('Пожалуйста заполните поле'),
-  description: Yup.string().required('Пожалуйста заполните поле'),
-  tasks: Yup.string().required('Пожалуйста заполните поле'),
-  request: Yup.string().required('Пожалуйста заполните поле'),
+    .required('err_missing_fields'),
+  description: Yup.string().required('err_missing_fields'),
+  tasks: Yup.string().required('err_missing_fields'),
+  request: Yup.string().required('err_missing_fields'),
   photos: Yup.mixed().required('Required'),
 });
 
@@ -129,6 +129,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
                   kind='M'
                   icon='arrow'
                   color='inverted'
+                  busy={mutationPhotos.isLoading}
                 >
                   Опубликовать
                 </ButtonPrimary>
@@ -174,7 +175,10 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
                   </span>
                 </div>
                 <div className='w-full max-w-[480px]'>
-                  <SelectMaterial options={[]} defaultVal='Select project stadia' />
+                  <SelectMaterial
+                    options={[]}
+                    defaultVal='Select project stadia'
+                  />
                 </div>
               </div>
               <div className='lg:flex-row flex-col flex justify-between'>

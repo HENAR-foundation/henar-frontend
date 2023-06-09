@@ -4,7 +4,6 @@ import { useFormik } from 'formik';
 import Head from 'next/head';
 import Link from 'next/link';
 import React from 'react';
-import { useToggle } from 'usehooks-ts';
 import * as Yup from 'yup';
 import { signUp } from 'api/mutations/auth';
 import { GetServerSideProps } from 'next';
@@ -16,14 +15,14 @@ const SignupSchema = Yup.object().shape({
   password: Yup.string()
     .min(5, 'Пароль должен содержать минимум 5 символов')
     .max(50, 'Пароль может содержать максимум 50 символов')
-    .required('Пожалуйста заполните поле'),
+    .required('err_missing_fields'),
   passwordConfirmation: Yup.string().oneOf(
     [Yup.ref('password')],
     'Пароли не совпадают'
   ),
   email: Yup.string()
-    .email('Не корректный email')
-    .required('Пожалуйста заполните поле'),
+    .email('err_invalid_email_format')
+    .required('err_missing_fields'),
 });
 
 const RegistrationPage = () => {
@@ -62,8 +61,7 @@ const RegistrationPage = () => {
           <form onSubmit={formik.handleSubmit}>
             <div className='space-y-3 mb-14'>
               <InputMaterial
-                error={formik.errors.email}
-                type='email'
+                error={t(formik.errors.email as any)}
                 name='email'
                 label={t('email')!}
                 onChange={formik.handleChange}
@@ -73,12 +71,12 @@ const RegistrationPage = () => {
                 type='password'
                 name='password'
                 label={t('password')!}
-                error={formik.errors.password}
+                error={t(formik.errors.password as any)}
                 onChange={formik.handleChange}
                 value={formik.values.password}
               />
               <InputMaterial
-                error={formik.errors.passwordConfirmation}
+                error={t(formik.errors.passwordConfirmation as any)}
                 onChange={formik.handleChange}
                 value={formik.values.passwordConfirmation}
                 name='passwordConfirmation'
@@ -89,7 +87,7 @@ const RegistrationPage = () => {
             <ButtonPrimary
               icon='arrow'
               type='submit'
-              // onClick={toggleSlide}
+              busy={signUpMutation.isLoading}
               className='text-left w-full'
               kind='M'
             >
@@ -113,7 +111,10 @@ const RegistrationPage = () => {
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   return {
     props: {
-      messages: (await import(`../../messages/${locale}.json`)).default,
+      messages: {
+        ...(await import(`../../messages/${locale}.json`)).default,
+        ...(await import(`../../messages/formErrors/${locale}.json`)).default,
+      },
     },
   };
 };

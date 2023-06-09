@@ -10,10 +10,10 @@ import { getLocationSuggest } from 'api/locationSuggets';
 import { createLocation } from 'api/mutations/location';
 
 const SignupSchema = Yup.object().shape({
-  name: Yup.string().required('Пожалуйста заполните поле'),
-  lastName: Yup.string().required('Пожалуйста заполните поле'),
-  location: Yup.string().required('Пожалуйста заполните поле'),
-  job: Yup.string().required('Пожалуйста заполните поле'),
+  name: Yup.string().required('err_missing_fields'),
+  lastName: Yup.string().required('err_missing_fields'),
+  location: Yup.string().required('err_missing_fields'),
+  job: Yup.string().required('err_missing_fields'),
 });
 
 const AboutModal = () => {
@@ -29,7 +29,7 @@ const AboutModal = () => {
       name: '',
       lastName: '',
       location: '0000000000000',
-    //   locationCode: '',
+      //   locationCode: '',
       job: '',
     },
     validateOnChange: false,
@@ -84,14 +84,14 @@ const AboutModal = () => {
           <div className='flex flex-col space-y-3 lg:w-[295px]'>
             <InputMaterial
               name='name'
-              error={formik.errors.name}
+              error={t(formik.errors.name as any)}
               onChange={formik.handleChange}
               value={formik.values.name}
               placeholder={t('name')}
             />
             <InputMaterial
               name='lastName'
-              error={formik.errors.lastName}
+              error={t(formik.errors.lastName as any)}
               onChange={formik.handleChange}
               value={formik.values.lastName}
               placeholder={t('last_name')}
@@ -104,7 +104,7 @@ const AboutModal = () => {
             <InputMaterial
               name='location'
               value={'0000000000000'}
-              error={formik.errors.location}
+              error={t(formik.errors.location as any)}
               onChange={formik.handleChange}
               className='lg:w-[295px]'
               placeholder={t('where_are_you_from')}
@@ -126,7 +126,7 @@ const AboutModal = () => {
             <span>{t('your_occupation')}?</span>
             <InputMaterial
               name='job'
-              error={formik.errors.job}
+              error={t(formik.errors.job as any)}
               onChange={formik.handleChange}
               className='lg:w-[295px]'
               placeholder={t('current_position')}

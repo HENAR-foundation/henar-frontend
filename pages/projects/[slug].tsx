@@ -72,7 +72,7 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
         <div className='mt-10 hidden lg:flex'>
           <BreadCrumbs
             crumbs={[
-              { label: 'Проекты', link: '/projects' },
+              { label: t('projects'), link: '/projects' },
               {
                 label: project?.slug || '',
                 link: `/projects/${slug}`,
@@ -101,7 +101,7 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                 <div className='flex items-center space-x-4 mb-6'>
                   <AvatarCircle src='avatar.jpg' />
                   <div className='flex flex-col font-bodyLight'>
-                    <span className='text-s'>{createdBy?.full_name.en}</span>
+                    <span className='text-s'>{createdBy?.full_name?.en}</span>
                     <span className='text-a-ss'>{createdBy?.job}</span>
                   </div>
                 </div>
@@ -120,8 +120,9 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                 <div className='flex bg-white rounded-s p-6'>
                   <div className='flex flex-col font-bodyLight'>
                     <span className='text-a-m'>
-                      Откликнулись {project?.successful_applicants || 0}{' '}
-                      человека
+                      {t('responses_plural', {
+                        count: project?.successful_applicants?.length || 0,
+                      })}
                     </span>
                     <span className='text-tetriary text-a-ss'>
                       {t('views_plural', { count: project?.views || 0 })}

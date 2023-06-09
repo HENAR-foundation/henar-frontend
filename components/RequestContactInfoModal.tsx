@@ -14,7 +14,7 @@ const MotivationSchema = Yup.object().shape({
   motivation: Yup.string()
     .min(5, 'Должно содержать минимум 5 символов')
     .max(1500, 'Может содержать максимум 1500 символов')
-    .required('Пожалуйста заполните поле'),
+    .required('err_missing_fields'),
 });
 
 const RequestContactInfoModal: FC<{ onClose: VoidFunction }> = ({

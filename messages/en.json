@@ -47,7 +47,7 @@
   "current_position": "Enter your current position",
   "save": "Save",
   "views_plural": "{count, plural, =0 {# views} =1 {# view} other {# views}}",
-  "{amount}_responses": "{amount} responses",
+  "responses_plural": "{count, plural, =0 {# people reacted} =1 {# people reacted} other {# people reacted}}",
   "reset_your_password": "Reset your password",
   "old_password": "Old password",
   "new_password": "New password",
