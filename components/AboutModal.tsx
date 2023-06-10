@@ -151,15 +151,17 @@ const AboutModal = () => {
           <div className='mt-7 lg:mt-10 flex justify-between flex-col lg:space-y-0 space-y-3'>
             <div className='flex w-full lg:justify-between lg:items-center lg:flex-row flex-col relative'>
               <span>{t('where_are_you_from')}</span>
-              <LocationInput
-                name='location'
-                onChange={({ data, value }) => {
-                  selectSuggest({ data, value });
-                  formik.setFieldValue('location', value);
-                }}
-                error={t(formik.errors.location as any)}
-                locationId={user?.location}
-              />
+              <span className='lg:w-[295px]'>
+                <LocationInput
+                  name='location'
+                  onChange={({ data, value }) => {
+                    selectSuggest({ data, value });
+                    formik.setFieldValue('location', value);
+                  }}
+                  error={t(formik.errors.location as any)}
+                  locationId={user?.location}
+                />
+              </span>
               {suggestsVisible &&
                 locSuggests &&
                 locSuggests?.suggestions.length !== 0 && (
