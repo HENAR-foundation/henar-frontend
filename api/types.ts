@@ -63,7 +63,9 @@ export interface User {
   email: string;
   password: string;
   avatar: string;
-  full_name: FullName;
+  first_name: string;
+  last_name: string;
+  //   full_name: FullName;
   description: string;
   contacts: Contacts;
   location: string;
@@ -224,3 +226,16 @@ export interface LocationSuggestsData {
   source: any;
   qc: any;
 }
+///
+
+export type BackendLocation = {
+  _id: string;
+  value: string;
+  country: string;
+  region: string;
+  city: string;
+  settlement: string;
+  street: string;
+  house: string;
+  extra_info: string;
+};

@@ -1,5 +1,6 @@
-import { LocationSuggestsData } from 'api/types';
+import { BackendLocation, LocationSuggestsData } from 'api/types';
 import axios from '../axios';
+import { AxiosResponse } from 'axios';
 
 export const createLocation = async (loc: {
   value: string;
@@ -12,7 +13,7 @@ export const createLocation = async (loc: {
   extra_info: string;
 }) => {
   try {
-    const result = await axios.post(
+    const result: AxiosResponse<BackendLocation> = await axios.post(
       '/locations',
       { ...loc },
       {

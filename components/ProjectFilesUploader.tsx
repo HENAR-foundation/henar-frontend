@@ -2,6 +2,7 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import ButtonOutline from './ButtonOutline';
 import Image from 'next/image';
 import { FormikErrors } from 'formik';
+import { useTranslations } from 'next-intl';
 
 const ImageCross = () => (
   <svg
@@ -75,7 +76,7 @@ const ProjectFilesUploader: FC<{
         }>
       >;
   name: string;
-}> = ({ onChange, name,  }) => {
+}> = ({ onChange, name }) => {
   const hiddenFileInput = useRef<any>(null);
   const [selectedFiles, setSelectedFile] = useState<any>();
   const [preview, setPreview] = useState<any[]>();
@@ -107,6 +108,8 @@ const ProjectFilesUploader: FC<{
     setSelectedFile(e.target.files);
   };
 
+  const t = useTranslations();
+
   return (
     <>
       {selectedFiles && preview && (
@@ -126,7 +129,7 @@ const ProjectFilesUploader: FC<{
         onClick={() => hiddenFileInput.current?.click()}
         className='w-[163px] lg:mt-0 mt-[30px]'
       >
-        Загрузите фото
+        {t('upload_photo')}
       </ButtonOutline>
       <input
         multiple

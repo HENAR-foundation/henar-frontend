@@ -27,14 +27,19 @@ const SignupSchema = Yup.object().shape({
 
 const RegistrationPage = () => {
   const { push } = useRouter();
+  
   const signUpMutation = useMutation({
     onSuccess: () => {
       PubSub.publish('notification', 'Registered successfully');
       push('/login');
     },
+    onError: ()=>{
+      formik.setErrors({passwordConfirmation: 'Email adress already in user'})
+    },
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       signUp(email, password),
   });
+
   const formik = useFormik({
     initialValues: {
       email: '',

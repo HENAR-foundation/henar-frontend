@@ -92,6 +92,7 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
     props: {
       messages: {
         ...(await import(`../../messages/${locale}.json`)),
+        ...(await import(`../../messages/formErrors/${locale}.json`)),
       },
     },
   };

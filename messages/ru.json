@@ -46,6 +46,7 @@
   "input_city": "Введите город",
   "current_position": "Введите должность",
   "save": "Сохранить",
+  "participates_plural": "{count, plural, =0 {Участвует в # проектах} =1 {Участвует в # проекте} other {Участвует в # проектах}}",
   "views_plural": "{count, plural, =0 {# просмотров} =1 {# просмотр} other {# просмотров}}",
   "responses_plural": "{count, plural, =0 {Откликнулось # человек} =1 {Откликнулся # человек} other {Откликнулось # человек}}",
   "reset_your_password": "Изменить пароль",
@@ -77,5 +78,16 @@
   "about_the_event": "О мероприятии",
   "how_to_attend": "Как попасть ?",
   "project_needs": "Кто нужен проекту?",
-  "no_projects_published": "Пользователи пока не опубликовали проектов, станьте первым"
+  "no_projects_published": "Пользователи пока не опубликовали проектов, станьте первым",
+  "title": "Название",
+  "title-field-description": "Будет отображаться на карточке проекта",
+  "photo": "Фото",
+  "photo_field_description": "Загрузите фотографии для обложки проекта",
+  "project_phase": "Стадия проекта",
+  "project_phase_field_description": "На каком этапе находится проект",
+  "description": "Описание",
+  "objectives": "Задачи",
+  "request": "Запрос",
+  "help_project": "Как помочь проекту?",
+  "types_needs": "Возможности для участия"
 }

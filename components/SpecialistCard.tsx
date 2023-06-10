@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
 import ButtonOutline from './ButtonOutline';
@@ -8,30 +7,24 @@ import Tag from './Tag';
 import { useTranslations } from 'next-intl';
 import { GetServerSideProps } from 'next';
 import { User } from 'api/types';
-import { useQuery } from '@tanstack/react-query';
-import { checkSignIn } from 'api/user';
+import { formatFullName } from 'helpers';
 
-const SpecialistCard: FC<User> = ({
-  _id,
-  avatar,
-  full_name,
-  description,
-  location,
-  job,
-  tags,
-}) => {
+const SpecialistCard: FC<User> = (user) => {
+  const {
+    _id,
+    // avatar,
+    // first_name,
+    // last_name,
+    description,
+    location,
+    job,
+    tags,
+  } = user;
   const { push } = useRouter();
   const t = useTranslations();
-  const { data: user } = useQuery({
-    queryFn: checkSignIn,
-    queryKey: ['isSignedIn'],
-  });
+
   const handleRequestContactModal = () => {
-    if (user) {
-      push('/persons/' + _id);
-    } else {
-      push('/registration');
-    }
+    push('/persons/' + _id);
   };
   return (
     <div className='shadow-l p-4 lg:p-0 w-full h-full rounded-xl  flex min-h-[218px] bg-white overflow-hidden lg:flex-row flex-col'>
@@ -41,7 +34,9 @@ const SpecialistCard: FC<User> = ({
         </div>
       </div>
       <div className='h-full lg:ml-6 pt-6 lg:pt-[21px] flex-col flex items-baseline'>
-        <h2 className='text-a-m lg:text-l lg:mb-0 mb-2'>{full_name.en}</h2>
+        <h2 className='text-a-m lg:text-l lg:mb-0 mb-2'>
+          {formatFullName(user)}
+        </h2>
         <div className='lg:flex mt-2 hidden space-x-7'>
           {job && (
             <span className='flex'>

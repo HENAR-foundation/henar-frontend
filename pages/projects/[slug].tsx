@@ -1,9 +1,4 @@
-import {
-  QueryClient,
-  dehydrate,
-  useQueries,
-  useQuery,
-} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { getProject } from 'api/projects';
 import { Translations } from 'api/types';
 import { checkSignIn, getUser } from 'api/user';
@@ -11,15 +6,14 @@ import ApplyForProjectModal from 'components/ApplyForProjectModal';
 import AvatarCircle from 'components/AvatarCircle';
 import BreadCrumbs from 'components/BreadCrumbs';
 import ButtonPrimary from 'components/ButtonPrimary';
-import FeedbacksBlock from 'components/FeedbacksBlock';
 import FishImage from 'components/FishImage';
+import { formatFullName } from 'helpers';
 import { GetServerSideProps } from 'next';
 import { useTranslations } from 'next-intl';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useToggle } from 'usehooks-ts';
 
 const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
@@ -45,10 +39,18 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
   const t = useTranslations();
 
   const alreadyApplied = !!Object.keys(
-    user?.user_projects.projects_applications || {}
+    user?.user_projects?.projects_applications || {}
   ).find((key) => key === project?._id);
 
   const [applyProjectModal, toggleModal] = useToggle();
+
+  const handleApply = () => {
+    if (user) {
+      toggleModal();
+    } else {
+      router.push('/registration');
+    }
+  };
 
   return (
     <>
@@ -101,7 +103,9 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                 <div className='flex items-center space-x-4 mb-6'>
                   <AvatarCircle src='avatar.jpg' />
                   <div className='flex flex-col font-bodyLight'>
-                    <span className='text-s'>{createdBy?.full_name?.en}</span>
+                    <span className='text-s'>
+                      {formatFullName(createdBy)}
+                    </span>
                     <span className='text-a-ss'>{createdBy?.job}</span>
                   </div>
                 </div>
@@ -110,8 +114,9 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                 </h2>
                 <ButtonPrimary
                   kind='M'
+                  disabled={alreadyApplied}
                   className='w-full text-left'
-                  onClick={toggleModal}
+                  onClick={handleApply}
                 >
                   Apply for project
                 </ButtonPrimary>

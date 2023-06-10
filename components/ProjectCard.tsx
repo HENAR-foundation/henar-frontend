@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
 import { getUser } from 'api/user';
 import { useTranslations } from 'next-intl';
+import { formatFullName } from 'helpers';
 
 const ProjectCard: FC<{
   image?: string;
@@ -66,7 +67,7 @@ const ProjectCard: FC<{
           <AvatarCircle />
           {createdBy && (
             <div className='flex flex-col'>
-              <span className='text-s'>{createdBy?.full_name?.en}</span>
+              <span className='text-s'>{formatFullName(createdBy)}</span>
               <span className='text-a-ss font-bodyLight text-secondary'>
                 {createdBy.job}
               </span>

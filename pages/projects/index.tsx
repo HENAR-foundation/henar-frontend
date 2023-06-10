@@ -94,7 +94,9 @@ const ProjectsPage = () => {
         {t('projects_plural', { count: projects?.length || 0 })}
       </h1>
       {projects && projects?.length === 0 && (
-        <span className='text-secondary text-m'>{t('no_projects_published')}</span>
+        <span className='text-secondary text-m'>
+          {t('no_projects_published')}
+        </span>
       )}
       {projects && projects?.length !== 0 && (
         <div className='space-y-5 space-x-0 lg:space-y-0 flex flex-1 flex-col lg:flex-row w-full mb-9 lg:space-x-4 items-end'>
@@ -146,7 +148,10 @@ const ProjectsPage = () => {
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   return {
     props: {
-      messages: (await import(`../../messages/${locale}.json`)).default,
+      messages: {
+        ...(await import(`../../messages/${locale}.json`)).default,
+        ...(await import(`../../messages/formErrors/${locale}.json`)).default,
+      },
     },
   };
 };

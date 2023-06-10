@@ -78,18 +78,21 @@ const EventsPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
-//   const queryClient = new QueryClient();
+  //   const queryClient = new QueryClient();
 
-//   await queryClient.fetchQuery({ queryFn: getTags, queryKey: ['tags'] });
+  //   await queryClient.fetchQuery({ queryFn: getTags, queryKey: ['tags'] });
 
-//   await queryClient.fetchQuery({
-//     queryKey: ['events'],
-//     queryFn: getEvents,
-//   });
+  //   await queryClient.fetchQuery({
+  //     queryKey: ['events'],
+  //     queryFn: getEvents,
+  //   });
 
   return {
     props: {
-      messages: (await import(`../../messages/${locale}.json`)).default,
+      messages: {
+        ...(await import(`../../messages/${locale}.json`)).default,
+        ...(await import(`../../messages/formErrors/${locale}.json`)).default,
+      },
       //   dehydratedState: dehydrate(queryClient),
     },
   };

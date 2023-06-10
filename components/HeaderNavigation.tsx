@@ -12,6 +12,7 @@ import { useTranslations } from 'next-intl';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { checkSignIn, getUsers } from 'api/user';
 import { signOut } from 'api/mutations/auth';
+import { formatFullName } from 'helpers';
 
 const links = [
   {
@@ -178,7 +179,9 @@ const ProfileNav: FC<{ onShowSettings: () => void }> = ({ onShowSettings }) => {
         className='flex cursor-pointer items-center justify-center'
         onClick={toggleOpen}
       >
-        <span className='mx-[10px] text-a-ss leading-[140%] w-[90px]'>{user?.full_name.en || 'John Doe'}</span>
+        <span className='mx-[10px] text-a-ss leading-[140%] w-[90px]'>
+          {formatFullName(user)}
+        </span>
         <Image
           className={`transform ${opened && 'rotate-180'}`}
           src='/angle-down-grey.svg'
@@ -221,8 +224,6 @@ export const HeaderNavigation = () => {
     cacheTime: 0,
     queryFn: checkSignIn,
   });
-
-  console.info(data, 'HEADER DATA');
 
   return (
     <header className='sticky z-50 top-0 w-full bg-white h-20 justify-center shadow-l lg:flex hidden'>
@@ -329,7 +330,9 @@ export const HeaderNavigationM = () => {
             </div>
           </div>
           <div className='flex flex-col mt-5 mx-[31px]'>
-            <ButtonPrimary kind='M'>{t('registration')}</ButtonPrimary>
+            <ButtonPrimary onClick={() => push('/registration')} kind='M'>
+              {t('registration')}
+            </ButtonPrimary>
             <ButtonOutline
               kind='M'
               className='mt-3 mb-[33px]'

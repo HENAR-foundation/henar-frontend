@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import React, { FC, useEffect, useState } from 'react';
 import InputMaterial from './InputMaterial';
-import ProjectCard from './ProjectCard';
 import TextAreaMaterial from './TextAreaMaterial';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getProjects } from 'api/projects';
@@ -13,9 +12,13 @@ import * as Yup from 'yup';
 import { updateUser } from 'api/mutations/user';
 import ButtonPrimary from './ButtonPrimary';
 import { uploadPhotos } from 'api/mutations/files';
-import NotAllowed from './NotAllowed';
 import Tag from './Tag';
 import AvatarCircle from './AvatarCircle';
+import { formatFullName } from 'helpers';
+import { getLocationById } from 'api/location';
+import LocationInput from './LocationInput';
+import { LocationSuggestsData } from 'api/types';
+import { createLocation } from 'api/mutations/location';
 
 enum tabTypes {
   Profile = 'profile',
@@ -27,7 +30,8 @@ type IS = keyof typeof tabTypes;
 const UpdateProfileSchema = Yup.object().shape({
   name: Yup.string().required('err_missing_fields'),
   lastName: Yup.string().required('err_missing_fields'),
-  location: Yup.string().required('err_missing_fields'),
+  location: Yup.string(),
+  locationCode: Yup.string(),
   job: Yup.string().required('err_missing_fields'),
   about: Yup.string().required('err_missing_fields'),
 });
@@ -40,35 +44,85 @@ const AboutTab: FC = () => {
     onSuccess: () => {
       if (user) {
         formik.setValues({
-          name: user?.full_name.en.split(' ')[0],
+          name: user?.first_name,
           about: user.description,
-          lastName: user.full_name.en.split(' ')[1],
+          lastName: user.last_name,
           location: user.location,
           job: user.job,
           avatar: user.avatar,
+          locationCode: '',
         });
+        fetchLocation();
+      }
+    },
+  });
+  const queryClient = useQueryClient();
+
+  const { refetch: fetchLocation } = useQuery({
+    queryFn: () => getLocationById(user?.location || ''),
+    enabled: false,
+    queryKey: ['userLocation', user?.location],
+    onSuccess: (location) => {
+      if (location) {
+        formik.setFieldValue('location', location.city);
       }
     },
   });
 
+  const createLocMutation = useMutation({ mutationFn: createLocation });
+
   const mutationPhotos = useMutation({
     mutationFn: (photos: FileList) => uploadPhotos(photos),
-    onSuccess: (data) => handlUpdateUser(''),
+    onSuccess: () => handlUpdateUser(''),
+  });
+
+  const [selectedSuggest, selectSuggest] = useState<{
+    data: LocationSuggestsData;
+    value: string;
+  } | null>(null);
+
+  const updateUserMutation = useMutation({
+    mutationFn: updateUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['isSignedIn'] }).then(() => {
+        PubSub.publish('notification', 'Профиль успешно обновлен');
+      });
+    },
   });
 
   const handlUpdateUser = (avatar?: string) => {
-    const { name, lastName, job, about, location } = formik.values;
+    const { name, lastName, job, about, locationCode } =
+      formik.values;
     if (user) {
-      updateUser({
-        ...user,
-        avatar: avatar || '',
-        full_name: { ...user.full_name, en: `${name} ${lastName}` },
-        job,
-        location,
-        description: about,
-      }).then(() => {
-        PubSub.publish('notification', 'Профиль успешно обновлен');
-      });
+      const updatedUser = { ...user };
+      if (user.location !== locationCode) {
+        const { data, value } = selectedSuggest || {};
+        createLocMutation.mutate(
+          {
+            city: data?.city || '',
+            country: data?.country || '',
+            extra_info: '',
+            house: data?.house,
+            region: data?.region || '',
+            settlement: data?.settlement || '',
+            street: data?.street || '',
+            value: value || '',
+          },
+          {
+            onSuccess: (result) => {
+              console.info(result);
+              updatedUser.location = result.data._id;
+              updateUserMutation.mutate({
+                ...updatedUser,
+                job,
+                description: about,
+                first_name: name,
+                last_name: lastName,
+              });
+            },
+          }
+        );
+      }
     }
   };
 
@@ -78,6 +132,7 @@ const AboutTab: FC = () => {
       avatar: '',
       lastName: '',
       location: '',
+      locationCode: '',
       job: '',
       about: '',
     },
@@ -96,7 +151,7 @@ const AboutTab: FC = () => {
     <form onSubmit={formik.handleSubmit}>
       <div className='flex flex-col lg:space-y-8 space-y-[20px]'>
         <div className='flex w-full lg:flex-row flex-col'>
-          <span className='w-[230px] mt-2 lg:mb-0 mb-3'>Photo</span>
+          <span className='w-[230px] mt-2 lg:mb-0 mb-3'>{t('photo')}</span>
           <div className='flex flex-1 w-full flex-col'>
             <PhotoUploader onChange={formik.setFieldValue} name='avatar' />
           </div>
@@ -109,29 +164,36 @@ const AboutTab: FC = () => {
             <InputMaterial
               name='name'
               value={formik.values.name}
-              error={formik.errors.name}
+              error={t(formik.errors.name as any)}
               onChange={formik.handleChange}
               label={t('name')}
             />
             <InputMaterial
               name='lastName'
               value={formik.values.lastName}
-              error={formik.errors.lastName}
+              error={t(formik.errors.lastName as any)}
               onChange={formik.handleChange}
               label={t('last_name')}
             />
           </div>
         </div>
-        <NotAllowed>
-          <div className='flex w-full lg:flex-row flex-col'>
-            <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
-              {t('where_are_you_from')}
-            </span>
-            <div className='flex flex-1 flex-col w-full'>
-              <InputMaterial disabled label={t('input_city')} />
-            </div>
+        <div className='flex w-full lg:flex-row flex-col'>
+          <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
+            {t('where_are_you_from')}
+          </span>
+          <div className='flex flex-1 flex-col w-full'>
+            <LocationInput
+              name='location'
+              error={t(formik.errors.location as any)}
+              onChange={({ data, value }) => {
+                selectSuggest({ data, value });
+                formik.setFieldValue('location', value);
+              }}
+              label={t('input_city')}
+              locationId={user?.location}
+            />
           </div>
-        </NotAllowed>
+        </div>
         <div className='flex w-full lg:flex-row flex-col'>
           <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
             {t('your_occupation')}
@@ -140,7 +202,7 @@ const AboutTab: FC = () => {
             <InputMaterial
               name='job'
               value={formik.values.job}
-              error={formik.errors.job}
+              error={t(formik.errors.job as any)}
               onChange={formik.handleChange}
               label={t('current_position')}
             />
@@ -152,7 +214,7 @@ const AboutTab: FC = () => {
             <TextAreaMaterial
               name='about'
               value={formik.values.about}
-              error={formik.errors.about}
+              error={t(formik.errors.about as any)}
               onChange={formik.handleChange}
               label={t('about')}
             />
@@ -161,7 +223,7 @@ const AboutTab: FC = () => {
       </div>
       <div className='flex flex-row-reverse mt-[65px] w-full'>
         <ButtonPrimary type='submit' kind='M' className='w-[170px]'>
-          Сохранить
+          {t('save')}
         </ButtonPrimary>
       </div>
     </form>
@@ -194,16 +256,12 @@ const ProfileModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
   });
   const ProjectsTab = () => {
     const { data } = useQuery({ queryFn: getProjects, queryKey: ['projects'] });
+
     const projects = data?.filter(
       ({ _id }) =>
         !!Object.keys(user?.user_projects.created_projects || {}).includes(_id)
     );
-    console.info(
-      Object.keys(user?.user_projects.created_projects || {}),
-      projects,
-      'ASSSS',
-      data
-    );
+
     return (
       <>
         {projects?.map(({ title, views, successful_applicants }) => (
@@ -222,7 +280,7 @@ const ProfileModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
             <div className='flex mt-10'>
               <AvatarCircle />
               <div className='flex flex-col ml-[15px] mr-6'>
-                <span>{user?.full_name.en}</span>
+                <span>{formatFullName(user)}</span>
                 <span className='font-thin text-a-ss'>{user?.job}</span>
               </div>
             </div>

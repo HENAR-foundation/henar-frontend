@@ -15,6 +15,7 @@ import React, { FC } from 'react';
 import { useToggle } from 'usehooks-ts';
 import { checkSignIn } from 'api/user';
 import FishImage from 'components/FishImage';
+import { formatFullName } from 'helpers';
 
 const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
   const router = useRouter();
@@ -37,10 +38,35 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
     !!user?.contacts_request?.outgoing_contact_requests[id as any];
 
   const t = useTranslations();
+
+  const handleRequestInfo = () => {
+    if (user) {
+      toggleModal();
+    } else {
+      router.push('/registration');
+      PubSub.publish(
+        'notification',
+        'Please register to request specialist information'
+      );
+    }
+  };
+
+  const { data: unfilteredProjects } = useQuery({
+    queryFn: getProjects,
+    queryKey: ['projects'],
+  });
+
+  const projects = unfilteredProjects?.filter(
+    ({ _id }) =>
+      !!Object.keys(user?.user_projects?.confirmed_applications || {}).includes(
+        _id
+      )
+  );
+
   return (
     <>
       <Head>
-        <title>{expert?.full_name.en || t('experts')}</title>
+        <title>{formatFullName(expert) || t('experts')}</title>
       </Head>
       <div>
         <div className='absolute w-full top-14 left-0 lg:hidden flex aspect-[1.45/1] mb-5'>
@@ -67,15 +93,15 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
             </div>
             <div className='flex flex-col bg-white rounded-s py-6 px-5 justify-between'>
               <div>
-                <h2 className='text-a-xl mb-3'>{expert?.full_name.en}</h2>
-                <p className='font-bodyLight text-a-m'>{user?.description}</p>
+                <h2 className='text-a-xl mb-3'>{formatFullName(expert)}</h2>
+                <p className='font-bodyLight text-a-m'>{expert?.description}</p>
               </div>
               <ButtonPrimary
                 disabled={isContactAlreadyRequested}
                 kind='M'
                 icon='arrow'
                 className='lg:mt-0 mt-9 text-left text-m'
-                onClick={toggleModal}
+                onClick={handleRequestInfo}
               >
                 {isContactAlreadyRequested
                   ? 'Already requested'
@@ -91,7 +117,7 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
                 </p>
                 <p className='mt-4 flex justify-between'>
                   <span className='text-tetriary'>{t('specialty')}</span>
-                  <span>Радиология</span>
+                  <span>{expert?.job}</span>
                 </p>
                 {/* <h3 className='mt-6 text-a-xl mb-4'>{t('interests')}</h3>
                 <div className='inline-flex flex-wrap gap-2 lg:mb-8'>
@@ -102,9 +128,13 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
               </div>
             </div>
           </div>
-          <h2 className='font-bold text-h-m-d mb-9'>Учавствует в 3 проектах</h2>
+          <h2 className='font-bold text-h-m-d mb-9'>
+            {t('responses_plural', {
+              count: projects?.length || 0,
+            })}
+          </h2>
           <div className='w-full grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-4 mb-[85px]'>
-            {data?.map((item, index) => (
+            {projects?.map((item, index) => (
               <ProjectCard key={index} data={item} />
             ))}
           </div>

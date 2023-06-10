@@ -12,16 +12,16 @@ import { GetServerSideProps } from 'next';
 import { useTranslations } from 'next-intl';
 
 const ResearchesPage = () => {
-//   const formik = useFormik({
-//     initialValues: {
-//       title: '',
-//       lastName: '',
-//       location: '',
-//       job: '',
-//     },
-//     validateOnChange: false,
-//     onSubmit: () => {},
-//   });
+  //   const formik = useFormik({
+  //     initialValues: {
+  //       title: '',
+  //       lastName: '',
+  //       location: '',
+  //       job: '',
+  //     },
+  //     validateOnChange: false,
+  //     onSubmit: () => {},
+  //   });
 
   const { data: stats } = useQuery({
     queryFn: getStatistics,
@@ -125,22 +125,25 @@ const ResearchesPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
-//   const queryClient = new QueryClient();
+  //   const queryClient = new QueryClient();
 
-//   await queryClient.fetchQuery({
-//     queryFn: getStatistics,
-//     queryKey: ['statistics'],
-//   });
+  //   await queryClient.fetchQuery({
+  //     queryFn: getStatistics,
+  //     queryKey: ['statistics'],
+  //   });
 
-//   await queryClient.fetchQuery({
-//     queryFn: getResearches,
-//     queryKey: ['researches'],
-//   });
+  //   await queryClient.fetchQuery({
+  //     queryFn: getResearches,
+  //     queryKey: ['researches'],
+  //   });
 
   return {
     props: {
-      messages: (await import(`../../messages/${locale}.json`)).default,
-    //   dehydratedState: dehydrate(queryClient),
+      messages: {
+        ...(await import(`../../messages/${locale}.json`)).default,
+        ...(await import(`../../messages/formErrors/${locale}.json`)).default,
+      },
+      //   dehydratedState: dehydrate(queryClient),
     },
   };
 };

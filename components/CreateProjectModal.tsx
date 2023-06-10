@@ -13,6 +13,7 @@ import { checkSignIn } from 'api/user';
 import { getProjects } from 'api/projects';
 import ProjectFilesUploader from './ProjectFilesUploader';
 import { uploadPhotos } from 'api/mutations/files';
+import { formatFullName } from 'helpers';
 
 const CreateProjectSchema = Yup.object().shape({
   title: Yup.string()
@@ -43,7 +44,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
     if (user) {
       createProject({
         covers: photos,
-        author: user.full_name.ru,
+        author: formatFullName(user),
         description,
         title,
         objective: 'OBJECTIVe',
@@ -131,33 +132,33 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
                   color='inverted'
                   busy={mutationPhotos.isLoading}
                 >
-                  Опубликовать
+                  {t('create_project')}
                 </ButtonPrimary>
               </div>
             </div>
             <div className='rounded-b-xl overflow-hidden  space-y-10 flex flex-col bg-white lg:px-8 px-4 py-6'>
               <div className='flex justify-between lg:flex-row flex-col'>
-                <div className='flex flex-col lg:w-[160px]'>
-                  <span className='text-l'>Название</span>
+                <div className='flex flex-col lg:w-[170px]'>
+                  <span className='text-l'>{t('title')}</span>
                   <span className='font-bodyLight text-a-ss'>
-                    Будет отображаться на карточке проекта
+                    {t('title-field-description')}
                   </span>
                 </div>
                 <div className='w-full max-w-[480px]'>
                   <InputMaterial
                     name='title'
-                    error={formik.errors.title}
+                    error={t(formik.errors.title as any)}
                     onChange={formik.handleChange}
                     value={formik.values.title}
-                    placeholder='Название'
+                    placeholder={t('title')}
                   />
                 </div>
               </div>
               <div className='flex justify-between lg:flex-row flex-col'>
-                <div className='flex flex-col lg:w-[160px]'>
-                  <span className='text-l'>Фото</span>
+                <div className='flex flex-col lg:w-[170px]'>
+                  <span className='text-l'>{t('photo')}</span>
                   <span className='font-bodyLight text-a-ss'>
-                    Загрузите фотографии для обложки проекта
+                    {t('photo_field_description')}
                   </span>
                 </div>
                 <div className='w-full max-w-[480px]'>
@@ -168,10 +169,10 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
                 </div>
               </div>
               <div className='lg:flex-row flex-col flex justify-between'>
-                <div className='flex flex-col lg:w-[160px]'>
-                  <span className='text-l'>Стадия проекта</span>
+                <div className='flex flex-col lg:w-[170px]'>
+                  <span className='text-l'>{t('project_phase')}</span>
                   <span className='font-bodyLight text-a-ss'>
-                    На каком этапе находится проект ?
+                    {t('project_phase_field_description')}
                   </span>
                 </div>
                 <div className='w-full max-w-[480px]'>
@@ -182,68 +183,68 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
                 </div>
               </div>
               <div className='lg:flex-row flex-col flex justify-between'>
-                <div className='flex flex-col lg:w-[160px]'>
-                  <span className='text-l'>Описание</span>
+                <div className='flex flex-col lg:w-[170px]'>
+                  <span className='text-l'>{t('description')}</span>
                   <span className='font-bodyLight text-a-ss'>
-                    Будет отображаться на карточке проекта
+                    {t('title-field-description')}
                   </span>
                 </div>
                 <div className='w-full max-w-[480px]'>
                   <TextAreaMaterial
                     className='min-h-[120px]'
                     name='description'
-                    error={formik.errors.description}
+                    error={t(formik.errors.description as any)}
                     onChange={formik.handleChange}
                     value={formik.values.description}
-                    placeholder='Описание'
+                    placeholder={t('description')}
                   />
                 </div>
               </div>
               <div className='lg:flex-row flex-col flex justify-between'>
-                <div className='flex flex-col lg:w-[160px]'>
-                  <span className='text-l'>Задачи</span>
+                <div className='flex flex-col lg:w-[170px]'>
+                  <span className='text-l'>{t('objectives')}</span>
                   <span className='font-bodyLight text-a-ss'>
-                    Будет отображаться на карточке проекта
+                    {t('title-field-description')}
                   </span>
                 </div>
                 <div className='w-full max-w-[480px]'>
                   <TextAreaMaterial
                     className='min-h-[120px]'
                     name='tasks'
-                    error={formik.errors.tasks}
+                    error={t(formik.errors.tasks as any)}
                     onChange={formik.handleChange}
                     value={formik.values.tasks}
-                    placeholder='Задачи'
+                    placeholder={t('objectives')}
                   />
                 </div>
               </div>
               <div className='lg:flex-row flex-col flex justify-between'>
-                <div className='flex flex-col lg:w-[160px]'>
-                  <span className='text-l'>Запрос</span>
+                <div className='flex flex-col lg:w-[170px]'>
+                  <span className='text-l'>{t('request')}</span>
                   <span className='font-bodyLight text-a-ss'>
-                    Как можно почучаствовать в проекте?
+                    {t('types_needs')}
                   </span>
                 </div>
                 <div className='w-full max-w-[480px]'>
                   <TextAreaMaterial
                     className='min-h-[120px]'
                     name='request'
-                    error={formik.errors.request}
+                    error={t(formik.errors.request as any)}
                     onChange={formik.handleChange}
                     value={formik.values.request}
-                    placeholder='Запрос'
+                    placeholder={t('request')}
                   />
                 </div>
               </div>
               <div className='lg:flex-row flex-col flex justify-between'>
-                <div className='flex flex-col lg:w-[160px]'>
-                  <span className='text-l'>How you can help ?</span>
+                <div className='flex flex-col lg:w-[170px]'>
+                  <span className='text-l'>{t('help_project')}</span>
                   <span className='font-bodyLight text-a-ss'>
-                    Как можно почучаствовать в проекте?
+                    {t('types_needs')}
                   </span>
                 </div>
                 <div className='w-full max-w-[480px]'>
-                  <SelectMaterial options={[]} defaultVal='How you can help' />
+                  <SelectMaterial options={[]} defaultVal={t('help_project')} />
                 </div>
               </div>
             </div>
