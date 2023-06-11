@@ -87,6 +87,7 @@
   "description": "Description",
   "objectives": "Objectives",
   "request": "Request",
-  "help_project": "What help do you need?",
+  "help_project_question": "What help do you need?",
+  "help_project": "Help type",
   "types_needs": "Types of help that can benefit a project"
 }

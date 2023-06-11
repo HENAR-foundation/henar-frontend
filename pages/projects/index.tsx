@@ -14,6 +14,7 @@ import { useToggle } from 'usehooks-ts';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/router';
 import { checkSignIn } from 'api/user';
+import { ProjectHelpTypes, ProjectPhases } from 'helpers';
 
 const ProjectsPage = () => {
   const { push } = useRouter();
@@ -23,21 +24,21 @@ const ProjectsPage = () => {
     queryKey: ['isSignedIn'],
   });
 
-  const { data: projects } = useQuery({
-    queryKey: ['projects'],
-    queryFn: getProjects,
-  });
-
   const [filters, setFilters] = useState<{
-    country?: string;
-    kind?: string;
+    help?: string;
+    phase?: string;
     search: string;
     sortType: 'popularity' | 'views' | 'field';
   }>({
-    country: undefined,
-    kind: undefined,
+    help: undefined,
+    phase: undefined,
     search: '',
     sortType: 'popularity',
+  });
+
+  const { data: projects } = useQuery({
+    queryKey: ['projects', filters],
+    queryFn: getProjects,
   });
 
   const t = useTranslations();
@@ -48,6 +49,8 @@ const ProjectsPage = () => {
       description.en.toLowerCase().includes(filters.search.toLowerCase())
     );
   });
+
+  console.info(filters);
 
   const handleCreateProjectClick = () => {
     if (user) toggleModal();
@@ -102,30 +105,49 @@ const ProjectsPage = () => {
         <div className='space-y-5 space-x-0 lg:space-y-0 flex flex-1 flex-col lg:flex-row w-full mb-9 lg:space-x-4 items-end'>
           <span className='min-w-full lg:min-w-[368px]'>
             <InputMaterial
-              onChange={(newVal) =>
-                setFilters((prev) => ({ ...prev, sortType: newVal as any }))
+              onChange={(e) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  search: e.target.value as any,
+                }))
               }
               icon='search'
               placeholder={t('find_project')}
             />
           </span>
           <SelectMaterial
-            options={[
-              { label: 'Россия', val: 'rus' },
-              { label: 'Америка', val: 'us' },
-            ]}
-            icon='globe'
-            defaultVal='Все страны'
-            label={t('country')}
+            name='phase'
+            onChange={(_name, phase) => {
+              setFilters((prev) => ({
+                ...prev,
+                phase,
+              }));
+            }}
+            options={(
+              Object.keys(ProjectPhases) as (keyof typeof ProjectPhases)[]
+            ).map((val) => ({
+              label: ProjectPhases[val],
+              val,
+            }))}
+            defaultVal='Все стадии'
+            label={t('project_phase')}
           />
           <SelectMaterial
-            options={[
-              { label: 'Врач', val: 'rus' },
-              { label: 'Стоматолог', val: 'us' },
-            ]}
-            icon='microscope'
-            defaultVal='Все направления'
-            label='Направление'
+            options={(
+              Object.keys(ProjectHelpTypes) as (keyof typeof ProjectHelpTypes)[]
+            ).map((val) => ({
+              label: ProjectHelpTypes[val],
+              val,
+            }))}
+            name='help'
+            onChange={(_name, help) => {
+              setFilters((prev) => ({
+                ...prev,
+                help,
+              }));
+            }}
+            defaultVal='Все виды'
+            label={t('help_project')}
           />
           <SortingSelect
             options={[

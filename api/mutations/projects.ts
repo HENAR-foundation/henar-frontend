@@ -7,6 +7,7 @@ export const createProject = async (project: {
   tags: string[];
   objective: string;
   author: string;
+  how_to_help_the_project: string;
   covers: string[];
 }) => {
   const { author, covers, description, title, objective, whoIsNeeded, tags } =

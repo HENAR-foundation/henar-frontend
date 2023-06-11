@@ -12,16 +12,19 @@ const SelectMaterial: FC<{
   name?: string;
   icon?: keyof typeof Icons;
   label?: string;
-  onChange?: VoidFunction;
+  onChange?: (name: string, value: string) => void;
   className?: string;
   options: { label: string; val: string | number }[];
   defaultVal: string;
 }> = ({ defaultVal, onChange, options, name, icon, className, label }) => {
+  const [isOpened, toggleOpen] = useToggle(false);
+  const [selectedOption, toggleOption] = useState(-1);
   const handleOptionClick = (e: any) => {
     if (e.currentTarget.dataset['index']) {
       toggleOption(e.currentTarget.dataset['index']);
       toggleOpen();
-      onChange && onChange();
+      onChange &&
+        onChange(name || '', optionsList[e.currentTarget.dataset['index']].val.toString());
     }
   };
 
@@ -39,8 +42,6 @@ const SelectMaterial: FC<{
     }
   };
 
-  const [isOpened, toggleOpen] = useToggle(false);
-  const [selectedOption, toggleOption] = useState(-1);
   const optionsList = [{ label: defaultVal, val: '' }, ...options];
   return (
     <div className={'w-full font-bodyLight flex items-end ' + className}>

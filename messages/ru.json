@@ -88,6 +88,7 @@
   "description": "Описание",
   "objectives": "Задачи",
   "request": "Запрос",
-  "help_project": "Как помочь проекту?",
+  "help_project_question": "Как помочь проекту?",
+  "help_project": "Тип помощи",
   "types_needs": "Возможности для участия"
 }

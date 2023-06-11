@@ -13,7 +13,7 @@ import { checkSignIn } from 'api/user';
 import { getProjects } from 'api/projects';
 import ProjectFilesUploader from './ProjectFilesUploader';
 import { uploadPhotos } from 'api/mutations/files';
-import { formatFullName } from 'helpers';
+import { ProjectHelpTypes, ProjectPhases } from 'helpers';
 
 const CreateProjectSchema = Yup.object().shape({
   title: Yup.string()
@@ -24,6 +24,7 @@ const CreateProjectSchema = Yup.object().shape({
   tasks: Yup.string().required('err_missing_fields'),
   request: Yup.string().required('err_missing_fields'),
   photos: Yup.mixed().required('Required'),
+  how_to_help_the_project: Yup.string().required('Required'),
 });
 
 const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
@@ -40,22 +41,25 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
   const queryClient = useQueryClient();
 
   const handleCreateProject = (photos: string[] = []) => {
-    const { description, request, title } = formik.values;
+    const { description, request, title, how_to_help_the_project } =
+      formik.values;
     if (user) {
-      createProject({
-        covers: photos,
-        author: formatFullName(user),
-        description,
-        title,
-        objective: 'OBJECTIVe',
-        tags: [],
-        whoIsNeeded: request,
-      }).then(() => {
-        queryClient.invalidateQueries({ queryKey: ['projects'] });
-        refetchProjects();
-        PubSub.publish('notification', 'Проект успешно создал');
-        onClose();
-      });
+      console.info(formik.values);
+      //   createProject({
+      //     covers: photos,
+      //     author: formatFullName(user),
+      //     description,
+      //     how_to_help_the_project,
+      //     title,
+      //     objective: 'OBJECTIVe',
+      //     tags: [],
+      //     whoIsNeeded: request,
+      //   }).then(() => {
+      //     queryClient.invalidateQueries({ queryKey: ['projects'] });
+      //     refetchProjects();
+      //     PubSub.publish('notification', 'Проект успешно создал');
+      //     onClose();
+      //   });
     }
   };
 
@@ -63,7 +67,6 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
     mutationFn: (photos: FileList) => uploadPhotos(photos),
     onSuccess: (data) => handleCreateProject(data),
   });
-
   const formik = useFormik({
     initialValues: {
       title: '',
@@ -71,6 +74,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
       tasks: '',
       request: '',
       photos: [],
+      how_to_help_the_project: '',
     },
     validateOnChange: false,
     validationSchema: CreateProjectSchema,
@@ -177,7 +181,14 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
                 </div>
                 <div className='w-full max-w-[480px]'>
                   <SelectMaterial
-                    options={[]}
+                    options={(
+                      Object.keys(
+                        ProjectPhases
+                      ) as (keyof typeof ProjectPhases)[]
+                    ).map((val) => ({
+                      label: ProjectPhases[val],
+                      val,
+                    }))}
                     defaultVal='Select project stadia'
                   />
                 </div>
@@ -220,6 +231,29 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
               </div>
               <div className='lg:flex-row flex-col flex justify-between'>
                 <div className='flex flex-col lg:w-[170px]'>
+                  <span className='text-l'>{t('help_project_question')}</span>
+                  <span className='font-bodyLight text-a-ss'>
+                    {t('types_needs')}
+                  </span>
+                </div>
+                <div className='w-full max-w-[480px]'>
+                  <SelectMaterial
+                    onChange={formik.setFieldValue}
+                    name='how_to_help_the_project'
+                    options={(
+                      Object.keys(
+                        ProjectHelpTypes
+                      ) as (keyof typeof ProjectHelpTypes)[]
+                    ).map((val) => ({
+                      label: ProjectHelpTypes[val],
+                      val,
+                    }))}
+                    defaultVal={t('help_project_question')}
+                  />
+                </div>
+              </div>
+              <div className='lg:flex-row flex-col flex justify-between'>
+                <div className='flex flex-col lg:w-[170px]'>
                   <span className='text-l'>{t('request')}</span>
                   <span className='font-bodyLight text-a-ss'>
                     {t('types_needs')}
@@ -234,17 +268,6 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
                     value={formik.values.request}
                     placeholder={t('request')}
                   />
-                </div>
-              </div>
-              <div className='lg:flex-row flex-col flex justify-between'>
-                <div className='flex flex-col lg:w-[170px]'>
-                  <span className='text-l'>{t('help_project')}</span>
-                  <span className='font-bodyLight text-a-ss'>
-                    {t('types_needs')}
-                  </span>
-                </div>
-                <div className='w-full max-w-[480px]'>
-                  <SelectMaterial options={[]} defaultVal={t('help_project')} />
                 </div>
               </div>
             </div>
