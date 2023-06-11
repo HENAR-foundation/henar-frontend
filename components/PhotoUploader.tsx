@@ -18,12 +18,17 @@ const PhotoUploader: FC<{
       return;
     }
     const objectUrls = [] as any;
+    console.info('UPDATE FROM UPLOADER')
     onChange(name, selectedFiles);
     setPreview(URL.createObjectURL(selectedFiles[0]) as any);
 
     // free memory when ever this component is unmounted
     return () => objectUrls.forEach((url: any) => URL.revokeObjectURL(url));
   }, [selectedFiles]);
+
+  useEffect(() => {
+    if (!url && selectedFiles) setSelectedFile(null);
+  }, [url]);
 
   const handleChange = (e: any) => {
     if (!e.target.files || e.target.files.length === 0) {
@@ -77,7 +82,7 @@ const PhotoUploader: FC<{
         <div>
           <span
             className='text-error cursor-pointer'
-            onClick={() => onChange(name, null)}
+            onClick={() => onChange(name, '')}
           >
             Удалить фото
           </span>

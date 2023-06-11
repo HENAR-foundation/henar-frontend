@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import InputMaterial from './InputMaterial';
 import TextAreaMaterial from './TextAreaMaterial';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -41,21 +41,23 @@ const AboutTab: FC = () => {
   const { data: user } = useQuery({
     queryFn: checkSignIn,
     queryKey: ['isSignedIn'],
-    onSuccess: () => {
-      if (user) {
-        formik.setValues({
-          name: user?.first_name,
-          description: user.description,
-          lastName: user.last_name,
-          location: user.location,
-          job: user.job,
-          avatar: user.avatar,
-          locationCode: user.location,
-        });
-        fetchLocation();
-      }
-    },
   });
+
+  useEffect(() => {
+    if (user && !formik.values.name) {
+      formik.setValues({
+        name: user?.first_name,
+        description: user.description,
+        lastName: user.last_name,
+        location: user.location,
+        job: user.job,
+        avatar: user.avatar,
+        locationCode: user.location,
+      });
+      fetchLocation();
+    }
+  }, [user]);
+
   const queryClient = useQueryClient();
 
   const { refetch: fetchLocation, data: preUserLocation } = useQuery({
@@ -65,13 +67,6 @@ const AboutTab: FC = () => {
   });
 
   const createLocMutation = useMutation({ mutationFn: createLocation });
-
-  const mutationPhotos = useMutation({
-    mutationFn: (photos: FileList) => uploadPhotos(photos),
-    onSuccess: (urls: string[]) => {
-      formik.setFieldValue('avatar', urls[0]);
-    },
-  });
 
   const [selectedSuggest, selectSuggest] = useState<{
     data: LocationSuggestsData;
@@ -87,7 +82,37 @@ const AboutTab: FC = () => {
     },
   });
 
-  const handlUpdateUser = () => {
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      avatar: '',
+      lastName: '',
+      location: '',
+      locationCode: '',
+      description: '',
+      job: '',
+    },
+    validateOnChange: false,
+    validationSchema: UpdateProfileSchema,
+    onSubmit: async ({ avatar }) => {
+      if (avatar && avatar !== user?.avatar) {
+        await mutationPhotos.mutate(avatar as unknown as FileList);
+      } else {
+        handlUpdateUser();
+      }
+    },
+  });
+
+  const mutationPhotos = useMutation({
+    mutationFn: (photos: FileList) => uploadPhotos(photos),
+    onSuccess: (urls: string[]) => {
+      formik.setFieldValue('avatar', urls[0]);
+      formik.setFieldTouched('avatar', true, false);
+      handlUpdateUser(urls[0]);
+    },
+  });
+
+  const handlUpdateUser = (newAvatar?: string) => {
     const { name, lastName, job, description, avatar } = formik.values;
     if (user) {
       const updatedUser = { ...user };
@@ -110,7 +135,7 @@ const AboutTab: FC = () => {
               updateUserMutation.mutate({
                 ...updatedUser,
                 job,
-                avatar: avatar || user.avatar,
+                avatar: newAvatar || avatar,
                 description: description,
                 first_name: name,
                 last_name: lastName,
@@ -119,10 +144,11 @@ const AboutTab: FC = () => {
           }
         );
       } else {
+        console.info(newAvatar)
         updateUserMutation.mutate({
           ...updatedUser,
           job,
-          avatar: avatar || '',
+          avatar: newAvatar || avatar,
           description: description,
           first_name: name,
           last_name: lastName,
@@ -130,30 +156,6 @@ const AboutTab: FC = () => {
       }
     }
   };
-
-  const formik = useFormik({
-    initialValues: {
-      name: '',
-      avatar: '',
-      lastName: '',
-      location: '',
-      locationCode: '',
-      description: '',
-      job: '',
-    },
-    validateOnChange: false,
-    validationSchema: UpdateProfileSchema,
-    onSubmit: async ({ avatar }) => {
-      if (avatar && avatar !== user?.avatar) {
-        await mutationPhotos.mutate(avatar as unknown as FileList);
-        handlUpdateUser();
-      } else {
-        handlUpdateUser();
-      }
-    },
-  });
-
-  console.info(formik);
 
   return (
     <form onSubmit={formik.handleSubmit}>
