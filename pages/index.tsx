@@ -155,7 +155,7 @@ const Home = () => {
                 {t('createprojects')}
               </h3>
               <span className='text-m mb-10'>
-                Единая платформа для диаспоральных врачей армении
+                {t('welcome_header')}
               </span>
               <ButtonPrimary className='lg:mb-0 mb-6' color='cream' kind='M'>
                 {t('toprojects')}

@@ -40,7 +40,6 @@ const Calendar = () => {
       return <span className='flex items-center justify-center'></span>;
     });
   const weekDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-  console.info(firstDayShift, days());
 
   return (
     <div className='flex flex-col items-center w-[330px] h-[330px] px-[46px] py-[34px] bg-white rounded-s'>

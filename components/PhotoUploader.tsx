@@ -1,13 +1,12 @@
-import { FormikErrors } from 'formik';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import React, { FC, useEffect, useRef, useState } from 'react';
-import NotAllowed from './NotAllowed';
 
 const PhotoUploader: FC<{
   onChange: any;
+  url?: string;
   name: string;
-}> = ({ name, onChange }) => {
+}> = ({ name, url, onChange }) => {
   const t = useTranslations();
   const hiddenFileInput = useRef<any>(null);
   const [selectedFiles, setSelectedFile] = useState<any>();
@@ -34,49 +33,57 @@ const PhotoUploader: FC<{
     // I've kept this example simple by using the first image instead of multiple
     setSelectedFile(e.target.files);
   };
-  console.info(preview);
   return (
-    <>
+    <div className='flex w-full justify-between'>
       <div
+        onClick={() => hiddenFileInput.current?.click()}
         className={`relative flex w-[150px] h-[150px] items-center justify-center bg-peach rounded-xl flex-col cursor-pointer ${
           preview ? 'text-white' : 'text-accent2'
         }`}
       >
         {selectedFiles && preview && (
-          <figure className='w-[150px] h-[150px] relative rounded-s overflow-hidden bg-black'>
+          <figure className=' brightness-50 w-[150px] h-[150px] relative rounded-s overflow-hidden bg-black'>
             {/* <ImageCross /> */}
             <Image src={preview} alt='' fill className='object-cover' />
           </figure>
         )}
-        <NotAllowed>
-          <div className='absolute top-0 left-0 w-full h-full flex justify-center items-center'>
-            <span
-              className='flex flex-col items-center'
-            //   onClick={() => hiddenFileInput.current?.click()}
-            >
-              <Image
-                src='/camera-peach.svg'
-                width={20}
-                height={20}
-                alt={t('upload_photo')}
-              />
-              <span className='cursor-default text-a-ss'>
-                {t('upload_photo')}
-              </span>
-            </span>
-          </div>
-        </NotAllowed>
+        {url && !selectedFiles && (
+          <figure className='brightness-50 w-[150px] h-[150px] relative rounded-s overflow-hidden bg-black'>
+            <Image src={url} fill alt='avatar' className='object-cover' />
+          </figure>
+        )}
+        <div className='absolute top-0 left-0 w-full h-full flex justify-center items-center'>
+          <span className='flex flex-col items-center'>
+            <Image
+              src='/camera-peach.svg'
+              width={20}
+              height={20}
+              alt={t('upload_photo')}
+            />
+            <span className='text-a-ss'>{t('upload_photo')}</span>
+          </span>
+        </div>
+        <input
+          accept='image/*'
+          ref={hiddenFileInput}
+          name={name}
+          className='hidden'
+          type='file'
+          // value={value}
+          onChange={handleChange}
+        />
       </div>
-      <input
-        accept='image/*'
-        ref={hiddenFileInput}
-        name={name}
-        className='hidden'
-        type='file'
-        // value={value}
-        onChange={handleChange}
-      />
-    </>
+      {url && (
+        <div>
+          <span
+            className='text-error cursor-pointer'
+            onClick={() => onChange(name, null)}
+          >
+            Удалить фото
+          </span>
+        </div>
+      )}
+    </div>
   );
 };
 

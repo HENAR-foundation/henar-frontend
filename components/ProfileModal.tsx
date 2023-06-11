@@ -33,7 +33,7 @@ const UpdateProfileSchema = Yup.object().shape({
   location: Yup.string(),
   locationCode: Yup.string(),
   job: Yup.string().required('err_missing_fields'),
-  about: Yup.string().required('err_missing_fields'),
+  description: Yup.string().required('err_missing_fields'),
 });
 
 const AboutTab: FC = () => {
@@ -45,12 +45,12 @@ const AboutTab: FC = () => {
       if (user) {
         formik.setValues({
           name: user?.first_name,
-          about: user.description,
+          description: user.description,
           lastName: user.last_name,
           location: user.location,
           job: user.job,
           avatar: user.avatar,
-          locationCode: '',
+          locationCode: user.location,
         });
         fetchLocation();
       }
@@ -58,22 +58,19 @@ const AboutTab: FC = () => {
   });
   const queryClient = useQueryClient();
 
-  const { refetch: fetchLocation } = useQuery({
+  const { refetch: fetchLocation, data: preUserLocation } = useQuery({
     queryFn: () => getLocationById(user?.location || ''),
     enabled: false,
     queryKey: ['userLocation', user?.location],
-    onSuccess: (location) => {
-      if (location) {
-        formik.setFieldValue('location', location.city);
-      }
-    },
   });
 
   const createLocMutation = useMutation({ mutationFn: createLocation });
 
   const mutationPhotos = useMutation({
     mutationFn: (photos: FileList) => uploadPhotos(photos),
-    onSuccess: () => handlUpdateUser(''),
+    onSuccess: (urls: string[]) => {
+      formik.setFieldValue('avatar', urls[0]);
+    },
   });
 
   const [selectedSuggest, selectSuggest] = useState<{
@@ -90,13 +87,12 @@ const AboutTab: FC = () => {
     },
   });
 
-  const handlUpdateUser = (avatar?: string) => {
-    const { name, lastName, job, about, locationCode } =
-      formik.values;
+  const handlUpdateUser = () => {
+    const { name, lastName, job, description, avatar } = formik.values;
     if (user) {
       const updatedUser = { ...user };
-      if (user.location !== locationCode) {
-        const { data, value } = selectedSuggest || {};
+      const { data, value } = selectedSuggest || {};
+      if (value && preUserLocation?.value !== value) {
         createLocMutation.mutate(
           {
             city: data?.city || '',
@@ -110,18 +106,27 @@ const AboutTab: FC = () => {
           },
           {
             onSuccess: (result) => {
-              console.info(result);
               updatedUser.location = result.data._id;
               updateUserMutation.mutate({
                 ...updatedUser,
                 job,
-                description: about,
+                avatar: avatar || user.avatar,
+                description: description,
                 first_name: name,
                 last_name: lastName,
               });
             },
           }
         );
+      } else {
+        updateUserMutation.mutate({
+          ...updatedUser,
+          job,
+          avatar: avatar || '',
+          description: description,
+          first_name: name,
+          last_name: lastName,
+        });
       }
     }
   };
@@ -133,19 +138,22 @@ const AboutTab: FC = () => {
       lastName: '',
       location: '',
       locationCode: '',
+      description: '',
       job: '',
-      about: '',
     },
     validateOnChange: false,
     validationSchema: UpdateProfileSchema,
-    onSubmit: ({ avatar }) => {
-      if (avatar) {
-        mutationPhotos.mutate(avatar as unknown as FileList);
+    onSubmit: async ({ avatar }) => {
+      if (avatar && avatar !== user?.avatar) {
+        await mutationPhotos.mutate(avatar as unknown as FileList);
+        handlUpdateUser();
       } else {
         handlUpdateUser();
       }
     },
   });
+
+  console.info(formik);
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -153,7 +161,11 @@ const AboutTab: FC = () => {
         <div className='flex w-full lg:flex-row flex-col'>
           <span className='w-[230px] mt-2 lg:mb-0 mb-3'>{t('photo')}</span>
           <div className='flex flex-1 w-full flex-col'>
-            <PhotoUploader onChange={formik.setFieldValue} name='avatar' />
+            <PhotoUploader
+              url={formik.values.avatar}
+              onChange={formik.setFieldValue}
+              name='avatar'
+            />
           </div>
         </div>
         <div className='flex w-full lg:flex-row flex-col'>
@@ -212,17 +224,22 @@ const AboutTab: FC = () => {
           <span className='w-[230px] mt-2 lg:mb-0 mb-3'>{t('about')}</span>
           <div className='flex flex-1 flex-col w-full'>
             <TextAreaMaterial
-              name='about'
-              value={formik.values.about}
-              error={t(formik.errors.about as any)}
+              name='description'
+              value={formik.values.description}
+              error={t(formik.errors.description as any)}
               onChange={formik.handleChange}
               label={t('about')}
             />
           </div>
         </div>
       </div>
-      <div className='flex flex-row-reverse mt-[65px] w-full'>
-        <ButtonPrimary type='submit' kind='M' className='w-[170px]'>
+      <div className='flex flex-row-reverse mt-[65px] w-full mb-[17px]'>
+        <ButtonPrimary
+          busy={mutationPhotos.isLoading || updateUserMutation.isLoading}
+          type='submit'
+          kind='M'
+          className='w-full lg:w-[170px]'
+        >
           {t('save')}
         </ButtonPrimary>
       </div>
@@ -322,46 +339,50 @@ const ProfileModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
         data-overlay='true'
         className='flex w-full h-full items-center justify-center opacity-1 overflow-auto'
       >
-        <Image
-          src='/cross-white.svg'
-          width={20}
-          height={20}
-          alt='close button'
-          className='absolute right-5 top-5 lg:hidden flex'
-          onClick={onClose}
-        />
-        <div className='flex bg-white rounded-xxl lg:p-[26px] w-full max-w-[1100px] min-h-[700px] lg:flex-row flex-col h-screen lg:h-auto overflow-auto lg:mt-0 mt-[115px]'>
-          <div className='bg-peach rounded-xl'>
-            <div className='flex flex-col lg:w-[307px] mx-7 my-10 '>
-              <h3 className='mb-8 text-h-m-d font-bold'>{t('settings')}</h3>
-              {(Object.keys(tabTypes) as Array<IS>).map((tab) => (
-                <span
-                  onClick={() => toggleTab(tabTypes[tab])}
-                  className={`cursor-pointer p-4 w-full ${
-                    activeTab === tabTypes[tab] ? 'bg-white' : ''
-                  } rounded-l`}
-                >
-                  {t(tabTypes[tab])}
-                </span>
-              ))}
-            </div>
-          </div>
-          <div className='flex flex-col lg:ml-14 flex-1'>
-            <div className='lg:flex hidden justify-end'>
-              <Image
-                src='/cross-grey.svg'
-                width={20}
-                height={20}
-                alt='close button'
-                className='cursor-pointer'
-                onClick={onClose}
-              />
-            </div>
-            <div className='flex flex-col lg:mt-[15px] mt-2 lg:px-0 px-4 lg:mx-0  bg-white rounded-xl w-full'>
-              <h3 className='mb-8 text-h-m-d font-bold lg:flex hidden'>
-                {t(activeTab)}
-              </h3>
-              {tabsContentByType[activeTab]}
+        <div className='flex-col h-full w-full flex items-center overflow-auto  lg:mt-0 relative'>
+          <div className='mt-[100px] lg:w-full min-h-full relative'>
+            <Image
+              src='/cross-white.svg'
+              width={20}
+              height={20}
+              alt='close button'
+              className='absolute lg:hidden top-[-50px] right-[25px] cursor-pointer'
+              onClick={onClose}
+            />
+            <div className='flex bg-white h-auto rounded-xxl overflow-hidden  lg:p-[26px] lg:flex-row flex-col justify-between min-h-[700px]  w-full max-w-[1100px]'>
+              <div className='bg-peach rounded-xl'>
+                <div className='flex flex-col lg:w-[307px] mx-7 my-10 '>
+                  <h3 className='mb-8 text-h-m-d font-bold'>{t('settings')}</h3>
+                  {(Object.keys(tabTypes) as Array<IS>).map((tab) => (
+                    <span
+                      onClick={() => toggleTab(tabTypes[tab])}
+                      className={`cursor-pointer p-4 w-full ${
+                        activeTab === tabTypes[tab] ? 'bg-white' : ''
+                      } rounded-l`}
+                    >
+                      {t(tabTypes[tab])}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className='flex flex-col lg:ml-14 flex-1'>
+                <div className='lg:flex hidden justify-end'>
+                  <Image
+                    src='/cross-grey.svg'
+                    width={20}
+                    height={20}
+                    alt='close button'
+                    className='cursor-pointer'
+                    onClick={onClose}
+                  />
+                </div>
+                <div className='flex flex-col lg:mt-[15px] mt-2 lg:px-0 px-4 lg:mx-0  bg-white rounded-xl w-full'>
+                  <h3 className='mb-8 text-h-m-d font-bold lg:flex hidden'>
+                    {t(activeTab)}
+                  </h3>
+                  {tabsContentByType[activeTab]}
+                </div>
+              </div>
             </div>
           </div>
         </div>

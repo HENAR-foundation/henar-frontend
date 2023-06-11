@@ -53,7 +53,7 @@ const LocationInput: FC<{
     if (data) onChange({ data, value: value || '' });
     toggleVisibility(false);
   };
-
+  
   return (
     <div className='flex w-full relative flex-col'>
       <InputMaterial
@@ -61,7 +61,7 @@ const LocationInput: FC<{
         name={name}
         label={label}
         value={inputVal}
-        error={t(error as any)}
+        error={t(error as any|| null)}
         onChange={handleInputChange}
         placeholder={t('where_are_you_from')}
       />
@@ -71,6 +71,7 @@ const LocationInput: FC<{
           <div className='flex flex-col absolute top-[45px] max-h-[180px] right-0 overflow-auto bg-white z-10 w-full border-t-[1px] border-accent2'>
             {locSuggests.suggestions.map(({ value }, index) => (
               <span
+                key={index + value}
                 onClick={() => handleSuggestSelect(index)}
                 className='cursor-pointer font-thin text-m py-[10px] px-3'
               >

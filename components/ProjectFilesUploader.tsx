@@ -99,7 +99,6 @@ const ProjectFilesUploader: FC<{
   }, [selectedFiles]);
 
   const handleChange = (e: any) => {
-    console.info(e);
     if (!e.target.files || e.target.files.length === 0) {
       setSelectedFile(undefined);
       return;

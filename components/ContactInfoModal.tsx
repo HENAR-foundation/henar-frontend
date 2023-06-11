@@ -3,7 +3,6 @@ import { checkSignIn } from 'api/user';
 import AboutModal from './AboutModal';
 import React, { FC } from 'react';
 
-const protectedRoutes = ['/events'] as any;
 
 const ContactInfoModal: FC<any> = ({ children }) => {
   const { data, isLoading } = useQuery({

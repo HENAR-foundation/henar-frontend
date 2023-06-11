@@ -39,7 +39,6 @@ const AboutModal = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['isSignedIn'] }).then(() => {
         PubSub.publish('notification', 'Профиль успешно обновлен');
-        console.info('UPDATED');
       });
     },
   });
@@ -72,9 +71,7 @@ const AboutModal = () => {
             },
             {
               onSuccess: (result) => {
-                console.info(result);
                 updatedUser.location = result.data._id;
-                console.info('UPDATING', updatedUser);
                 updateUserMutation.mutate({
                   ...updatedUser,
                   job,

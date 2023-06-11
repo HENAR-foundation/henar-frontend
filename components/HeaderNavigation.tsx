@@ -10,7 +10,7 @@ import ProfileModal from './ProfileModal';
 import LangToggle from './LangToggle';
 import { useTranslations } from 'next-intl';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { checkSignIn, getUsers } from 'api/user';
+import { checkSignIn } from 'api/user';
 import { signOut } from 'api/mutations/auth';
 import { formatFullName } from 'helpers';
 
@@ -75,7 +75,7 @@ const NavNotifications: FC<{ onClose: () => void }> = ({ onClose }) => {
   //     }
   //   }, []);
 
-  const requests = user?.contacts_request.incoming_contact_requests;
+  //   const requests = user?.contacts_request.incoming_contact_requests;
   //   console.info(requests)
   return (
     <div className='flex flex-col bg-white rounded-b-l pt-[18px] pl-5 pr-[17px] w-[383px] absolute top-[58px] left-[-335px] pb-10 border-t-[1px] border-accent2'>
@@ -152,7 +152,8 @@ const ProfileNav: FC<{ onShowSettings: () => void }> = ({ onShowSettings }) => {
     queryFn: checkSignIn,
     queryKey: ['isSignedIn'],
   });
-  const requests = user?.contacts_request.incoming_contact_requests;
+  const requests =
+    user?.contacts_request.incoming_contact_requests.length !== 0;
 
   return (
     <div className='flex relative'>
@@ -173,8 +174,7 @@ const ProfileNav: FC<{ onShowSettings: () => void }> = ({ onShowSettings }) => {
       {notificationsOpened && (
         <NavNotifications onClose={toggleNotifications} />
       )}
-
-      <AvatarCircle />
+      <AvatarCircle src={user?.avatar} />
       <div
         className='flex cursor-pointer items-center justify-center'
         onClick={toggleOpen}
@@ -226,58 +226,107 @@ export const HeaderNavigation = () => {
   });
 
   return (
-    <header className='sticky z-50 top-0 w-full bg-white h-20 justify-center shadow-l lg:flex hidden'>
-      <div className='h-full max-w-[1067px] w-full flex items-center justify-between'>
-        <section className='flex h-full items-center'>
-          <Link href='/' className='w-[140px]'>
-            <Image alt='Logo' src='/logo.svg' width={140} height={35} />
-          </Link>
-          <div className='ml-7 flex items-center space-x-9 text-primary h-full'>
-            {links.map((item, index) => (
-              <div
-                key={index}
-                className={`h-full items-center flex ${
-                  route === item.link &&
-                  'text-accent1 border-b-[2px] border-solid border-accent1'
-                }`}
-              >
-                <Link href={item.link}>{t(item.label as any)}</Link>
-              </div>
-            ))}
-          </div>
-        </section>
-        <div className='flex items-center'>
-          <LangToggle />
-          <section className='flex'>
-            {data ? (
-              <ProfileNav onShowSettings={toggleSettings} />
-            ) : (
-              <>
-                <ButtonPrimary
-                  onClick={() => push('/registration')}
-                  className='min-w-[138px]'
+    <>
+      <HeaderNavigationM toggleSettings={toggleSettings} />
+      <header className='sticky z-50 top-0 w-full bg-white h-20 justify-center shadow-l lg:flex hidden'>
+        <div className='h-full max-w-[1067px] w-full flex items-center justify-between'>
+          <section className='flex h-full items-center'>
+            <Link href='/' className='w-[140px]'>
+              <Image alt='Logo' src='/logo.svg' width={140} height={35} />
+            </Link>
+            <div className='ml-7 flex items-center space-x-9 text-primary h-full'>
+              {links.map((item, index) => (
+                <div
+                  key={index}
+                  className={`h-full items-center flex ${
+                    route === item.link &&
+                    'text-accent1 border-b-[2px] border-solid border-accent1'
+                  }`}
                 >
-                  {t('registration')}
-                </ButtonPrimary>
-                <Link href='/login'>
-                  <ButtonOutline className='ml-2 min-w-[137px]'>
-                    {t('sign_in')}
-                  </ButtonOutline>
-                </Link>
-              </>
-            )}
+                  <Link href={item.link}>{t(item.label as any)}</Link>
+                </div>
+              ))}
+            </div>
           </section>
+          <div className='flex items-center'>
+            <LangToggle />
+            <section className='flex'>
+              {data ? (
+                <ProfileNav onShowSettings={toggleSettings} />
+              ) : (
+                <>
+                  <ButtonPrimary
+                    onClick={() => push('/registration')}
+                    className='min-w-[138px]'
+                  >
+                    {t('registration')}
+                  </ButtonPrimary>
+                  <Link href='/login'>
+                    <ButtonOutline className='ml-2 min-w-[137px]'>
+                      {t('sign_in')}
+                    </ButtonOutline>
+                  </Link>
+                </>
+              )}
+            </section>
+          </div>
         </div>
-      </div>
+      </header>
       {showSettings && <ProfileModal onClose={toggleSettings} />}
-    </header>
+    </>
   );
 };
 
-export const HeaderNavigationM = () => {
+const ProfileNavM: FC<{ toggleSettings: () => void }> = ({
+  toggleSettings,
+}) => {
+  const { push } = useRouter();
+  const t = useTranslations();
+  const queryClient = useQueryClient();
+  const { data: user } = useQuery({
+    queryFn: checkSignIn,
+    queryKey: ['isSignedIn'],
+  });
+
+  const handleSignOut = () => {
+    signOut()
+      .then(() => {
+        queryClient.invalidateQueries({ queryKey: ['isSignedIn'] }).then(() => {
+          PubSub.publish('notification', 'Вы успешно вышли');
+          push('/');
+        });
+      })
+      .catch((e) => console.info(e, 'FAILED'));
+  };
+  return (
+    <div className='flex flex-col items-center'>
+      <hr className='w-[70%] text-borderPrimary' />
+      <div className='flex mt-11 items-center space-x-3 mb-8'>
+        <AvatarCircle src={user?.avatar} />
+        <span>{formatFullName(user)}</span>
+      </div>
+      <span className='mb-4' onClick={toggleSettings}>
+        {t('settings')}
+      </span>
+      <span className='text-error mb-12' onClick={handleSignOut}>
+        Exit
+      </span>
+    </div>
+  );
+};
+
+export const HeaderNavigationM: FC<{
+  toggleSettings: () => void;
+}> = ({ toggleSettings }) => {
   const { route } = useRouter();
   const [opened, toggleOpen] = useToggle(false);
   const { push } = useRouter();
+
+  const { data: user } = useQuery({
+    queryFn: checkSignIn,
+    queryKey: ['isSignedIn'],
+  });
+
   useEffect(() => {
     opened && toggleOpen();
   }, [route]);
@@ -294,16 +343,16 @@ export const HeaderNavigationM = () => {
 
   return (
     <header className='sticky top-0 w-full bg-white h-[55px] shadow-l lg:hidden px-5 z-50'>
-      {opened && (
+      {!opened && (
         <div className='flex flex-col fixed h-full w-full bg-white z-50 left-0 top-0  justify-between overflow-auto'>
           <div>
             <div className='relative flex h-[55px] mx-5'>
               <div className='absolute w-full h-full flex items-center justify-center'>
                 <Image
                   onClick={toggleOpen}
-                  src='/mobile_logo.svg'
-                  width={84}
-                  height={35}
+                  src='/logo.svg'
+                  width={118}
+                  height={46}
                   alt='logo'
                 />
               </div>
@@ -330,16 +379,22 @@ export const HeaderNavigationM = () => {
             </div>
           </div>
           <div className='flex flex-col mt-5 mx-[31px]'>
-            <ButtonPrimary onClick={() => push('/registration')} kind='M'>
-              {t('registration')}
-            </ButtonPrimary>
-            <ButtonOutline
-              kind='M'
-              className='mt-3 mb-[33px]'
-              onClick={() => push('/login')}
-            >
-              {t('sign_in')}
-            </ButtonOutline>
+            {user ? (
+              <ProfileNavM toggleSettings={toggleSettings} />
+            ) : (
+              <>
+                <ButtonPrimary onClick={() => push('/registration')} kind='M'>
+                  {t('registration')}
+                </ButtonPrimary>
+                <ButtonOutline
+                  kind='M'
+                  className='mt-3 mb-[33px]'
+                  onClick={() => push('/login')}
+                >
+                  {t('sign_in')}
+                </ButtonOutline>
+              </>
+            )}
             <span className='text-accent1 text-xl leading-[140%] text-center'>
               +7 800 555 35 35
             </span>

@@ -40,7 +40,6 @@ const personsMock: {
 const SpecialistsPage = () => {
   const t = useTranslations();
   const { data } = useQuery({ queryFn: getUsers, queryKey: ['users'] });
-  console.info(data);
   return (
     <>
       <Head>
