@@ -343,7 +343,7 @@ export const HeaderNavigationM: FC<{
 
   return (
     <header className='sticky top-0 w-full bg-white h-[55px] shadow-l lg:hidden px-5 z-50'>
-      {!opened && (
+      {opened && (
         <div className='flex flex-col fixed h-full w-full bg-white z-50 left-0 top-0  justify-between overflow-auto'>
           <div>
             <div className='relative flex h-[55px] mx-5'>
