@@ -8,11 +8,12 @@ import { useTranslations } from 'next-intl';
 import { GetServerSideProps } from 'next';
 import { User } from 'api/types';
 import { formatFullName } from 'helpers';
+import Image from 'next/image';
 
 const SpecialistCard: FC<User> = (user) => {
   const {
     _id,
-    // avatar,
+    avatar,
     // first_name,
     // last_name,
     description,
@@ -29,8 +30,19 @@ const SpecialistCard: FC<User> = (user) => {
   return (
     <div className='shadow-l p-4 lg:p-0 w-full h-full rounded-xl  flex min-h-[218px] bg-white overflow-hidden lg:flex-row flex-col'>
       <div className='flex justify-center items-center'>
-        <div className='lg:m-4 lg:w-[184px] lg:h-[184px] relative aspect-[1/1]'>
-          <FishImage />
+        <div className='lg:m-4 lg:w-[184px] w-full relative aspect-[1/1]'>
+          {avatar ? (
+            <figure className='relative w-full h-full rounded-s overflow-hidden'>
+              <Image
+                alt={`${user.first_name} avatar`}
+                src={avatar}
+                fill
+                className='object-cover'
+              />
+            </figure>
+          ) : (
+            <FishImage />
+          )}
         </div>
       </div>
       <div className='h-full lg:ml-6 pt-6 lg:pt-[21px] flex-col flex items-baseline'>

@@ -70,26 +70,32 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
       </Head>
       <div>
         <div className='absolute w-full top-14 left-0 lg:hidden flex aspect-[1.45/1] mb-5'>
-          <FishImage />
-          {/* <Image
-            className='max-h-[400px]'
-            alt='avatar'
-            src='/avatar.jpg'
-            style={{ objectFit: 'cover' }}
-            fill
-          /> */}
+          {expert?.avatar ? (
+            <Image
+              className='max-h-[400px]'
+              alt='avatar'
+              src={expert?.avatar}
+              style={{ objectFit: 'cover' }}
+              fill
+            />
+          ) : (
+            <FishImage />
+          )}
         </div>
         {contactModal && <RequestContactInfoModal onClose={toggleModal} />}
         <div className='flex flex-col'>
           <div className='grid lg:grid-cols-3 grid-cols-1 gap-[20px] my-[60px] z-20 lg:mt-10 mt-[240px]'>
             <div className='aspect-[1/1] min-h-[325px] relative rounded-xl overflow-hidden lg:inline-block hidden'>
-              <FishImage />
-              {/* <Image
-                alt='avatar'
-                src='/avatar.jpg'
-                style={{ objectFit: 'cover' }}
-                fill
-              /> */}
+              {expert?.avatar ? (
+                <Image
+                  alt='avatar'
+                  src={expert.avatar}
+                  className='object-cover'
+                  fill
+                />
+              ) : (
+                <FishImage />
+              )}
             </div>
             <div className='flex flex-col bg-white rounded-s py-6 px-5 justify-between'>
               <div>

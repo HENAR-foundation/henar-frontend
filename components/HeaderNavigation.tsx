@@ -409,7 +409,7 @@ export const HeaderNavigationM: FC<{
       )}
       <div className='relative flex h-full '>
         <div className='absolute w-full h-full flex items-center justify-center'>
-          <Image src='/mobile_logo.svg' width={84} height={35} alt='logo' />
+          <Image src='/logo.svg' width={118} height={46} alt='logo' />
         </div>
         <Image
           src='/burger.svg'
