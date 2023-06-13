@@ -17,6 +17,13 @@ export interface Project {
   who_is_needed: Translations;
 }
 
+export interface Notification {
+    _id: string;
+    status: string;
+    type: string;
+    user: string;
+}
+
 export interface StatisticItem {
   _id: string;
   count: number;

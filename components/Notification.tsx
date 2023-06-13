@@ -1,9 +1,14 @@
+import { useQuery } from '@tanstack/react-query';
+import { getNotifications } from 'api/notifications';
 import React, { useEffect, useState } from 'react';
 import PubSub from 'pubsub-js';
 import { useToggle } from 'usehooks-ts';
 import Image from 'next/image';
 
 const Notification = () => {
+  const { data: notifications } = useQuery({
+    queryFn: getNotifications,
+  }); 
   const [visibleFade, toggleVisibleFade] = useToggle();
   const [visible, toggleVisible] = useToggle(false);
   const [notificationMessage, setMessage] = useState('');
@@ -24,6 +29,8 @@ const Notification = () => {
       PubSub.unsubscribe('notification');
     };
   }, []);
+
+  console.log(notifications)
   
   return (
     (visible && (
