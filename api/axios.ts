@@ -7,7 +7,7 @@ const instance = axios.create({
       ? 'https://healthnet.am/api/v1'
       : 'http://localhost:8080/v1',
   withCredentials: true,
-  timeout: 1000,
+  timeout: 5000,
 });
 
 const protectedRoutes = ['/'];

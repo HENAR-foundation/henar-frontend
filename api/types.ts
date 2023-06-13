@@ -17,12 +17,6 @@ export interface Project {
   who_is_needed: Translations;
 }
 
-export interface Notification {
-    _id: string;
-    status: string;
-    type: string;
-    user: string;
-}
 
 export interface StatisticItem {
   _id: string;
@@ -39,7 +33,7 @@ export interface Translations {
 }
 
 export interface Research {
-  _id: string;
+    _id: string;
   author: string;
   description: Translations;
   link: string;
@@ -51,7 +45,7 @@ export interface Research {
 }
 
 export interface Event {
-  _id: string;
+    _id: string;
   author: string;
   cover: string;
   date: string;
@@ -93,10 +87,10 @@ export interface FullName {
 export interface Contacts {}
 
 export interface ContactsRequest {
-  incoming_contact_requests: Record<string, string>[];
-  outgoing_contact_requests: Record<string, string>[];
-  confirmed_contacts_requests: Record<string, string>[];
-  blocked_users: BlockedUsers[];
+    incoming_contact_requests: Record<string, string>[];
+    outgoing_contact_requests: Record<string, string>[];
+    confirmed_contacts_requests: Record<string, string>[];
+    blocked_users: BlockedUsers[];
 }
 
 export interface IncomingContactRequests {}
@@ -108,7 +102,7 @@ export interface ConfirmedContactsRequests {}
 export interface BlockedUsers {}
 
 export interface UserProjects {
-  projects_applications: Record<string, boolean>[];
+    projects_applications: Record<string, boolean>[];
   confirmed_applications: ConfirmedApplications;
   rejected_applicants: RejectedApplicants;
   created_projects: Record<string, boolean>[];
@@ -246,3 +240,10 @@ export type BackendLocation = {
   house: string;
   extra_info: string;
 };
+
+export interface Notification {
+    _id: string;
+    status: string;
+    type: string;
+    body: any; // в зависимости от type будет разный body
+}

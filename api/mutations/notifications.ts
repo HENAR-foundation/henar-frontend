@@ -1,10 +1,10 @@
 import axios from '../axios';
 import { Notification } from '../types';
 
-export const acceptNotifications = async (notificationIds: string[]) => {
+export const acceptNotifications = async (notificationsIds: string[]) => {
     try {
         const result = await axios.post('/notifications', {
-            notificationIds
+            notificationsIds
         },
         {
             withCredentials: true

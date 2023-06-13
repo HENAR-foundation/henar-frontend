@@ -1,3 +1,5 @@
+import { getNotifications } from 'api/notifications';
+import { acceptNotifications } from 'api/mutations/notifications';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { FC, useEffect, useMemo } from 'react';
@@ -9,7 +11,7 @@ import AvatarCircle from './AvatarCircle';
 import ProfileModal from './ProfileModal';
 import LangToggle from './LangToggle';
 import { useTranslations } from 'next-intl';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { checkSignIn } from 'api/user';
 import { signOut } from 'api/mutations/auth';
 import { formatFullName } from 'helpers';
@@ -57,10 +59,27 @@ const notificationsMock = [
 ];
 
 const NavNotifications: FC<{ onClose: () => void }> = ({ onClose }) => {
+  const { data: notifications } = useQuery({
+    queryFn: getNotifications,
+  }); 
   const { data: user } = useQuery({
     queryFn: checkSignIn,
     queryKey: ['isSignedIn'],
   });
+  const acceptNotificationsMutation = useMutation({
+    mutationFn: acceptNotifications,
+    onSuccess: () => null
+  });
+
+  console.log(notifications)
+
+  async function handleReadNotifications() {
+      const newNotifications = notifications?.filter(n => n.status === "new")
+      if (newNotifications) {
+        const updatedNotifications = await acceptNotificationsMutation.mutate(newNotifications.map(n => n._id))
+        console.log(updatedNotifications)
+    }
+  }
   //   const { data: users } = useQuery({ queryFn: getUsers, queryKey: ['users'] });
   //   const incomingRequests = useMemo(() => {
   //     const nots = [];
@@ -81,6 +100,9 @@ const NavNotifications: FC<{ onClose: () => void }> = ({ onClose }) => {
     <div className='flex flex-col bg-white rounded-b-l pt-[18px] pl-5 pr-[17px] w-[383px] absolute top-[58px] left-[-335px] pb-10 border-t-[1px] border-accent2'>
       <div className='flex justify-between'>
         <span className='text-l'>Уведомления</span>
+        <span className='text-accent1 cursor-pointer' onClick={handleReadNotifications}>
+          Прочитать
+        </span>
         <span className='text-accent1 cursor-pointer' onClick={onClose}>
           Закрыть
         </span>
