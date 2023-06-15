@@ -48,7 +48,7 @@ const SpecialistsPage = () => {
 
       <div className='flex flex-col'>
         <h1 className='mb-2 text-h-xl-m mt-[59px] font-bold'>{t('experts')}</h1>
-        <span className='lg:w-[360px] mb-[54px]'>Раздел для поиска и установления деловых контактов</span>
+        <span className='lg:w-[360px] mb-[54px]'>{t('connect_experts')}</span>
       </div>
       <div className='space-y-5 space-x-0 lg:space-y-0 flex flex-1 flex-col lg:flex-row w-full mb-9 lg:space-x-4 items-end'>
         <span className='min-w-full lg:min-w-[368px]'>
@@ -80,7 +80,7 @@ const SpecialistsPage = () => {
           ]}
         />
       </div>
-      <div className='max-w-[1054px] w-full h-full space-y-5'>
+      <div className='mb-10 max-w-[1054px] w-full h-full space-y-5'>
         {data?.map((person) => (
           <SpecialistCard key={person.description} {...person} />
         ))}
