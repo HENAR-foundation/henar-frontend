@@ -46,7 +46,10 @@ const SpecialistsPage = () => {
         <title>{t('experts')}</title>
       </Head>
 
-      <h1 className='mb-2 text-h-xl-m mt-[59px] font-bold'>{t('experts')}</h1>
+      <div className='flex flex-col'>
+        <h1 className='mb-2 text-h-xl-m mt-[59px] font-bold'>{t('experts')}</h1>
+        <span className='lg:w-[360px] mb-[54px]'>Раздел для поиска и установления деловых контактов</span>
+      </div>
       <div className='space-y-5 space-x-0 lg:space-y-0 flex flex-1 flex-col lg:flex-row w-full mb-9 lg:space-x-4 items-end'>
         <span className='min-w-full lg:min-w-[368px]'>
           <InputMaterial icon='search' placeholder={t('find_an_expert')} />

@@ -116,7 +116,7 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                   className='w-full text-left'
                   onClick={handleApply}
                 >
-                  Apply for project
+                  {t('respond')}
                 </ButtonPrimary>
               </div>
               <div className='col-span-1 mb-4 lg:mb-0'>
@@ -138,13 +138,13 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
           <div className='z-20 grid grid-cols-1 lg:grid-cols-3 lg:gap-8'>
             <div className='order-2 lg:order-1 lg:col-span-2 space-y-4 lg:space-y-5'>
               <div className='bg-white rounded-s px-6 pt-6 pb-8'>
-                <h3 className='text-a-l mb-4'>Описание проекта</h3>
+                <h3 className='text-a-l mb-4'>{t('project_description')}</h3>
                 <span className='font-bodyLight'>
                   {project?.description.en}
                 </span>
               </div>
               <div className='bg-white rounded-s px-6 pt-6 pb-8'>
-                <h3 className='text-a-l mb-4'>Задачи проекта</h3>
+                <h3 className='text-a-l mb-4'>{t('project_objective')}</h3>
                 <span className='font-bodyLight'>{project?.objective.en}</span>
               </div>
               <div className='bg-white rounded-s px-6 pt-6 pb-8'>

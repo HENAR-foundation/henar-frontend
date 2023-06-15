@@ -90,5 +90,10 @@
   "request": "Запрос",
   "help_project_question": "Как помочь проекту?",
   "help_project": "Тип помощи",
-  "types_needs": "Возможности для участия"
+  "types_needs": "Возможности для участия",
+  "project_description": "Описание проекта",
+  "project_objective": "Задачи проекта",
+  "respond": "Откликнуться"
+
+
 }
