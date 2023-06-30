@@ -20,7 +20,6 @@ export const createProject = async (project: {
         author,
         covers,
         description: { en: description, ru: description, hy: description },
-        moderation_status: 'approved',
         title: { en: title, ru: title, hy: title },
         objective: { en: objective, ru: objective, hy: objective },
         who_is_needed: { en: whoIsNeeded, ru: whoIsNeeded, hy: whoIsNeeded },
@@ -43,3 +42,31 @@ export const applyForProject = (id: string) => {
     throw error.response;
   }
 };
+
+export const deleteProject = async (id: string) => {
+    try {
+        return axios.delete(
+          '/projects/' + id,
+          { withCredentials: true }
+        );
+      } catch (error: any) {
+        throw error.response;
+      }
+}
+
+export const updateProjectStatus = async (project: any, status) => {
+    try {
+        return axios.patch(
+          '/projects/' + project._id,
+          { 
+            ...project,
+            project_status: "ideation",
+            moderation_status: status
+          },
+          { withCredentials: true }
+        );
+      } catch (error: any) {
+        throw error.response;
+      }
+}
+

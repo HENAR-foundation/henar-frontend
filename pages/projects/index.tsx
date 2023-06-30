@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { getProjects } from 'api/projects';
 import ButtonPrimary from 'components/ButtonPrimary';
 import CreateProjectModal from 'components/CreateProjectModal';
@@ -15,6 +15,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/router';
 import { checkSignIn } from 'api/user';
 import { ProjectHelpTypes, ProjectPhases } from 'helpers';
+import { deleteProject } from 'api/mutations/projects';
 
 const ProjectsPage = () => {
   const { push } = useRouter();
@@ -41,6 +42,7 @@ const ProjectsPage = () => {
     queryFn: getProjects,
   });
 
+
   const t = useTranslations();
 
   const filteredProjects = projects?.filter(({ title, description }) => {
@@ -52,10 +54,13 @@ const ProjectsPage = () => {
 
   console.info(filters);
 
+
   const handleCreateProjectClick = () => {
     if (user) toggleModal();
     else push('/registration');
   };
+
+  console.log(projects)
 
   return (
     <>
@@ -101,7 +106,7 @@ const ProjectsPage = () => {
           {t('no_projects_published')}
         </span>
       )}
-      {projects && projects?.length !== 0 && (
+      {user?.role != "admin" && projects && projects?.length !== 0 && (
         <div className='space-y-5 space-x-0 lg:space-y-0 flex flex-1 flex-col lg:flex-row w-full mb-9 lg:space-x-4 items-end'>
           <span className='min-w-full lg:min-w-[368px]'>
             <InputMaterial
@@ -158,11 +163,52 @@ const ProjectsPage = () => {
           />
         </div>
       )}
-      <div className='columns-1 lg:columns-3 space-y-4 mb-10'>
-        {filteredProjects?.map((project) => (
-          <ProjectCard data={project} image='proj_bg.png' />
-        ))}
-      </div>
+      {
+        user?.role === "admin" ? (
+            <div>
+                <h1 className='mb-4 text-h-m-d font-bold'>Need to approve ({filteredProjects?.filter(project => project.moderation_status === "pending").length})</h1>
+                <div className='columns-1 lg:columns-3 space-y-4 mb-10'>
+                {filteredProjects?.filter(project => project.moderation_status === "pending").length && filteredProjects?.filter(project => project.moderation_status === "pending").length > 0 
+                ? filteredProjects?.filter(project => project.moderation_status === "pending").map((project) => (
+                    <ProjectCard data={project} image='proj_bg.png' />
+                    ))
+                : <span className='text-secondary text-m'>
+                    {t('no_projects_published')}
+                </span>
+                }
+                </div>
+                <h1 className='mb-4 text-h-m-d font-bold'>Approved ({filteredProjects?.filter(project => project.moderation_status === "approved").length})</h1>
+                <div className='columns-1 lg:columns-3 space-y-4 mb-10'>
+                {filteredProjects?.filter(project => project.moderation_status === "approved").length && filteredProjects?.filter(project => project.moderation_status === "approved").length > 0 
+                ? filteredProjects?.filter(project => project.moderation_status === "approved").map((project) => (
+                    <ProjectCard data={project} image='proj_bg.png' />
+                    ))
+                : <span className='text-secondary text-m'>
+                    {t('no_projects_published')}
+                </span>
+                }
+                </div>
+                <h1 className='mb-4 text-h-m-d font-bold'>Declined ({filteredProjects?.filter(project => project.moderation_status === "rejected").length})</h1>
+                <div className='columns-1 lg:columns-3 space-y-4 mb-10'>
+                {filteredProjects?.filter(project => project.moderation_status === "rejected").length && filteredProjects?.filter(project => project.moderation_status === "rejected").length > 0 
+                ? filteredProjects?.filter(project => project.moderation_status === "rejected").map((project) => (
+                    <ProjectCard data={project} image='proj_bg.png' />
+                    ))
+                : <span className='text-secondary text-m'>
+                    {t('no_projects_published')}
+                </span>
+                }
+                </div>
+                
+            </div>      
+        ) : (
+            <div className='columns-1 lg:columns-3 space-y-4 mb-10'>
+                {filteredProjects?.map((project) => (
+                <ProjectCard data={project} image='proj_bg.png' />
+                ))}
+            </div>
+        )
+      }
     </>
   );
 };

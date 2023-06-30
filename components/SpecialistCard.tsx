@@ -10,7 +10,7 @@ import { User } from 'api/types';
 import { formatFullName } from 'helpers';
 import Image from 'next/image';
 
-const SpecialistCard: FC<User> = (user) => {
+const SpecialistCard: FC<any> = (user) => {
   const {
     _id,
     avatar,
@@ -28,9 +28,9 @@ const SpecialistCard: FC<User> = (user) => {
     push('/persons/' + _id);
   };
   return (
-    <div className='shadow-l p-4 lg:p-0 w-full h-full rounded-xl  flex min-h-[218px] bg-white overflow-hidden lg:flex-row flex-col'>
+    <div className={`shadow-l p-4 lg:p-0 w-full h-full rounded-xl  flex min-h-[${user.small ? "100px" : "218px"}] bg-white overflow-hidden lg:flex-row flex-col`} onClick={user.onClick}>
       <div className='flex justify-center items-center'>
-        <div className='lg:m-4 lg:w-[184px] w-full relative aspect-[1/1]'>
+        <div className={`lg:m-4 lg:w-[${user.small ? '100px' : '184px'}] w-full relative aspect-[1/1]`}>
           {avatar ? (
             <figure className='relative w-full h-full rounded-s overflow-hidden'>
               <Image
@@ -76,15 +76,18 @@ const SpecialistCard: FC<User> = (user) => {
           ))}
         </div>
       </div>
-      <div className='flex items-start lg:pt-4 lg:justify-end flex-1'>
-        <ButtonOutline
-          icon='mail'
-          onClick={handleRequestContactModal}
-          className='lg:w-auto w-full lg:mr-8'
-        >
-          {t('request_contacts')}
-        </ButtonOutline>
-      </div>
+      {
+        !user.small &&
+        <div className='flex items-start lg:pt-4 lg:justify-end flex-1'>
+            <ButtonOutline
+            icon='mail'
+            onClick={handleRequestContactModal}
+            className='lg:w-auto w-full lg:mr-8'
+            >
+            {t('request_contacts')}
+            </ButtonOutline>
+        </div>
+        }
     </div>
   );
 };

@@ -6,10 +6,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getProjects } from 'api/projects';
 import { useTranslations } from 'next-intl';
 import PhotoUploader from './PhotoUploader';
-import { checkSignIn } from 'api/user';
+import { checkSignIn, getCurrentUsers } from 'api/user';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { updateUser } from 'api/mutations/user';
+import { approveUserContactRequest, declineUserContactRequest, updateUser } from 'api/mutations/user';
 import ButtonPrimary from './ButtonPrimary';
 import { uploadPhotos } from 'api/mutations/files';
 import Tag from './Tag';
@@ -17,12 +17,16 @@ import AvatarCircle from './AvatarCircle';
 import { formatFullName } from 'helpers';
 import { getLocationById } from 'api/location';
 import LocationInput from './LocationInput';
-import { LocationSuggestsData } from 'api/types';
+import { LocationSuggestsData, User } from 'api/types';
 import { createLocation } from 'api/mutations/location';
+import SpecialistCard from './SpecialistCard';
+import { useRouter } from 'next/router';
+import ButtonOutline from './ButtonOutline';
 
 enum tabTypes {
   Profile = 'profile',
   Projects = 'projects',
+  People = 'people',
   Password = 'reset_your_password',
 }
 type IS = keyof typeof tabTypes;
@@ -267,6 +271,87 @@ const PasswordTab: FC<{ t: any }> = ({ t }) => (
   </div>
 );
 
+const PeopleTab: FC<{ t: any }> = ({ t }) => {
+    const { push } = useRouter();
+
+    const { data: user, refetch: refetchUser } = useQuery({
+        queryFn: checkSignIn,
+        queryKey: ['isSignedIn'],
+      });
+      
+    const usersIdsMap = [
+        ...Object.keys(user?.contacts_request?.blocked_users),
+        ...Object.keys(user?.contacts_request?.confirmed_contacts_requests),
+        ...Object.keys(user?.contacts_request?.incoming_contact_requests),
+        ...Object.keys(user?.contacts_request?.outgoing_contact_requests),
+    ]
+
+    const mutationApproveUserContactRequest = useMutation({
+        mutationFn: (id: string) => approveUserContactRequest(id),
+        onSuccess: () => refetchUser(),
+    });
+    const mutationDeclineUserContactRequest = useMutation({
+        mutationFn: (id: string) => declineUserContactRequest(id),
+        onSuccess: () => refetchUser(),
+    });
+    const { data: users } = useQuery({
+        queryFn: () => getCurrentUsers(usersIdsMap),
+        queryKey: ['currentUsers'],
+    });
+
+    return <div className='flex flex-col lg:space-y-8 space-y-[20px]'>
+        <div className='w-full'>
+            <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
+            Запросили контакт
+            </span>
+            <div>
+                {
+                    Object.keys(user?.contacts_request.incoming_contact_requests).map(id => 
+                        <div className='flex flex-row'>
+                            <SpecialistCard small key={id} onClick={() => push("/persons/" + id)} {...users?.find((user: User) => user._id == id) as User} />
+                            <div className='flex flex-col justify-between w-full h-full ml-4'>
+                                <div>
+                                    <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
+                                        Мотивация
+                                    </span>
+                                    <br />
+                                    <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
+                                        {user?.contacts_request.incoming_contact_requests[id]}
+                                    </span>
+                                </div>
+                                <div className='flex'>
+                                    <ButtonPrimary onClick={() => mutationApproveUserContactRequest.mutate(id)} >Принять</ButtonPrimary>
+                                    <ButtonOutline onClick={() => mutationDeclineUserContactRequest.mutate(id)}  className='ml-5'>Отклонить</ButtonOutline>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
+            </div>
+        </div>
+        <div className='w-full'>
+            <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
+            Одобрили заявку
+            </span>
+            <div>
+                {
+                    Object.keys(user?.contacts_request.confirmed_contacts_requests).map(id => <SpecialistCard small key={id} {...users?.find((user: User) => user._id == id) as User} />)
+                }
+            </div>
+        </div>
+        <div className='w-full'>
+            <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
+            Отклонили заявку
+            </span>
+            <div>
+                {
+                    Object.keys(user?.contacts_request.blocked_users).map(id => <SpecialistCard small key={id} {...users?.find((user: User) => user._id == id) as User} />)
+                }
+            </div>
+        </div>
+    </div>
+}
+
 const ProfileModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
   const [activeTab, toggleTab] = useState<tabTypes>(tabTypes.Profile);
   const { data: user } = useQuery({
@@ -314,6 +399,7 @@ const ProfileModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
   const tabsContentByType: { [key in tabTypes]?: JSX.Element } = {
     [tabTypes.Profile]: <AboutTab />,
     [tabTypes.Password]: <PasswordTab t={t} />,
+    [tabTypes.People]: <PeopleTab t={t} />,
     [tabTypes.Projects]: ProjectsTab(),
   };
 

@@ -102,17 +102,20 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
                 <h2 className='text-a-xl mb-3'>{formatFullName(expert)}</h2>
                 <p className='font-bodyLight text-a-m'>{expert?.description}</p>
               </div>
-              <ButtonPrimary
-                disabled={isContactAlreadyRequested}
-                kind='M'
-                icon='arrow'
-                className='lg:mt-0 mt-9 text-left text-m'
-                onClick={handleRequestInfo}
-              >
-                {isContactAlreadyRequested
-                  ? 'Already requested'
-                  : t('request_contacts')}
-              </ButtonPrimary>
+              {
+                  expert?.email ? null :
+                  <ButtonPrimary
+                  disabled={isContactAlreadyRequested}
+                  kind='M'
+                  icon='arrow'
+                  className='lg:mt-0 mt-9 text-left text-m'
+                  onClick={handleRequestInfo}
+                  >
+                    {isContactAlreadyRequested
+                    ? 'Already requested'
+                    : t('request_contacts')}
+                </ButtonPrimary>
+                }
             </div>
             <div className='flex flex-col bg-white rounded-s py-6 px-5 justify-between'>
               <div>
@@ -131,6 +134,22 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
                   <Tag name='Первая помощь' />
                   <Tag name='Радиология' />
                 </div> */}
+                {
+                    !expert?.email ? null : 
+                    <div className='mt-10'>
+                        <h2 className='text-a-xl mb-5'>Contacts</h2>
+                        <p className='flex justify-between'>
+                        <span className='text-tetriary'>{t('email')}</span>
+                        <span>{expert.email}</span>
+                        </p>
+                        {
+                            Object.keys(expert?.contacts).map((contactKey: string) => <p className='flex justify-between'>
+                                <span className='text-tetriary'>{contactKey}</span>
+                                <span>{expert?.contacts[contactKey] || "not filled"}</span>
+                            </p>)
+                        }
+                    </div>
+                }
               </div>
             </div>
           </div>

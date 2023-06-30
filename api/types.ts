@@ -4,7 +4,7 @@ export interface Project {
   author: string;
   covers: string[];
   description: Translations;
-  moderation_status: number;
+  moderation_status: string;
   objective: Translations;
   created_by: string;
   reason_of_reject: string;
@@ -68,7 +68,7 @@ export interface User {
   last_name: string;
   //   full_name: FullName;
   description: string;
-  contacts: Contacts;
+  contacts: any;
   location: string;
   role: string;
   job: string;
@@ -84,13 +84,12 @@ export interface FullName {
   hy: string;
 }
 
-export interface Contacts {}
 
 export interface ContactsRequest {
-    incoming_contact_requests: Record<string, string>[];
-    outgoing_contact_requests: Record<string, string>[];
-    confirmed_contacts_requests: Record<string, string>[];
-    blocked_users: BlockedUsers[];
+    incoming_contact_requests: any;
+    outgoing_contact_requests: any;
+    confirmed_contacts_requests: any;
+    blocked_users: any;
 }
 
 export interface IncomingContactRequests {}

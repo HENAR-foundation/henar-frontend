@@ -13,15 +13,41 @@ export const updateUser = async (user: User) => {
 };
 
 export const requestUserContact = async (id: string, message: string) => {
-  try {
-    return axios.post(
-      '/users/request-contacts/' + id,
-      { message },
-      {
-        withCredentials: true,
-      }
-    );
-  } catch (error: any) {
-    throw error.response;
-  }
+    try {
+      return axios.post(
+        '/users/request-contacts/' + id,
+        { message },
+        {
+          withCredentials: true,
+        }
+      );
+    } catch (error: any) {
+      throw error.response;
+    }
+  };
+
+export const approveUserContactRequest = async (id: string) => {
+    try {
+        return axios.get(
+        '/users/approve-contacts-request/' + id,
+        {
+            withCredentials: true,
+        }
+        );
+    } catch (error: any) {
+        throw error.response;
+    }
+};
+
+export const declineUserContactRequest = async (id: string) => {
+    try {
+        return axios.get(
+        '/users/reject-contacts-request/' + id,
+        {
+            withCredentials: true,
+        }
+        );
+    } catch (error: any) {
+        throw error.response;
+}
 };

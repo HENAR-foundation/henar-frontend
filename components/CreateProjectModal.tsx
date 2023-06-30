@@ -13,7 +13,7 @@ import { checkSignIn } from 'api/user';
 import { getProjects } from 'api/projects';
 import ProjectFilesUploader from './ProjectFilesUploader';
 import { uploadPhotos } from 'api/mutations/files';
-import { ProjectHelpTypes, ProjectPhases } from 'helpers';
+import { ProjectHelpTypes, ProjectPhases, formatFullName } from 'helpers';
 
 const CreateProjectSchema = Yup.object().shape({
   title: Yup.string()
@@ -44,22 +44,21 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
     const { description, request, title, how_to_help_the_project } =
       formik.values;
     if (user) {
-      console.info(formik.values);
-      //   createProject({
-      //     covers: photos,
-      //     author: formatFullName(user),
-      //     description,
-      //     how_to_help_the_project,
-      //     title,
-      //     objective: 'OBJECTIVe',
-      //     tags: [],
-      //     whoIsNeeded: request,
-      //   }).then(() => {
-      //     queryClient.invalidateQueries({ queryKey: ['projects'] });
-      //     refetchProjects();
-      //     PubSub.publish('notification', 'Проект успешно создал');
-      //     onClose();
-      //   });
+        createProject({
+          covers: photos,
+          author: formatFullName(user),
+          description,
+          how_to_help_the_project,
+          title,
+          objective: 'OBJECTIVe',
+          tags: [],
+          whoIsNeeded: request,
+        }).then(() => {
+          queryClient.invalidateQueries({ queryKey: ['projects'] });
+          refetchProjects();
+          PubSub.publish('notification', 'Проект успешно создал');
+          onClose();
+        });
     }
   };
 
@@ -83,6 +82,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
         if (photos.length) {
           mutationPhotos.mutate(photos as unknown as FileList);
         } else {
+            console.log(123)
           handleCreateProject();
         }
       }

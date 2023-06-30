@@ -13,8 +13,19 @@ export const getUsers: () => Promise<User[]> = async () => {
   return data;
 };
 
+export const getCurrentUsers: (ids: string[]) => Promise<User[]> = async (ids: string[]) => {
+    let users: User[] = []
+
+    return Promise.all(ids.map(async (id) => {
+        const { data } = await axios.get('/users/' + id);
+        return data
+    }))
+
+}
+
 export const getUser: (id: string) => Promise<User> = async (id) => {
   const { data } = await axios.get('/users/' + id);
 
   return data;
 };
+

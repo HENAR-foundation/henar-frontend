@@ -1,10 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { deleteProject, updateProjectStatus } from 'api/mutations/projects';
 import { getProject } from 'api/projects';
 import { Translations } from 'api/types';
 import { checkSignIn, getUser } from 'api/user';
 import ApplyForProjectModal from 'components/ApplyForProjectModal';
 import AvatarCircle from 'components/AvatarCircle';
 import BreadCrumbs from 'components/BreadCrumbs';
+import ButtonOutline from 'components/ButtonOutline';
 import ButtonPrimary from 'components/ButtonPrimary';
 import FishImage from 'components/FishImage';
 import { formatFullName } from 'helpers';
@@ -20,7 +22,7 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
   const router = useRouter();
   const { slug } = router.query;
 
-  const { data: project } = useQuery({
+  const { data: project, refetch: refetchProject } = useQuery({
     queryFn: () => getProject(slug as any),
     queryKey: ['project', slug],
   });
@@ -34,6 +36,15 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
     enabled: !!project?.created_by,
     queryFn: () => getUser(project?.created_by || '0'),
     queryKey: ['user', project?.created_by],
+  });
+
+  const mutationDeleteProject = useMutation({
+    mutationFn: (id: string) => deleteProject(id),
+    onSuccess: () => router.push("/projects"),
+  });
+  const mutationUpdateProjectStatus = useMutation({
+    mutationFn: (args: any) => updateProjectStatus(args[0], args[1]),
+    onSuccess: () => refetchProject(),
   });
 
   const t = useTranslations();
@@ -51,6 +62,21 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
       router.push('/registration');
     }
   };
+
+  function handleDeleteProject(id?: string) {
+    if (id) {
+        mutationDeleteProject.mutate(id)
+    }
+  }
+
+  function handleApproveProject() {
+        mutationUpdateProjectStatus.mutate([project, "approved"])
+  }
+  function handleDeclineProject() {
+        mutationUpdateProjectStatus.mutate([project, "rejected"])
+  }
+
+  console.log(project)
 
   return (
     <>
@@ -110,14 +136,39 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                 <h2 className='text-l leading-6 mb-3 font-medium'>
                   {project?.title.en}
                 </h2>
-                <ButtonPrimary
-                  kind='M'
-                  disabled={alreadyApplied}
-                  className='w-full text-left'
-                  onClick={handleApply}
-                >
-                  {t('respond')}
-                </ButtonPrimary>
+                {
+                    user?.role == 'admin' ?
+                    (
+                        <>
+                        <ButtonPrimary
+                            kind='M'
+                            disabled={alreadyApplied}
+                            className='w-full text-left'
+                            onClick={handleApply}
+                            >
+                            Edit
+                        </ButtonPrimary>
+                        <ButtonPrimary
+                            kind='M'
+                            disabled={alreadyApplied}
+                            className='w-full text-left mt-3'
+                            onClick={() => handleDeleteProject(project?._id)}
+                            >
+                            Delete
+                        </ButtonPrimary>
+                        </>
+                    ) : (
+                        <ButtonPrimary
+                            kind='M'
+                            disabled={alreadyApplied}
+                            className='w-full text-left'
+                            onClick={handleApply}
+                            >
+                            {t('respond')}
+                            </ButtonPrimary>
+                    )
+                }
+                
               </div>
               <div className='col-span-1 mb-4 lg:mb-0'>
                 <div className='flex bg-white rounded-s p-6'>
@@ -155,6 +206,28 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
               </div>
             </div>
           </div>
+          {
+            (user?.role == 'admin' && project?.moderation_status !== "approved") &&
+            <div className='flex flex-row justify-between bg-white rounded-s px-6 pt-6 pb-8 mt-10'>
+                <h3 className='flex items-center w-full text-a-l'>Check the project and select one of these actions</h3>
+                <div className='flex flex-row w-full'>
+                    <ButtonPrimary
+                        kind='M'
+                        className='w-full text-left mr-3'
+                        onClick={handleApproveProject}
+                        >
+                        Approve
+                    </ButtonPrimary>
+                    <ButtonOutline
+                        kind='M'
+                        className='w-full text-left  mr-3'
+                        onClick={handleDeclineProject}
+                        >
+                        Decline
+                    </ButtonOutline>
+                </div>
+              </div>
+            }
         </div>
       </div>
     </>
@@ -162,7 +235,7 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({
-  query,
+    query,
   locale,
 }) => {
   //   const { slug } = query;
