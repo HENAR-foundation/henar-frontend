@@ -71,7 +71,7 @@ const SpecialistCard: FC<any> = (user) => {
           {description}
         </span>
         <div className='flex space-x-1.5  mb-[20px]'>
-          {tags?.map((tag) => (
+          {tags?.map((tag: any) => (
             <Tag key={tag} name={tag} />
           ))}
         </div>

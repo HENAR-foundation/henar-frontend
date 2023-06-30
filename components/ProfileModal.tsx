@@ -26,7 +26,7 @@ import ButtonOutline from './ButtonOutline';
 enum tabTypes {
   Profile = 'profile',
   Projects = 'projects',
-  People = 'people',
+  People = 'specialty',
   Password = 'reset_your_password',
 }
 type IS = keyof typeof tabTypes;

@@ -54,7 +54,7 @@ export const deleteProject = async (id: string) => {
       }
 }
 
-export const updateProjectStatus = async (project: any, status) => {
+export const updateProjectStatus = async (project: any, status: string) => {
     try {
         return axios.patch(
           '/projects/' + project._id,
