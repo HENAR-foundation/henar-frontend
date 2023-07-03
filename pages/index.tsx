@@ -6,6 +6,7 @@ import { FC } from 'react';
 import { GetServerSideProps } from 'next';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const Specialist: FC<{
   name: string;
@@ -39,7 +40,7 @@ const Specialist: FC<{
         {spec}
       </span>
     </div>
-    <span className='text-a-sss lg:text-a-ss leading-[140%] font-bodyLight'>
+    <span className='text-a-sss lg:text-a-ss leading-[140%] font-bodyLight text-secondary'>
       {desc}
     </span>
   </div>
@@ -119,44 +120,60 @@ const RegForm = () => {
 
 const Home = () => {
   const t = useTranslations();
-
+  const { locale } = useRouter();
   return (
     <>
       <Head>
         <title>HNA</title>
       </Head>
       <div className='bg-white pt-10 pb-[140px]'>
-        <div className='flex w-full lg:space-x-6'>
-          <div className='lg:flex hidden flex-[0.38] min-h-[420px] bg-accent1 rounded-r-xl bg-opacity-10'></div>
-          <div className='flex flex-1 lg:flex-[0.62] break-words lg:min-h-[420px] bg-accent1 lg:rounded-r-[0] rounded-r-xll rounded-l-xll bg-opacity-10 pl-5 pr-5 lg:pr-0 lg:pl-8 flex-col justify-between'>
+        <div className='flex w-full bg-accent1 bg-opacity-10 justify-center'>
+          <div className='lg:ml-[160px] flex break-words lg:min-h-[420px] pl-5 pr-5 justify-between'>
             <div>
-              <h3 className='font-body mt-8 lg:mt-10 text-h-xl-m lg:text-h-xl-d font-bold lg:w-[470px] leading-[100%] mb-3 lg:mb-[19px]'>
-                {t('welcome_header')}
-              </h3>
-              <span className='text-m'>{t('welcome_footer')}</span>
+              <div className='lg:mr-[124px]'>
+                <h3 className='lg:w-[458px] font-body mt-8 lg:mt-12 text-h-xl-m lg:text-h-l-d font-bold leading-[100%] mb-3 lg:mb-[19px]'>
+                  {t('welcome_header')}
+                </h3>
+                <span className='text-m inline-block lg:w-[328px]'>
+                  {t('welcome_footer')}
+                </span>
+              </div>
+              <Link href='registration'>
+                <ButtonPrimary
+                  kind='M'
+                  className='lg:mb-[63px] w-full mb-6 mt-[70px] lg:w-[205px]'
+                >
+                  {t('registration')}
+                </ButtonPrimary>
+              </Link>
             </div>
-            <ButtonPrimary kind='M' className='mb-6 mt-[70px] lg:w-[205px]'>
-              {t('registration')}
-            </ButtonPrimary>
+            <div className='lg:flex items-end hidden'>
+              <Image
+                src={`/phone-card${locale === 'ru' ? '' : '-en'}.png`}
+                width={218}
+                height={342}
+                alt=''
+              />
+            </div>
           </div>
         </div>
         <div className='flex w-full space-x-6 mt-6 lg:mt-14'>
           <div className='flex flex-1 lg:flex-[0.51] lg:h-[430px] bg-cream lg:rounded-l-[0] rounded-l-xll rounded-r-xll lg:pr-[103px] justify-center flex-col lg:items-end items-center'>
-            <div className='flex flex-col text-left lg:w-[242px] px-[26px] lg:px-0'>
+            <div className='pl-6  flex w-full justify-end'>
               <Image
                 className='inline-block lg:hidden mb-[25px]'
-                src='/feedbacks-m.png'
+                src={`/feedbacks-m${locale === 'ru' ? '' : '-en'}.png`}
                 width={369}
                 height={276}
                 alt=''
               />
+            </div>
+            <div className='flex flex-col text-left lg:w-[242px] px-[26px] lg:px-0'>
               <span className='text-accent2'>{t('projects')}</span>
               <h3 className='font-body my-[14px] text-h-l-d font-bold leading-[100%] w-full'>
                 {t('createprojects')}
               </h3>
-              <span className='text-m mb-10'>
-                {t('welcome_header')}
-              </span>
+              <span className='text-m mb-10'>{t('collaborate')}</span>
               <ButtonPrimary className='lg:mb-0 mb-6' color='cream' kind='M'>
                 {t('toprojects')}
               </ButtonPrimary>
@@ -164,7 +181,7 @@ const Home = () => {
           </div>
           <div className='hidden lg:flex flex-[0.49] h-[430px] bg-cream rounded-l-xll  pl-[57px] flex-col justify-center'>
             <Image
-              src='/feedbacks.png'
+              src={`/feedbacks${locale === 'ru' ? '' : '-en'}.png`}
               height={310}
               width={373}
               alt='feedbacks'
@@ -183,23 +200,23 @@ const Home = () => {
             <div className='relative h-[195px] lg:h-[360px] w-full lg:mt-0 mt-8'>
               <Specialist
                 className='left-[-175px] lg:left-[-45px] absolute'
-                desc='"Preventive Care Campaign": Raising awareness about preventive care and healthy lifestyle choices.'
-                spec='General Practitioner (GP)'
-                name='David Ghazaryan'
+                desc={t('p-l-desc')}
+                spec={t('p-l-job')}
+                name={t('p-l-name')}
                 pic='/fish-expert-david.png'
               />
               <Specialist
                 className='lg:top-[60px] lg:left-[calc(50%-152px)] left-[calc(50%-93px)] absolute'
-                desc='Geriatric Care and Elderly Support Program'
-                spec='Geriatrician'
-                name='Lilit Aghajanyan'
+                desc={t('p-c-desc')}
+                spec={t('p-c-job')}
+                name={t('p-c-name')}
                 pic='/fish-expert-lilit.png'
               />
               <Specialist
                 className='lg:top-[20px] lg:right-[-45px] right-[-175px] absolute'
-                desc='Chronic Disease Management Program. Make them essential for leading programs focused on effectively managing conditions '
-                spec='Internal Medicine Physician'
-                name='Armen Harutyunyan'
+                desc={t('p-r-desc')}
+                spec={t('p-r-job')}
+                name={t('p-r-name')}
                 pic='/fish-expert-armen.png'
               />
             </div>
@@ -213,9 +230,14 @@ const Home = () => {
           <div className='hidden lg:flex w-full bg-mint rounded-l-xl'></div>
         </div>
         <div className='flex w-full mt-14 relative lg:h-[489px] flex-col lg:flex-row'>
-          <div className='hidden lg:flex flex-1 bg-accent2 bg-opacity-20 rounded-xll items-center justify-end'>
+          <div className='hidden lg:flex flex-1 bg-accent2 bg-opacity-20 rounded-r-xll items-center justify-end'>
             <div className='mr-[33px]'>
-              <Image src='/stat-left.png' height={279} width={472} alt='' />
+              <Image
+                src={`/stat-left${locale === 'ru' ? '' : '-en'}.png`}
+                height={279}
+                width={472}
+                alt=''
+              />
             </div>
           </div>
           <div className='flex flex-col bg-peach items-center justify-center'>
@@ -223,14 +245,14 @@ const Home = () => {
               {t('researches')}
             </span>
             <Image
-              src='/stats-m.png'
-              width={325}
+              src={`/stats-m${locale === 'ru' ? '' : '-en'}.png`}
+              width={900}
               height={156}
               alt=''
-              className='lg:hidden mb-[18px]'
+              className='lg:hidden mb-[18px] mt-3'
             />
           </div>
-          <div className='w-full flex lg:w-[377px] items-center flex-col'>
+          <div className='w-full px-7 flex lg:w-[377px] items-center flex-col'>
             <span className='hidden lg:inline-block text-accent2 mt-[60px]'>
               {t('researches')}
             </span>
@@ -243,16 +265,73 @@ const Home = () => {
             <ButtonPrimary
               kind='M'
               color='cream'
-              className='w-[206px] mt-[38px] lg:mt-8'
+              className='lg:w-[206px] w-full mt-[38px] lg:mt-8'
             >
               {t('toanalytics')}
             </ButtonPrimary>
           </div>
-          <div className='hidden lg:flex flex-1 bg-accent2 bg-opacity-20 rounded-xll items-center justify-start'>
+          <div className='hidden lg:flex flex-1 bg-accent2 bg-opacity-20 rounded-l-xll items-center justify-start'>
             <div className='ml-[33px]'>
-              <Image src='/stat-right.png' height={251} width={451} alt='' />
+              <Image
+                src={`/stat-right${locale === 'ru' ? '' : '-en'}.png`}
+                height={251}
+                width={451}
+                alt=''
+              />
             </div>
           </div>
+        </div>
+        <div className='flex w-full mt-14 relative lg:h-[430px] flex-col lg:flex-row lg:space-x-[25px]'>
+          <div className='hidden lg:flex flex-[0.825] bg-mint rounded-r-xll items-center justify-end'>
+            <div className='flex flex-col mr-12'>
+              <span className='text-accent1'> {t('events')}</span>
+              <h3 className='w-[330px] leading-[100%] my-4 text-h-l-d break-all'>
+                {t('stay-tuned')}
+              </h3>
+              <span className='lg:w-[240px] text-m leading-[150%] font-bodyLight'>
+                {t('medical-events')}
+              </span>
+              <Link href='/events'>
+                <ButtonPrimary kind='M' className='mt-10 lg:w-[225px]'>
+                  {t('to-events')}
+                </ButtonPrimary>
+              </Link>
+            </div>
+          </div>
+          <div className='lg:hidden flex flex-col items-center justify-center text-center'>
+            <h3 className='max-w-[286px] mb-[17px] text-h-m-d leading-[100%]'>
+              {t('stay-tuned')}
+            </h3>
+            <span className='mb-[30px] max-w-[250px]'>
+              {t('medical-events')}
+            </span>
+          </div>
+          <div className='flex flex-1 bg-mint lg:rounded-l-xll items-center lg:justify-start justify-center'>
+            <Image
+              className='hidden lg:flex ml-[30px]'
+              src={`/skeletor${locale === 'ru' ? '' : '-en'}.png`}
+              width={650}
+              height={307}
+              alt='skeletor'
+            />
+            <div className='flex lg:hidden  w-[80%] flex-col justify-center items-center'>
+              <span className='text-accent1 mb-[18px] mt-[22px] text-xl'>
+                {t('events')}
+              </span>
+              <Image
+                className='mb-[35px]'
+                src={`/skeletor-m${locale === 'ru' ? '' : '-en'}.png`}
+                width={650}
+                height={307}
+                alt='skeletor'
+              />
+            </div>
+          </div>
+          <Link href='/events' className='mx-7 lg:hidden flex mt-[30px]'>
+            <ButtonPrimary kind='M' className='w-full'>
+              {t('to-events')}
+            </ButtonPrimary>
+          </Link>
         </div>
         <RegForm />
       </div>

@@ -27,7 +27,7 @@ const locales = [
 const LangToggle = () => {
   const [opened, toggleOpen] = useToggle(false);
   const [mobileOpened, toggleOpenMobile] = useToggle(false);
-  const { locale, push, route, asPath } = useRouter();
+  const { locale, push, asPath } = useRouter();
 
   const lcl = useMemo(
     () => locales.find(({ code }) => code === locale),

@@ -20,5 +20,16 @@
   "entercity": "Նշեք քաղաքը",
   "youroccupation": "Ձեր զբաղմունքը",
   "enterspecialty": "Ձեր մասնագիտությունը",
-  "": "Գրանցվեք"
+  "p-l-name": "David Ghazaryan",
+  "p-l-job": "General Practitioner (GP)",
+  "p-l-desc": "\"Preventive Care Campaign\": Raising awareness about preventive care and healthy lifestyle choices.",
+  "p-c-name": "Lilit Aghajanyan",
+  "p-c-job": "Geriatrician",
+  "p-c-desc": "Geriatric Care and Elderly Support Program",
+  "p-r-name": "Armen Harutyunyan",
+  "p-r-job": "Gynecologist",
+  "p-r-desc": "\"GynoCare\": A project dedicated to providing specialized care and promoting optimal gynecological health.",
+  "stay-tuned": "Հետևե՛ք առաջիկա իրադարձություններին",
+  "medical-events": "բժշկական իրադարձություններ Հայաստանում",
+  "to-events": "Միջոցառումներ"
 }
