@@ -70,3 +70,30 @@ export const updateProjectStatus = async (project: any, status: string) => {
       }
 }
 
+export const approveApplicant = ({projectId, applicantId}: any) => {
+    try {
+      return axios.post(
+        '/projects/applicants/approve', 
+        {
+            projectId,
+            applicantId
+        },
+        { withCredentials: true });
+    } catch (error: any) {
+      throw error.response;
+    }
+  };
+
+  export const rejectApplicant = ({projectId, applicantId}: any) => {
+    try {
+      return axios.post(
+        '/projects/applicants/reject', 
+        {
+            projectId,
+            applicantId
+        },
+        { withCredentials: true });
+    } catch (error: any) {
+      throw error.response;
+    }
+  };

@@ -3,7 +3,7 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import InputMaterial from './InputMaterial';
 import TextAreaMaterial from './TextAreaMaterial';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getProjects } from 'api/projects';
+import { getMyProjects, getProjects } from 'api/projects';
 import { useTranslations } from 'next-intl';
 import PhotoUploader from './PhotoUploader';
 import { checkSignIn, getCurrentUsers } from 'api/user';
@@ -22,6 +22,7 @@ import { createLocation } from 'api/mutations/location';
 import SpecialistCard from './SpecialistCard';
 import { useRouter } from 'next/router';
 import ButtonOutline from './ButtonOutline';
+import { approveApplicant, rejectApplicant } from 'api/mutations/projects';
 
 enum tabTypes {
   Profile = 'profile',
@@ -352,41 +353,76 @@ const PeopleTab: FC<{ t: any }> = ({ t }) => {
     </div>
 }
 
-const ProfileModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
-  const [activeTab, toggleTab] = useState<tabTypes>(tabTypes.Profile);
-  const { data: user } = useQuery({
-    queryFn: checkSignIn,
-    queryKey: ['isSignedIn'],
-  });
-  const ProjectsTab = () => {
-    const { data } = useQuery({ queryFn: getProjects, queryKey: ['projects'] });
+const ApplicantCard = (props: any) => {
+    const { applicant } = props
+    const mutationApproveApplicant = useMutation({
+        mutationFn: ({applicantId, projectId}: any) => approveApplicant({projectId, applicantId}),
+        onSuccess: () => props.refetch
+    })
 
-    const projects = data?.filter(
-      ({ _id }) =>
-        !!Object.keys(user?.user_projects.created_projects || {}).includes(_id)
-    );
-
+    const mutationRejectApplicant = useMutation({
+        mutationFn: ({applicantId, projectId}: any) => rejectApplicant({projectId, applicantId}),
+        onSuccess: () => props.refetch
+    })
+    
     return (
+        <div className='flex flex-row justify-between items-center'>
+            <div  className='flex mt-5'>
+                <AvatarCircle src={applicant.avatar} />
+                <div className='flex flex-col ml-[15px] mr-6'>
+                <span>{formatFullName(applicant)}</span>
+                <span className='font-thin text-a-ss'>{applicant?.job}</span>
+                </div>
+            </div>
+            <div className='flex flex-row items-center'>
+                <ButtonPrimary className='mr-2' onClick={() => mutationApproveApplicant.mutate({ projectId: props.project._id, applicantId: props.applicant._id })}>Approve</ButtonPrimary>
+                <ButtonOutline onClick={() => mutationRejectApplicant.mutate({ projectId: props.project._id, applicantId: props.applicant._id })}>Decline</ButtonOutline>
+            </div>
+        </div>
+    )
+}
+
+const ProjectsTab: FC<{ t: any }> = ({ t }) => {
+    const { data: user, isFetched: isUserFetching } = useQuery({
+        queryFn: checkSignIn,
+        queryKey: ['isSignedIn'],
+    });
+
+    const { data: projects, refetch: refetchProjects, isFetched: isProjectsFetching } = useQuery({ 
+        queryFn: getMyProjects, 
+        queryKey: ['myProjects'],
+    });
+
+    const { data: users, isFetched: isUsersFetching } = useQuery({
+        queryFn: (ids: any) => getCurrentUsers(projects!.flatMap(project => Object.keys(project.applicants))),
+        queryKey: ['currentUsers'],
+        enabled: !!projects,
+        onSuccess: users => {
+        }
+    });
+
+    console.log(projects)
+
+    return (isProjectsFetching && isUserFetching && isUsersFetching) && (
       <>
-        {projects?.map(({ title, views, successful_applicants }) => (
-          <div className='flex flex-col rounded-l bg-white p-[20px] shadow-sm'>
+        {projects?.map((project) => (
+          <div className='flex flex-col rounded-l bg-white p-[20px] shadow-sm mb-20'>
             <div className='flex space-x-6'>
-              <span className='text-accent1'>{views || 0} views</span>
+              <span className='text-accent1'>{project.views || 0} views</span>
               <span className='text-accent1'>
-                {successful_applicants?.length || 0} views
+                {project.successful_applicants?.length || 0} views
               </span>
               <span className='text-error'>On moderation</span>
             </div>
-            <span className='text-l mt-2'>{title.en}</span>
+            <span className='text-l mt-2'>{project.title.en}</span>
             <span className='mt-3 w-[96px] h-[24px]'>
               <Tag name='Medicine' />
             </span>
-            <div className='flex mt-10'>
-              <AvatarCircle />
-              <div className='flex flex-col ml-[15px] mr-6'>
-                <span>{formatFullName(user)}</span>
-                <span className='font-thin text-a-ss'>{user?.job}</span>
-              </div>
+            <div>
+                <h4 className='mt-5'>{Object.keys(project.applicants).filter((applicantId: string) => !project.rejected_applicants[applicantId]).length === 0 ? "You dont have applicants" : 'Applicants'}</h4>
+                {
+                    Object.keys(project.applicants).filter((applicantId: string) => !project.rejected_applicants[applicantId]).map(applicant => <ApplicantCard applicant={users?.find(user => user._id == applicant)} project={project} refetch={refetchProjects}/>)
+                }
             </div>
           </div>
         ))}
@@ -394,13 +430,20 @@ const ProfileModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
     );
   };
 
+const ProfileModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
+  const [activeTab, toggleTab] = useState<tabTypes>(tabTypes.Profile);
+  const { data: user } = useQuery({
+    queryFn: checkSignIn,
+    queryKey: ['isSignedIn'],
+  });
+
   const t = useTranslations();
 
   const tabsContentByType: { [key in tabTypes]?: JSX.Element } = {
     [tabTypes.Profile]: <AboutTab />,
     [tabTypes.Password]: <PasswordTab t={t} />,
     [tabTypes.People]: <PeopleTab t={t} />,
-    [tabTypes.Projects]: ProjectsTab(),
+    [tabTypes.Projects]: <ProjectsTab t={t} />,
   };
 
   useEffect(() => {

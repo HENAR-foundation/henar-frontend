@@ -59,8 +59,8 @@ const ResearchesPage = () => {
       <Head>
         <title>{t('analytics')}</title>
       </Head>
-      <div className='pt-[59px]'>
-        <h1 className='mb-4 text-h-xl-m font-bold'>{t('analytics')}</h1>
+      <div>
+        {/* <h1 className='mb-4 text-h-xl-m font-bold'>{t('analytics')}</h1>
         <span className='mt-4 font-bodyLight text-xl'>
           {t('state_medicine')}
         </span>
@@ -76,7 +76,7 @@ const ResearchesPage = () => {
               trendIsPositive={year_delta < count}
             />
           ))}
-        </div>
+        </div> */}
         <h2 className='mt-[70px] text-h-m-d font-bold'>{t('researches')}</h2>
         <div className='space-y-5 space-x-0 lg:space-y-0 flex flex-1 flex-col lg:flex-row w-full mb-9 lg:space-x-4 items-end'>
           <span className='min-w-full lg:min-w-[368px]'>

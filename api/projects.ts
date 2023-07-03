@@ -7,6 +7,12 @@ export const getProject = async (slug?: string): Promise<Project> => {
 };
 
 export const getProjects = async (): Promise<Project[]> => {
-  const { data } = await axios.get('/projects');
+    const { data } = await axios.get('/projects');
+    return data || [];
+  };
+
+export const getMyProjects = async (): Promise<Project[]> => {
+  const { data } = await axios.get('/my-projects');
   return data || [];
 };
+  

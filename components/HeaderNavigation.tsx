@@ -29,6 +29,10 @@ const links = [
     link: '/events',
     label: 'events',
   },
+  {
+    link: '/researches',
+    label: 'researches',
+  },
 ];
 
 const notificationsMock = [

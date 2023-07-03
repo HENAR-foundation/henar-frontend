@@ -5,10 +5,10 @@ import AvatarCircle from './AvatarCircle';
 import FishImage from './FishImage';
 import Tag from './Tag';
 
-const EventCard: FC<{ image?: boolean }> = ({ image }) => {
+const EventCard: FC<{ event: any }> = ({ event }) => {
   const { push } = useRouter();
   const handleClick = () => {
-    push('/events/1');
+    push('/events/' + event.slug);
   };
 
   return (
@@ -17,19 +17,29 @@ const EventCard: FC<{ image?: boolean }> = ({ image }) => {
       onClick={handleClick}
       role='button'
     >
-      {image && (
+      {!event.cover ? (
         <div className='relative aspect-[1.44/1]'>
           <FishImage />
         </div>
-      )}
+        ) : (
+        <div className='relative aspect-[1.44/1]'>
+
+            <Image
+            fill
+            src={event.cover}
+            alt='event cover'
+            className='object-cover'
+          />
+        </div>
+        )}
       <div className='flex p-5 pb-22 flex-col'>
-        <span className='text-m text-accent1 mb-2'>14 декабря, 18:00</span>
+        <span className='text-m text-accent1 mb-2'>{new Date(event.date).toLocaleDateString()}</span>
         <span className='mb-[54px] text-a-m font-medium text-primary text-m'>
-          Разработка новой системы анализа медицинских снимков
+          {event.title.en}
         </span>
         <div className='flex items-center space-x-1'>
           <Image src='/map-pin.svg' width={20} height={20} alt='map pin icon' />
-          <span className='font-bodyLight text-secondary text-s'>Армения, проспект  Адмирала Сарова, ...</span>
+          <span className='font-bodyLight text-secondary text-s'>{event.orgs}</span>
         </div>
       </div>
     </div>
