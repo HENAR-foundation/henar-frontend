@@ -57,6 +57,7 @@ export interface Event {
   tags: string[];
   terms_of_visit: Translations;
   title: Translations;
+  links: string;
 }
 
 export interface User {

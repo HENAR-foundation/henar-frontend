@@ -229,7 +229,7 @@ const CreateEventModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
                 <div className='flex flex-col lg:w-[170px]'>
                   <span className='text-l'>{t('date')}</span>
                   <span className='font-bodyLight text-a-ss'>
-                    {t('types_date')}
+                    {t('title-field-date')}
                   </span>
                 </div>
                 <div className='w-full max-w-[480px]'>
@@ -238,7 +238,7 @@ const CreateEventModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
                     className='min-h-[120px]'
                     name='date'
                     onChange={formik.handleChange}
-                    value={formik.values.date}
+                    value={formik.values.date as any}
                     placeholder={t('date')}
                   />
                 </div>

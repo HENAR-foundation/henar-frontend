@@ -71,7 +71,7 @@ const EventPage = () => {
                 <span className='text-secondary text-a-ss mb-2'>
                   {t('date')}
                 </span>
-                <span className='text-l text-primary'>{new Date(event?.date).toLocaleDateString()}</span>
+                <span className='text-l text-primary'>{new Date(event?.date as any).toLocaleDateString()}</span>
               </p>
               <p className='flex flex-col mb-2'>
                 <span className='text-secondary text-a-ss mb-1'>
@@ -83,7 +83,7 @@ const EventPage = () => {
               </p>
             </div>
             <div className='bg-white rounded-s pt-5 pb-9 lg:pb-[68px] px-5 overflow-hidden lg:min-h-[240px]'>
-              <h3 className='text-a-l mb-3'>{t('link')}</h3>
+              <h3 className='text-a-l mb-3'>{t('links')}</h3>
               <Link target="_blank" className='text-m text-primary font-bodyLight' href={event?.links  || "test"}>
                 {event?.links || "test"}
               </Link>

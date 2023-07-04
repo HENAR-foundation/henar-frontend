@@ -382,7 +382,7 @@ const ApplicantCard = (props: any) => {
     )
 }
 
-const ProjectsTab: FC<{ t: any }> = ({ t }) => {
+const ProjectsTab = ({ t }: any) => {
     const { data: user, isFetched: isUserFetching } = useQuery({
         queryFn: checkSignIn,
         queryKey: ['isSignedIn'],
@@ -403,7 +403,7 @@ const ProjectsTab: FC<{ t: any }> = ({ t }) => {
 
     console.log(projects)
 
-    return (isProjectsFetching && isUserFetching && isUsersFetching) && (
+    return (isProjectsFetching && isUserFetching && isUsersFetching) ? (
       <>
         {projects?.map((project) => (
           <div className='flex flex-col rounded-l bg-white p-[20px] shadow-sm mb-20'>
@@ -419,15 +419,15 @@ const ProjectsTab: FC<{ t: any }> = ({ t }) => {
               <Tag name='Medicine' />
             </span>
             <div>
-                <h4 className='mt-5'>{Object.keys(project.applicants).filter((applicantId: string) => !project.rejected_applicants[applicantId]).length === 0 ? "You dont have applicants" : 'Applicants'}</h4>
+                <h4 className='mt-5'>{Object.keys(project.applicants).filter((applicantId: string) => !project.rejected_applicants[applicantId as any]).length === 0 ? "You dont have applicants" : 'Applicants'}</h4>
                 {
-                    Object.keys(project.applicants).filter((applicantId: string) => !project.rejected_applicants[applicantId]).map(applicant => <ApplicantCard applicant={users?.find(user => user._id == applicant)} project={project} refetch={refetchProjects}/>)
+                    Object.keys(project.applicants).filter((applicantId: string) => !project.rejected_applicants[applicantId as any]).map(applicant => <ApplicantCard applicant={users?.find(user => user._id == applicant)} project={project} refetch={refetchProjects}/>)
                 }
             </div>
           </div>
         ))}
       </>
-    );
+    ) : null
   };
 
 const ProfileModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
