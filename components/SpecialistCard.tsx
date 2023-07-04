@@ -30,7 +30,7 @@ const SpecialistCard: FC<any> = (user) => {
   return (
     <div className={`shadow-l p-4 lg:p-0 w-full h-full rounded-xl  flex min-h-[${user.small ? "100px" : "218px"}] bg-white overflow-hidden lg:flex-row flex-col`} onClick={user.onClick}>
       <div className='flex justify-center items-center'>
-        <div className={`lg:m-4 lg:w-[${user.small ? '100px' : '184px'}] w-full relative aspect-[1/1]`}>
+        <div className={`lg:m-4 lg:w-[${user.small ? '100px' : '184px'}] lg:h-[${user.small ? '100px' : '184px'}] w-full relative aspect-[1/1]`}>
           {avatar ? (
             <figure className='relative w-full h-full rounded-s overflow-hidden'>
               <Image
