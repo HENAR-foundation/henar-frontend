@@ -73,7 +73,7 @@ function getNotificationByType(type: string, body: any) {
     switch (type) {
         case "project_request": return <NotificationProjectRequest {...body} />
         case "approve_applicant": return <NotificationProjectRequestApprove {...body} />
-        case "contact_request": return <NotificationContactRequest {...body} />
+        case "contact_requested": return <NotificationContactRequest {...body} />
         case "contact_request_approved": return <NotificationContactRequestApprove {...body} />
         default: return null
     }

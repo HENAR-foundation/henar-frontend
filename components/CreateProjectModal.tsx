@@ -43,7 +43,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
   const queryClient = useQueryClient();
 
   const handleCreateProject = (photos: string[] = []) => {
-    const { description, request, title, how_to_help_the_project, links } =
+    const { description, request, title, how_to_help_the_project, links, tasks } =
       formik.values;
     if (user) {
         createProject({
@@ -52,7 +52,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
           description,
           how_to_help_the_project,
           title,
-          objective: 'OBJECTIVe',
+          objective: tasks,
           tags: [],
           whoIsNeeded: request,
           links

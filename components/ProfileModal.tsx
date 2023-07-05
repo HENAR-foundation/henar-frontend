@@ -269,6 +269,9 @@ const PasswordTab: FC<{ t: any }> = ({ t }) => (
         <InputMaterial label={t('new_password')} type='password' />
       </div>
     </div>
+    <div className='flex justify-end items-end h-[100px]'>
+        <ButtonPrimary>{t("reset_password")}</ButtonPrimary>
+    </div>
   </div>
 );
 

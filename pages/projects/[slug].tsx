@@ -77,8 +77,6 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
         mutationUpdateProjectStatus.mutate([project, "rejected"])
   }
 
-  console.log(project)
-
   return (
     <>
       <Head>

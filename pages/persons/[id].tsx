@@ -16,6 +16,7 @@ import { useToggle } from 'usehooks-ts';
 import { checkSignIn } from 'api/user';
 import FishImage from 'components/FishImage';
 import { formatFullName } from 'helpers';
+import { getLocationById } from 'api/location';
 
 const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
   const router = useRouter();
@@ -32,6 +33,12 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
   const { data: expert } = useQuery({
     queryFn: () => getUser(id?.toString() || ''),
     queryKey: ['person', id],
+  });
+
+  const { data: preUserLocation } = useQuery({
+    queryFn: () => getLocationById(user?.location || ''),
+    enabled: false,
+    queryKey: ['userLocation', user?.location],
   });
 
   const isContactAlreadyRequested =
@@ -117,12 +124,12 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
                 </ButtonPrimary>
                 }
             </div>
-            <div className='flex flex-col bg-white rounded-s py-6 px-5 justify-between'>
+            <div className='flex flex-col bg-white rounded-s py-6 px-5 justify-between' style={{ alignSelf: "flex-start" }}>
               <div>
                 <h2 className='text-a-xl mb-5'>{t('information')}</h2>
                 <p className='flex justify-between'>
                   <span className='text-tetriary'>{t('country')}</span>
-                  <span>Россия</span>
+                  <span>{preUserLocation?.country}</span>
                 </p>
                 <p className='mt-4 flex justify-between'>
                   <span className='text-tetriary'>{t('specialty')}</span>
