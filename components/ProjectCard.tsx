@@ -36,7 +36,7 @@ const ProjectCard: FC<{
       onClick={handleClick}
       role='button'
     >
-      {data.covers.length !== 0 && (
+      {data.covers && (
         <div className='relative aspect-[1.7/1] mb-6'>
           <Image
             fill
