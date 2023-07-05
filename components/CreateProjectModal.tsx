@@ -14,17 +14,19 @@ import { getProjects } from 'api/projects';
 import ProjectFilesUploader from './ProjectFilesUploader';
 import { uploadPhotos } from 'api/mutations/files';
 import { ProjectHelpTypes, ProjectPhases, formatFullName } from 'helpers';
+import { t } from 'i18next';
 
 const CreateProjectSchema = Yup.object().shape({
   title: Yup.string()
     .min(5, 'Название должно содержать минимум 5 символов')
     .max(50, 'Название может содержать максимум 50 символов')
-    .required('err_missing_fields'),
-  description: Yup.string().required('err_missing_fields'),
-  tasks: Yup.string().required('err_missing_fields'),
-  request: Yup.string().required('err_missing_fields'),
+    .required(t('err_missing_fields') as any),
+  description: Yup.string().required(t('err_missing_fields') as any),
+  tasks: Yup.string().required(t('err_missing_fields') as any),
+  request: Yup.string().required(t('err_missing_fields') as any),
   photos: Yup.mixed().required('Required'),
-  how_to_help_the_project: Yup.string().required('Required'),
+  how_to_help_the_project: Yup.string(),
+  links: Yup.string(),
 });
 
 const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
@@ -41,7 +43,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
   const queryClient = useQueryClient();
 
   const handleCreateProject = (photos: string[] = []) => {
-    const { description, request, title, how_to_help_the_project } =
+    const { description, request, title, how_to_help_the_project, links } =
       formik.values;
     if (user) {
         createProject({
@@ -53,6 +55,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
           objective: 'OBJECTIVe',
           tags: [],
           whoIsNeeded: request,
+          links
         }).then(() => {
           queryClient.invalidateQueries({ queryKey: ['projects'] });
           refetchProjects();
@@ -74,6 +77,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
       request: '',
       photos: [],
       how_to_help_the_project: '',
+      links: ''
     },
     validateOnChange: false,
     validationSchema: CreateProjectSchema,
@@ -254,9 +258,9 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
               </div>
               <div className='lg:flex-row flex-col flex justify-between'>
                 <div className='flex flex-col lg:w-[170px]'>
-                  <span className='text-l'>{t('request')}</span>
+                  <span className='text-l'>{t('org')}</span>
                   <span className='font-bodyLight text-a-ss'>
-                    {t('types_needs')}
+                    {t('orgs')}
                   </span>
                 </div>
                 <div className='w-full max-w-[480px]'>
@@ -267,6 +271,23 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
                     onChange={formik.handleChange}
                     value={formik.values.request}
                     placeholder={t('request')}
+                  />
+                </div>
+              </div>
+              <div className='flex justify-between lg:flex-row flex-col'>
+                <div className='flex flex-col lg:w-[170px]'>
+                  <span className='text-l'>{t('links')}</span>
+                  <span className='font-bodyLight text-a-ss'>
+                    {t('title-field-description')}
+                  </span>
+                </div>
+                <div className='w-full max-w-[480px]'>
+                  <InputMaterial
+                    name='links'
+                    error={t(formik.errors.links as any)}
+                    onChange={formik.handleChange}
+                    value={formik.values.links}
+                    placeholder={t('links')}
                   />
                 </div>
               </div>

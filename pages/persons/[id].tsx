@@ -144,7 +144,7 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
                         </p>
                         {
                             Object.keys(expert?.contacts).map((contactKey: string) => <p className='flex justify-between'>
-                                <span className='text-tetriary'>{contactKey}</span>
+                                <span className='text-tetriary'>{t(contactKey as any)}</span>
                                 <span>{expert?.contacts[contactKey] || "not filled"}</span>
                             </p>)
                         }

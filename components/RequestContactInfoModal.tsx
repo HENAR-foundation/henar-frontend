@@ -9,12 +9,13 @@ import TextAreaMaterial from './TextAreaMaterial';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { requestUserContact } from 'api/mutations/user';
 import { useRouter } from 'next/router';
+import { t } from 'i18next';
 
 const MotivationSchema = Yup.object().shape({
   motivation: Yup.string()
     .min(5, 'Должно содержать минимум 5 символов')
     .max(1500, 'Может содержать максимум 1500 символов')
-    .required('err_missing_fields'),
+    .required(t('err_missing_fields') as any),
 });
 
 const RequestContactInfoModal: FC<{ onClose: VoidFunction }> = ({
@@ -79,16 +80,16 @@ const RequestContactInfoModal: FC<{ onClose: VoidFunction }> = ({
                   icon='arrow'
                   color='inverted'
                 >
-                  Запросить
+                  {t("connect")}
                 </ButtonPrimary>
               </div>
             </div>
             <div className='rounded-b-xl overflow-hidden  space-y-10 flex flex-col bg-white lg:px-8 px-4 py-6'>
               <div className='flex justify-between lg:flex-row flex-col'>
                 <div className='flex flex-col lg:w-[160px]'>
-                  <span className='text-l'>Мотивация</span>
+                  <span className='text-l'>{t("motivation")}</span>
                   <span className='font-bodyLight text-a-ss'>
-                    Почему хотите запросить контакт специалиста?
+                    {t("why_connect")}
                   </span>
                 </div>
                 <div className='w-full max-w-[480px]'>
@@ -98,10 +99,10 @@ const RequestContactInfoModal: FC<{ onClose: VoidFunction }> = ({
                     error={formik.errors.motivation}
                     onChange={formik.handleChange}
                     value={formik.values.motivation}
-                    placeholder='Мотивация'
+                    placeholder={t("motivation")}
                   />
                   <span className='text-secondary text-a-ss'>
-                    До 1500 символов
+                    {t("under_1500")}
                   </span>
                 </div>
               </div>

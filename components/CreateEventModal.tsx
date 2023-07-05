@@ -134,7 +134,7 @@ const CreateEventModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
                   color='inverted'
                   busy={mutationPhotos.isLoading}
                 >
-                  {t('create_project')}
+                  {t('create_event')}
                 </ButtonPrimary>
               </div>
             </div>
@@ -212,7 +212,7 @@ const CreateEventModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
                   <span className='font-bodyLight text-a-ss'>
                     {t('title-field-links')}
                   </span>
-                    error={t(formik.errors.date as any)}
+                    {t(formik.errors.date as any)}
                 </div>
                 <div className='w-full max-w-[480px]'>
                   <TextAreaMaterial

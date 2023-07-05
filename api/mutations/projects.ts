@@ -9,8 +9,9 @@ export const createProject = async (project: {
   author: string;
   how_to_help_the_project: string;
   covers: string[];
+  links: string;
 }) => {
-  const { author, covers, description, title, objective, whoIsNeeded, tags } =
+  const { author, covers, description, title, objective, whoIsNeeded, tags, links } =
     project;
   try {
     const result = await axios.post(
@@ -24,6 +25,7 @@ export const createProject = async (project: {
         objective: { en: objective, ru: objective, hy: objective },
         who_is_needed: { en: whoIsNeeded, ru: whoIsNeeded, hy: whoIsNeeded },
         tags,
+        links
       },
       { withCredentials: true }
     );

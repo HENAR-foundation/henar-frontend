@@ -26,7 +26,7 @@ const EventPage = () => {
   return (
     <>
       <Head>
-        <title>Событие</title>
+        <title>{t("event")}</title>
       </Head>
       <div>
         <div className='absolute w-full top-14 left-0 lg:hidden flex aspect-[1.45/1] mb-5'>
@@ -61,6 +61,12 @@ const EventPage = () => {
                 {event?.description?.en}
               </span>
             </div>
+            <div className='bg-white rounded-s px-5 pt-5 pb-9 lg:pb-5'>
+              <h3 className='text-a-l mb-3'>{t('org')}</h3>
+              <span className='font-bodyLight'>
+                {event?.orgs}
+              </span>
+            </div>
           </div>
           <div className='lg:order-2 col-span-1 space-y-5'>
             <div className='bg-white rounded-s pt-5 pb-[45px] px-5 overflow-hidden'>
@@ -73,16 +79,16 @@ const EventPage = () => {
                 </span>
                 <span className='text-l text-primary'>{new Date(event?.date as any).toLocaleDateString()}</span>
               </p>
-              <p className='flex flex-col mb-2'>
+              {/* <p className='flex flex-col mb-2'>
                 <span className='text-secondary text-a-ss mb-1'>
                   {t('where')}
                 </span>
                 <span className='text-m text-primary font-bodyLight'>
                   ...
                 </span>
-              </p>
+              </p> */}
             </div>
-            <div className='bg-white rounded-s pt-5 pb-9 lg:pb-[68px] px-5 overflow-hidden lg:min-h-[240px]'>
+            <div className='bg-white rounded-s pt-5 pb-9 lg:pb-[68px] px-5 overflow-hidden'>
               <h3 className='text-a-l mb-3'>{t('links')}</h3>
               <Link target="_blank" className='text-m text-primary font-bodyLight' href={event?.links  || "test"}>
                 {event?.links || "test"}

@@ -357,18 +357,18 @@ const ApplicantCard = (props: any) => {
     const { applicant } = props
     const mutationApproveApplicant = useMutation({
         mutationFn: ({applicantId, projectId}: any) => approveApplicant({projectId, applicantId}),
-        onSuccess: () => props.refetch
+        onSuccess: () => props.refetch()
     })
 
     const mutationRejectApplicant = useMutation({
         mutationFn: ({applicantId, projectId}: any) => rejectApplicant({projectId, applicantId}),
-        onSuccess: () => props.refetch
+        onSuccess: () => props.refetch()
     })
     
     return (
         <div className='flex flex-row justify-between items-center'>
             <div  className='flex mt-5'>
-                <AvatarCircle src={applicant.avatar} />
+                <AvatarCircle src={applicant.avatar || ""} />
                 <div className='flex flex-col ml-[15px] mr-6'>
                 <span>{formatFullName(applicant)}</span>
                 <span className='font-thin text-a-ss'>{applicant?.job}</span>
@@ -401,7 +401,15 @@ const ProjectsTab = ({ t }: any) => {
         }
     });
 
-    console.log(projects)
+    const applicantsFilter = (project: any) => (applicantId: string) => {
+        if (project.rejected_applicants) {
+            return !project.rejected_applicants[applicantId as any]
+        } 
+        if (project.successful_applicants) {
+            return !project.successful_applicants[applicantId as any]
+        }
+        return true
+    }
 
     return (isProjectsFetching && isUserFetching && isUsersFetching) ? (
       <>
@@ -419,9 +427,9 @@ const ProjectsTab = ({ t }: any) => {
               <Tag name='Medicine' />
             </span>
             <div>
-                <h4 className='mt-5'>{Object.keys(project.applicants).filter((applicantId: string) => !project.rejected_applicants[applicantId as any]).length === 0 ? "You dont have applicants" : 'Applicants'}</h4>
+                <h4 className='mt-5'>{Object.keys(project.applicants).filter(applicantsFilter(project)).length === 0 ? "You dont have applicants" : 'Applicants'}</h4>
                 {
-                    Object.keys(project.applicants).filter((applicantId: string) => !project.rejected_applicants[applicantId as any]).map(applicant => <ApplicantCard applicant={users?.find(user => user._id == applicant)} project={project} refetch={refetchProjects}/>)
+                    Object.keys(project.applicants).filter(applicantsFilter(project)).map(applicant => <ApplicantCard applicant={users?.find(user => user._id == applicant)} project={project} refetch={refetchProjects}/>)
                 }
             </div>
           </div>

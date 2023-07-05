@@ -60,7 +60,7 @@ const SpecialistsPage = () => {
             { label: 'Америка', val: 'us' },
           ]}
           icon='globe'
-          defaultVal='Все страны'
+          defaultVal={t("all_countries")}
           label={t('country')}
         />
         <SelectMaterial
@@ -69,8 +69,8 @@ const SpecialistsPage = () => {
             { label: 'Стоматолог', val: 'us' },
           ]}
           icon='cap'
-          defaultVal='Все направления'
-          label='Направление'
+          defaultVal={t('all_destinations')}
+          label={t('destination')}
         />
         <SortingSelect
           options={[

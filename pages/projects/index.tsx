@@ -52,15 +52,10 @@ const ProjectsPage = () => {
     );
   });
 
-  console.info(filters);
-
-
   const handleCreateProjectClick = () => {
     if (user) toggleModal();
     else push('/registration');
   };
-
-  console.log(projects)
 
   return (
     <>
@@ -82,8 +77,7 @@ const ProjectsPage = () => {
             {t('projects')}
           </h1>
           <span className='font-bodyLight text-m mb-8 leading-6'>
-            Проекты HENAR - это возможность для диаспоральных врачей Армении
-            найти финансирование или помощь
+            {t("projects_desc")}
           </span>
           <ButtonPrimary
             onClick={handleCreateProjectClick}
@@ -166,7 +160,7 @@ const ProjectsPage = () => {
       {
         user?.role === "admin" ? (
             <div>
-                <h1 className='mb-4 text-h-m-d font-bold'>Need to approve ({filteredProjects?.filter(project => project.moderation_status === "pending").length})</h1>
+                <h1 className='mb-4 text-h-m-d font-bold'>{t("projects_need_to_approve")} ({filteredProjects?.filter(project => project.moderation_status === "pending").length})</h1>
                 <div className='columns-1 lg:columns-3 space-y-4 mb-10'>
                 {filteredProjects?.filter(project => project.moderation_status === "pending").length && filteredProjects?.filter(project => project.moderation_status === "pending").length > 0 
                 ? filteredProjects?.filter(project => project.moderation_status === "pending").map((project) => (
@@ -177,7 +171,7 @@ const ProjectsPage = () => {
                 </span>
                 }
                 </div>
-                <h1 className='mb-4 text-h-m-d font-bold'>Approved ({filteredProjects?.filter(project => project.moderation_status === "approved").length})</h1>
+                <h1 className='mb-4 text-h-m-d font-bold'>{t("projects_approved")} ({filteredProjects?.filter(project => project.moderation_status === "approved").length})</h1>
                 <div className='columns-1 lg:columns-3 space-y-4 mb-10'>
                 {filteredProjects?.filter(project => project.moderation_status === "approved").length && filteredProjects?.filter(project => project.moderation_status === "approved").length > 0 
                 ? filteredProjects?.filter(project => project.moderation_status === "approved").map((project) => (
@@ -188,7 +182,7 @@ const ProjectsPage = () => {
                 </span>
                 }
                 </div>
-                <h1 className='mb-4 text-h-m-d font-bold'>Declined ({filteredProjects?.filter(project => project.moderation_status === "rejected").length})</h1>
+                <h1 className='mb-4 text-h-m-d font-bold'>{t("projects_declined")} ({filteredProjects?.filter(project => project.moderation_status === "rejected").length})</h1>
                 <div className='columns-1 lg:columns-3 space-y-4 mb-10'>
                 {filteredProjects?.filter(project => project.moderation_status === "rejected").length && filteredProjects?.filter(project => project.moderation_status === "rejected").length > 0 
                 ? filteredProjects?.filter(project => project.moderation_status === "rejected").map((project) => (

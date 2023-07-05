@@ -15,6 +15,8 @@ import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { checkSignIn } from 'api/user';
 import { signOut } from 'api/mutations/auth';
 import { formatFullName } from 'helpers';
+import Notification from './Notification';
+import NotificationMessage from './NotificationMessage';
 
 const links = [
   {
@@ -58,11 +60,8 @@ const notificationsMock = [
   },
 ];
 
-const NavNotifications: FC<{ onClose: () => void }> = ({ onClose }) => {
-  const { data: notifications } = useQuery({
-    queryFn: getNotifications,
-  }); 
-  const { data: user } = useQuery({
+const NavNotifications: FC<{ onClose: () => void, t: any, notifications: any[] }> = ({ onClose, t, notifications }) => { 
+  const { data: user, refetch: refetchNotifications } = useQuery({
     queryFn: checkSignIn,
     queryKey: ['isSignedIn'],
   });
@@ -71,80 +70,31 @@ const NavNotifications: FC<{ onClose: () => void }> = ({ onClose }) => {
     onSuccess: () => null
   });
 
-  console.log(notifications)
-
   async function handleReadNotifications() {
       const newNotifications = notifications?.filter(n => n.status === "new")
       if (newNotifications) {
         const updatedNotifications = await acceptNotificationsMutation.mutate(newNotifications.map(n => n._id))
-        console.log(updatedNotifications)
+        refetchNotifications()
     }
   }
-  //   const { data: users } = useQuery({ queryFn: getUsers, queryKey: ['users'] });
-  //   const incomingRequests = useMemo(() => {
-  //     const nots = [];
-  //     if (user) {
-  //       for (const [key, value] of Object.entries(
-  //         user?.contacts_request.incoming_contact_requests
-  //       )) {
-  //         nots.push({ name: users?.find(({ _id }) => _id === key)?._id });
-  //         console.log(`${key}: ${value}`);
-  //       }
-  //       return nots
-  //     }
-  //   }, []);
 
-  //   const requests = user?.contacts_request.incoming_contact_requests;
-  //   console.info(requests)
   return (
     <div className='flex flex-col bg-white rounded-b-l pt-[18px] pl-5 pr-[17px] w-[383px] absolute top-[58px] left-[-335px] pb-10 border-t-[1px] border-accent2'>
       <div className='flex justify-between'>
         <span className='text-l'>Уведомления</span>
         <span className='text-accent1 cursor-pointer' onClick={handleReadNotifications}>
-          Прочитать
+          {t("read")}
         </span>
         <span className='text-accent1 cursor-pointer' onClick={onClose}>
-          Закрыть
+          {t("close")}
         </span>
       </div>
       <div className='flex flex-col mt-4'>
-        {!user?.contacts_request.incoming_contact_requests
+        {!notifications
           ? 'Нет новых уведомлений'
-          : Object.keys(user?.contacts_request.incoming_contact_requests).map(
-              (text, index) => (
-                <div className='flex' key={index}>
-                  <div
-                    className={`flex items-center h-[60px] ${
-                      index !== notificationsMock.length - 1
-                        ? 'border-b-[1px] border-borderPrimary'
-                        : ''
-                    }`}
-                    key={index}
-                  >
-                    <Image
-                      src={'/fish-person.png'}
-                      width={32}
-                      height={32}
-                      alt='avatar'
-                      className='rounded-full h-[32px]'
-                    />
-                    <span className='ml-[9px] text-a-ss'>
-                      <span className='text-accent1'>
-                        Александр Алексаднров
-                      </span>{' '}
-                      отправил запрос на обмен контактамии
-                    </span>
-                  </div>
-                  <div className='flex ml-[13px] w-[13px] justify-center items-center'>
-                    <Image
-                      className='cursor-pointer'
-                      src='/cross-grey.svg'
-                      width={10}
-                      height={10}
-                      alt='delete notification'
-                    />
-                  </div>
-                </div>
+          : notifications.map(
+              (notification, index) => (
+                <NotificationMessage notification={notification} first={index === 0} key={index} />
               )
             )}
       </div>
@@ -174,6 +124,9 @@ const ProfileNav: FC<{ onShowSettings: () => void }> = ({ onShowSettings }) => {
     queryFn: checkSignIn,
     queryKey: ['isSignedIn'],
   });
+  const { data: notifications } = useQuery({
+    queryFn: getNotifications,
+  });
   const requests =
     user?.contacts_request.incoming_contact_requests.length !== 0;
 
@@ -194,7 +147,7 @@ const ProfileNav: FC<{ onShowSettings: () => void }> = ({ onShowSettings }) => {
         </span>
       </div>
       {notificationsOpened && (
-        <NavNotifications onClose={toggleNotifications} />
+        <NavNotifications onClose={toggleNotifications} t={t} notifications={notifications || []} />
       )}
       <AvatarCircle src={user?.avatar} />
       <div

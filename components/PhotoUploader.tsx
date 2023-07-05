@@ -84,7 +84,7 @@ const PhotoUploader: FC<{
             className='text-error cursor-pointer'
             onClick={() => onChange(name, '')}
           >
-            Удалить фото
+            {t("delete_photo")}
           </span>
         </div>
       )}

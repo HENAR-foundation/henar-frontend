@@ -23,7 +23,6 @@ const EventCard: FC<{ event: any }> = ({ event }) => {
         </div>
         ) : (
         <div className='relative aspect-[1.44/1]'>
-
             <Image
             fill
             src={event.cover}
@@ -38,7 +37,7 @@ const EventCard: FC<{ event: any }> = ({ event }) => {
           {event.title.en}
         </span>
         <div className='flex items-center space-x-1'>
-          <Image src='/map-pin.svg' width={20} height={20} alt='map pin icon' />
+          {/* <Image src='/map-pin.svg' width={20} height={20} alt='map pin icon' /> */}
           <span className='font-bodyLight text-secondary text-s'>{event.orgs}</span>
         </div>
       </div>

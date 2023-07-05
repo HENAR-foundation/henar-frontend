@@ -14,6 +14,7 @@ import { GetServerSideProps } from 'next';
 import { useTranslations } from 'next-intl';
 import Head from 'next/head';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
 import { useToggle } from 'usehooks-ts';
@@ -146,7 +147,7 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                             className='w-full text-left'
                             onClick={handleApply}
                             >
-                            Edit
+                            {t("edit")}
                         </ButtonPrimary>
                         <ButtonPrimary
                             kind='M'
@@ -154,7 +155,7 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                             className='w-full text-left mt-3'
                             onClick={() => handleDeleteProject(project?._id)}
                             >
-                            Delete
+                            {t("delete")}
                         </ButtonPrimary>
                         </>
                     ) : (
@@ -184,6 +185,24 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                   </div>
                 </div>
               </div>
+              {
+                project?.links &&
+                <div className='col-span-1 mb-4 lg:mb-0'>
+                    <div className='flex bg-white rounded-s p-6'>
+                    <div className='flex flex-col font-bodyLight'>
+                        <span className='text-a-m'>
+                        {t("links")}
+                        </span>
+                        
+                        <Link href={project!.links}>
+                            <span className='text-tetriary text-a-l text-link'>
+                            {project?.links}
+                            </span>
+                        </Link>
+                    </div>
+                    </div>
+                </div>
+              }
             </div>
           </div>
           <div className='z-20 grid grid-cols-1 lg:grid-cols-3 lg:gap-8'>
@@ -198,12 +217,15 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                 <h3 className='text-a-l mb-4'>{t('project_objective')}</h3>
                 <span className='font-bodyLight'>{project?.objective.en}</span>
               </div>
-              <div className='bg-white rounded-s px-6 pt-6 pb-8'>
+              {
+                project?.who_is_needed  &&
+                <div className='bg-white rounded-s px-6 pt-6 pb-8'>
                 <h3 className='text-a-l mb-4'>{t('project_needs')}</h3>
                 <span className='font-bodyLight'>
                   {project?.who_is_needed.en}
                 </span>
               </div>
+                }
             </div>
           </div>
           {
@@ -216,14 +238,14 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                         className='w-full text-left mr-3'
                         onClick={handleApproveProject}
                         >
-                        Approve
+                        {t("approve")}
                     </ButtonPrimary>
                     <ButtonOutline
                         kind='M'
                         className='w-full text-left  mr-3'
                         onClick={handleDeclineProject}
                         >
-                        Decline
+                        {t("decline")}
                     </ButtonOutline>
                 </div>
               </div>

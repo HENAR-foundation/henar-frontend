@@ -174,9 +174,11 @@ const Home = () => {
                 {t('createprojects')}
               </h3>
               <span className='text-m mb-10'>{t('collaborate')}</span>
-              <ButtonPrimary className='lg:mb-0 mb-6' color='cream' kind='M'>
-                {t('toprojects')}
-              </ButtonPrimary>
+              <Link href="projects">
+                <ButtonPrimary className='lg:mb-0 mb-6' color='cream' kind='M'>
+                    {t('toprojects')}
+                </ButtonPrimary>
+              </Link>
             </div>
           </div>
           <div className='hidden lg:flex flex-[0.49] h-[430px] bg-cream rounded-l-xll  pl-[57px] flex-col justify-center'>
@@ -220,12 +222,14 @@ const Home = () => {
                 pic='/fish-expert-armen.png'
               />
             </div>
-            <ButtonPrimary
-              kind='M'
-              className='mt-10 mb-6 lg:mb-12 lg:w-[206px] w-full'
-            >
-              {t('toexperts')}
-            </ButtonPrimary>
+            <Link href="specialists">
+                <ButtonPrimary
+                kind='M'
+                className='mt-10 mb-6 lg:mb-12 lg:w-[206px] w-full'
+                >
+                {t('toexperts')}
+                </ButtonPrimary>
+            </Link>
           </div>
           <div className='hidden lg:flex w-full bg-mint rounded-l-xl'></div>
         </div>
@@ -262,13 +266,15 @@ const Home = () => {
             <span className='font-bodyLight text-m mt-[15px] lg:mt-[20px] text-center'>
               {t('stayinformed')}
             </span>
-            <ButtonPrimary
-              kind='M'
-              color='cream'
-              className='lg:w-[206px] w-full mt-[38px] lg:mt-8'
-            >
-              {t('toanalytics')}
-            </ButtonPrimary>
+            <Link href="researches">
+                <ButtonPrimary
+                kind='M'
+                color='cream'
+                className='lg:w-[206px] w-full mt-[38px] lg:mt-8'
+                >
+                {t('toanalytics')}
+                </ButtonPrimary>
+            </Link>
           </div>
           <div className='hidden lg:flex flex-1 bg-accent2 bg-opacity-20 rounded-l-xll items-center justify-start'>
             <div className='ml-[33px]'>

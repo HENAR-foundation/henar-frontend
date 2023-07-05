@@ -7,6 +7,7 @@ export interface Project {
   moderation_status: string;
   objective: Translations;
   created_by: string;
+  links: string;
   reason_of_reject: string;
   rejected_applicants: string[];
   slug: string;
@@ -58,6 +59,7 @@ export interface Event {
   terms_of_visit: Translations;
   title: Translations;
   links: string;
+  orgs: string;
 }
 
 export interface User {
