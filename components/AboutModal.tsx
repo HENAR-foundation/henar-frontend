@@ -38,7 +38,7 @@ const AboutModal = () => {
     mutationFn: updateUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['isSignedIn'] }).then(() => {
-        PubSub.publish('notification', 'Профиль успешно обновлен');
+        PubSub.publish('notification', t("alert_signup_success"));
       });
     },
   });

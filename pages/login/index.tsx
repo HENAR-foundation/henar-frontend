@@ -19,13 +19,13 @@ const SigninSchema = Yup.object().shape({
 
 const LoginPage = () => {
   const { push } = useRouter();
-
+  const t = useTranslations();
   const queryClient = useQueryClient();
 
   const signInMutation = useMutation({
     onSuccess: (result) => {
       if (result) {
-        PubSub.publish('notification', 'Вы успешно вошли');
+        PubSub.publish('notification', t("alert_login"));
         queryClient.invalidateQueries({ queryKey: ['isSignedIn'] });
         queryClient.refetchQueries({ queryKey: ['isSignedIn'] });
         push('/projects');
@@ -50,7 +50,6 @@ const LoginPage = () => {
     },
   });
 
-  const t = useTranslations();
 
   return (
     <>

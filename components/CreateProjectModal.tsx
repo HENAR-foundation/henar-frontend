@@ -17,19 +17,20 @@ import { ProjectHelpTypes, ProjectPhases, formatFullName } from 'helpers';
 import { t } from 'i18next';
 
 const CreateProjectSchema = Yup.object().shape({
-  title: Yup.string()
+    title: Yup.string()
     .min(5, 'Название должно содержать минимум 5 символов')
     .max(50, 'Название может содержать максимум 50 символов')
     .required(t('err_missing_fields') as any),
-  description: Yup.string().required(t('err_missing_fields') as any),
-  tasks: Yup.string().required(t('err_missing_fields') as any),
-  request: Yup.string().required(t('err_missing_fields') as any),
-  photos: Yup.mixed().required('Required'),
+    description: Yup.string().required(t('err_missing_fields') as any),
+    tasks: Yup.string().required(t('err_missing_fields') as any),
+    request: Yup.string().required(t('err_missing_fields') as any),
+    photos: Yup.mixed().required('Required'),
   how_to_help_the_project: Yup.string(),
   links: Yup.string(),
 });
 
 const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
+  const t = useTranslations();
   const { data: user } = useQuery({
     queryFn: checkSignIn,
     queryKey: ['isSignedIn'],
@@ -38,13 +39,13 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
   const { refetch: refetchProjects } = useQuery({
     queryKey: ['projects'],
     queryFn: getProjects,
-  });
+});
 
   const queryClient = useQueryClient();
-
+  
   const handleCreateProject = (photos: string[] = []) => {
     const { description, request, title, how_to_help_the_project, links, tasks } =
-      formik.values;
+    formik.values;
     if (user) {
         createProject({
           covers: photos,
@@ -59,7 +60,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
         }).then(() => {
           queryClient.invalidateQueries({ queryKey: ['projects'] });
           refetchProjects();
-          PubSub.publish('notification', 'Проект успешно создал');
+          PubSub.publish('notification', t("alert_project_created"));
           onClose();
         });
     }
@@ -93,7 +94,6 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
     },
   });
 
-  const t = useTranslations();
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';

@@ -191,12 +191,16 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                         <span className='text-a-m'>
                         {t("links")}
                         </span>
-                        
-                        <Link href={project!.links}>
-                            <span className='text-tetriary text-a-l text-link'>
-                            {project?.links}
-                            </span>
-                        </Link>
+                        <div className='space-x-1 flex'>
+                            <Image src='/external-link-alt.svg' width={16} height={16} alt='' />
+                            <Link
+                                href={project!.links}
+                                target='_blank'
+                                className='font-bodyLight text-h-m-m'
+                            >
+                                {t("link")}
+                            </Link>
+                        </div>
                     </div>
                     </div>
                 </div>

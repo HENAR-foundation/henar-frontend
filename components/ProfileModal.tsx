@@ -82,7 +82,7 @@ const AboutTab: FC = () => {
     mutationFn: updateUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['isSignedIn'] }).then(() => {
-        PubSub.publish('notification', 'Профиль успешно обновлен');
+        PubSub.publish('notification', t("alert_profile_update"));
       });
     },
   });

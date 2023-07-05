@@ -146,5 +146,7 @@
   "alert_project_request": "Request was sent. Follow the status of the project in your personal account  in the \"Projects\" section",
   "alert_contact_request": "Request was sent. Follow the status of contacts in your personal account in the \"Expert Network\" section",
   "alert_contact_request_noauth": "Please register to request specialist information",
-  "alert_signup_success": "Registered successfully"
+  "alert_signup_success": "Registered successfully",
+  "terms_and_conditions": "Terms and conditions",
+  "privacy_policy": "Privacy policy"
 }

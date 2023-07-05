@@ -88,11 +88,18 @@ const EventPage = () => {
                 </span>
               </p> */}
             </div>
-            <div className='bg-white rounded-s pt-5 pb-9 lg:pb-[68px] px-5 overflow-hidden'>
+            <div className='bg-white rounded-s pt-5 lg:pb-[68px] px-5 overflow-hidden'>
               <h3 className='text-a-l mb-3'>{t('links')}</h3>
-              <Link target="_blank" className='text-m text-primary font-bodyLight' href={event?.links  || "test"}>
-                {event?.links || "test"}
-              </Link>
+              <div className='space-x-1 flex'>
+                <Image src='/external-link-alt.svg' width={16} height={16} alt='' />
+                <Link
+                    href={event?.links || "test"}
+                    target='_blank'
+                    className='font-bodyLight text-h-m-m'
+                >
+                    {t("link")}
+                </Link>
+            </div>
             </div>
           </div>
         </div>

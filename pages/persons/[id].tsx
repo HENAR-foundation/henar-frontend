@@ -53,7 +53,7 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
       router.push('/registration');
       PubSub.publish(
         'notification',
-        'Please register to request specialist information'
+        t("alert_contact_request_noauth")
       );
     }
   };

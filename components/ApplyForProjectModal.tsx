@@ -29,7 +29,7 @@ const ApplyForProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['project', slug] });
       queryClient.refetchQueries({ queryKey: ['project', slug] });
-      PubSub.publish('notification', 'Request was sended');
+      PubSub.publish('notification', t("alert_project_request"));
       onClose();
     },
   });

@@ -84,9 +84,7 @@ const NotificationMessage: FC<{ notification: any, first: boolean }> = ({ notifi
     <div className='flex' style={{ opacity: notification.status === "new" ? 1 : 0.5 }}>
         <div
         className={`flex items-center h-[60px] ${
-            first
-            ? 'border-b-[1px] border-borderPrimary'
-            : ''
+            'border-b-[1px] border-borderPrimary'
         }`}
         >
         <Image

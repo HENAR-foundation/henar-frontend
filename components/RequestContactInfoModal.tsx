@@ -32,7 +32,7 @@ const RequestContactInfoModal: FC<{ onClose: VoidFunction }> = ({
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['person', id] });
       queryClient.refetchQueries({ queryKey: ['person', id] });
-      PubSub.publish('notification', 'Реквест успешно отправлен');
+      PubSub.publish('notification', t("alert_contact_request"));
       onClose();
     },
   });

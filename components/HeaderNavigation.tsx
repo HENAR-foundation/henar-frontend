@@ -114,7 +114,7 @@ const ProfileNav: FC<{ onShowSettings: () => void }> = ({ onShowSettings }) => {
     signOut()
       .then(() => {
         queryClient.invalidateQueries({ queryKey: ['isSignedIn'] }).then(() => {
-          PubSub.publish('notification', 'Вы успешно вышли');
+          PubSub.publish('notification', t("alert_logout"));
           push('/');
         });
       })
