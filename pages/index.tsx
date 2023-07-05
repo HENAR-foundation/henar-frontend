@@ -132,7 +132,7 @@ const Home = () => {
           <div className='lg:ml-[160px] flex break-words lg:min-h-[420px] pl-5 pr-5 justify-between'>
             <div>
               <div className='lg:mr-[124px]'>
-                <h3 className='lg:w-[458px] font-body mt-8 lg:mt-12 text-h-xl-m lg:text-h-l-d font-bold leading-[100%] mb-3 lg:mb-[19px]'>
+                <h3 className='lg:w-[458px] font-body mt-8 lg:mt-12 text-h-m-d lg:text-h-l-d font-bold leading-[100%] mb-3 lg:mb-[19px]'>
                   {t('welcome_header')}
                 </h3>
                 <span className='text-m inline-block lg:w-[328px]'>
@@ -171,7 +171,7 @@ const Home = () => {
             </div>
             <div className='flex flex-col text-left lg:w-[242px] px-[26px] lg:px-0'>
               <span className='text-accent2'>{t('projects')}</span>
-              <h3 className='font-body my-[14px] text-h-l-d font-bold leading-[100%] w-full'>
+              <h3 className='font-body my-[14px] text-h-m-d lg:text-h-l-d font-bold leading-[100%] w-full'>
                 {t('createprojects')}
               </h3>
               <span className='text-m mb-10'>{t('collaborate')}</span>
@@ -292,7 +292,7 @@ const Home = () => {
           <div className='hidden lg:flex flex-[0.825] bg-mint rounded-r-xll items-center justify-end'>
             <div className='flex flex-col mr-12'>
               <span className='text-accent1'> {t('events')}</span>
-              <h3 className='w-[330px] leading-[100%] my-4 text-h-l-d break-all'>
+              <h3 className='w-[330px] leading-[100%] my-4 text-h-l-d break-words'>
                 {t('stay-tuned')}
               </h3>
               <span className='lg:w-[240px] text-m leading-[150%] font-bodyLight'>
