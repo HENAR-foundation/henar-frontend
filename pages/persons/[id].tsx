@@ -37,7 +37,7 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
 
   const { data: preUserLocation } = useQuery({
     queryFn: () => getLocationById(user?.location || ''),
-    enabled: false,
+    enabled: true,
     queryKey: ['userLocation', user?.location],
   });
 
@@ -133,7 +133,7 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
                 </p>
                 <p className='mt-4 flex justify-between'>
                   <span className='text-tetriary'>{t('specialty')}</span>
-                  <span>{expert?.job}</span>
+                  <span className='text-right'>{expert?.job}</span>
                 </p>
                 {/* <h3 className='mt-6 text-a-xl mb-4'>{t('interests')}</h3>
                 <div className='inline-flex flex-wrap gap-2 lg:mb-8'>
