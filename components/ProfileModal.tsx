@@ -303,17 +303,17 @@ const PeopleTab: FC<{ t: any }> = ({ t }) => {
     return <div className='flex flex-col lg:space-y-8 space-y-[20px]'>
         <div className='w-full'>
             <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
-            Запросили контакт
+            {t("contacts_requested")}
             </span>
             <div>
                 {
-                    Object.keys(user?.contacts_request.incoming_contact_requests).map(id => 
+                Object.keys(user?.contacts_request.incoming_contact_requests).map(id => 
                         <div className='flex flex-row'>
                             <SpecialistCard small key={id} onClick={() => push("/persons/" + id)} {...users?.find((user: User) => user._id == id) as User} />
                             <div className='flex flex-col justify-between w-full h-full ml-4'>
                                 <div>
                                     <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
-                                        Мотивация
+                                        {t("motivation")}
                                     </span>
                                     <br />
                                     <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
@@ -321,8 +321,8 @@ const PeopleTab: FC<{ t: any }> = ({ t }) => {
                                     </span>
                                 </div>
                                 <div className='flex'>
-                                    <ButtonPrimary onClick={() => mutationApproveUserContactRequest.mutate(id)} >Принять</ButtonPrimary>
-                                    <ButtonOutline onClick={() => mutationDeclineUserContactRequest.mutate(id)}  className='ml-5'>Отклонить</ButtonOutline>
+                                    <ButtonPrimary onClick={() => mutationApproveUserContactRequest.mutate(id)} >{t("approve")}</ButtonPrimary>
+                                    <ButtonOutline onClick={() => mutationDeclineUserContactRequest.mutate(id)}  className='ml-5'>{t("decline")}</ButtonOutline>
                                 </div>
                             </div>
                         </div>
@@ -332,7 +332,7 @@ const PeopleTab: FC<{ t: any }> = ({ t }) => {
         </div>
         <div className='w-full'>
             <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
-            Одобрили заявку
+            {t("contacts_approved")}
             </span>
             <div>
                 {
@@ -342,7 +342,7 @@ const PeopleTab: FC<{ t: any }> = ({ t }) => {
         </div>
         <div className='w-full'>
             <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
-            Отклонили заявку
+            {t("contacts_declined")}
             </span>
             <div>
                 {
@@ -427,9 +427,9 @@ const ProjectsTab = ({ t }: any) => {
               <Tag name='Medicine' />
             </span>
             <div>
-                <h4 className='mt-5'>{Object.keys(project.applicants).filter(applicantsFilter(project)).length === 0 ? "You dont have applicants" : 'Applicants'}</h4>
+                <h4 className='mt-5'>{Object.keys(project.applicants || {}).filter(applicantsFilter(project)).length === 0 ? "You dont have applicants" : 'Applicants'}</h4>
                 {
-                    Object.keys(project.applicants).filter(applicantsFilter(project)).map(applicant => <ApplicantCard applicant={users?.find(user => user._id == applicant)} project={project} refetch={refetchProjects}/>)
+                    Object.keys(project.applicants || {}).filter(applicantsFilter(project)).map(applicant => <ApplicantCard applicant={users?.find(user => user._id == applicant)} project={project} refetch={refetchProjects}/>)
                 }
             </div>
           </div>

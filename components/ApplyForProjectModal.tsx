@@ -57,28 +57,29 @@ const ApplyForProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
             <div className='rounded-t-xl overflow-hidden flex lg:flex-row flex-col justify-between  bg-accent1  w-full pb-6 pt-10 lg:px-8 px-4'>
               <div className='text-white flex flex-col'>
                 <h3 className='lg:leading-8 leading-7 font-bold text-h-m-m lg:text-h-m-d mb-2'>
-                  Apply for project
+                  {t("respond_to_project")}
                 </h3>
               </div>
             </div>
             <div className='rounded-b-xl overflow-hidden  space-y-10 flex flex-col bg-white lg:px-8 px-4 py-6'>
               <div className='flex justify-between lg:flex-row flex-col'>
                 <div className='flex flex-col w-full'>
-                  <span className='text-l'>Are you sure ?</span>
+                  <span className='text-l'>{t("are_you_sure")}</span>
                   <div className='flex flex-row space-x-5 w-[50%] mt-5 justify-between'>
                     <ButtonPrimary
                       onClick={() => applyMutation.mutate()}
                       kind='M'
                       className='flex-1'
                     >
-                      Apply
+                  {t("apply")}
+                      
                     </ButtonPrimary>
                     <ButtonOutline
                       kind='M'
                       className='flex-1'
                       onClick={onClose}
                     >
-                      Cancel
+                                        {t("cancel")}
                     </ButtonOutline>
                   </div>
                 </div>

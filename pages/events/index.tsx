@@ -45,7 +45,7 @@ const EventsPage = () => {
         </span>
         </div>
     </div>
-      <div className='w-[676px] mt-7 mb-10'>
+      {/* <div className='w-[676px] mt-7 mb-10'>
         <InputMaterial icon='search' placeholder={t('find_an_event')} />
       </div>
         {user?.role === 'admin' && <ButtonPrimary
@@ -54,10 +54,8 @@ const EventsPage = () => {
             kind='M'
           >
             {t('create_event')}
-          </ButtonPrimary>}
+          </ButtonPrimary>} */}
       <section>
-        <h2 className='mb-2 text-h-s-d -m mt-9 font-bold'>{t('past')}</h2>
-
         <div className='mt-6 space-x-0  w-full mb-9 lg:gap-x-9 columns-1 lg:columns-3 space-y-[28px]'>
           {events?.map((event) => (
             <EventCard event={event} key={event._id} />

@@ -127,5 +127,13 @@
   "notifications_contact_request_approved": "-ը կիսվել է իր կոնտակտներով ձեզ հետ",
   "notifications_project_request": "-ը պատասխանել է ձեր նախագծին",
   "notifications_project_request_approved": "Ձեզ տրվել է մուտք դեպի",
-  "link": "Հղում"
+  "link": "Հղում",
+  "respond_to_project": "Պատասխանել նախագծին",
+  "apply": "Այո՛",
+  "cancel": "Ոչ",
+  "are_you_sure": "Համոզված ես?",
+  "contacts_requested": "Կապ է պահանջվել",
+  "contacts_approved": "Կապ հաստատված է",
+  "contacts_declined": "Կապը մերժվեց",
+  "no_notifications": "Դուք չունեք նոր ծանուցումներ"
 }

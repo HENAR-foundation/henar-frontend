@@ -78,8 +78,8 @@ const ResearchesPage = () => {
             />
           ))}
         </div> */}
-        <h2 className='mt-[70px] text-h-m-d font-bold'>{t('researches')}</h2>
-        <div className='space-y-5 space-x-0 lg:space-y-0 flex flex-1 flex-col lg:flex-row w-full mb-9 lg:space-x-4 items-end'>
+        <h2 className='mt-[70px] mb-10 text-h-m-d font-bold'>{t('researches')}</h2>
+        {/* <div className='space-y-5 space-x-0 lg:space-y-0 flex flex-1 flex-col lg:flex-row w-full mb-9 lg:space-x-4 items-end'>
           <span className='min-w-full lg:min-w-[368px]'>
             <InputMaterial
               onChange={(newVal) =>
@@ -114,7 +114,7 @@ const ResearchesPage = () => {
               { label: t('by_industry'), val: 'us' },
             ]}
           />
-        </div>
+        </div> */}
         <div className='columns-1 lg:columns-3 space-y-4'>
           {filteredResearches?.map((item, index) => (
             <ResearchCard key={index} {...item} />

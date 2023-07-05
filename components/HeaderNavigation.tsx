@@ -81,7 +81,7 @@ const NavNotifications: FC<{ onClose: () => void, t: any, notifications: any[] }
   return (
     <div className='flex flex-col bg-white rounded-b-l pt-[18px] pl-5 pr-[17px] w-[383px] absolute top-[58px] left-[-335px] pb-10 border-t-[1px] border-accent2'>
       <div className='flex justify-between'>
-        <span className='text-l'>Уведомления</span>
+        <span className='text-l'>{t("notifications")}</span>
         <span className='text-accent1 cursor-pointer' onClick={handleReadNotifications}>
           {t("read")}
         </span>

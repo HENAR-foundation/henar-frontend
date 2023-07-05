@@ -127,5 +127,12 @@
   "notifications_contact_request_approved": "shared his contacts with you",
   "notifications_project_request": "responded to your project",
   "notifications_project_request_approved": "You have been given access to the",
-  "link": "Link"
+  "link": "Link",
+  "respond_to_project": "Respond to project",
+  "apply": "Yes",
+  "cancel": "No",
+  "are_you_sure": "Are you sure?",
+  "contacts_requested": "Contact requested",
+  "contacts_approved": "Contact approved",
+  "contacts_declined": "Contact declined"
 }

@@ -128,5 +128,14 @@
   "notifications_contact_request_approved": "поделился с вами своими своими контактами",
   "notifications_project_request": "откликнулся на ваш проект",
   "notifications_project_request_approved": "Вам дали доступ к проекту",
-  "link": "Ссылка"
+  "link": "Ссылка",
+  "respond_to_project": "Откликнуться на проект",
+  "apply": "Да",
+  "cancel": "Нет",
+  "are_you_sure": "Вы уверены?",
+  "contacts_requested": "Запросили контакт",
+  "contacts_approved": "Одобрили заявку",
+  "contacts_declined": "Отклонили заявку",
+  "no_notifications": "У вас нет новых уведомлений"
+
 }

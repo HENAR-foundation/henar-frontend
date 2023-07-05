@@ -59,10 +59,10 @@ const ProjectCard: FC<{
           {data.title.en ||
             'Разработка новой системы анализа медицинских снимков'}
         </span>
-        <div className='inline-flex flex-wrap gap-2 mb-6'>
+        {/* <div className='inline-flex flex-wrap gap-2 mb-6'>
           <Tag name='Медицина' />
           <Tag name='Медицина' />
-        </div>
+        </div> */}
         <div className='flex items-center space-x-4'>
           <AvatarCircle />
           {createdBy && (

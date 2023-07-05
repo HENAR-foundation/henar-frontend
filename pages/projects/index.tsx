@@ -100,7 +100,7 @@ const ProjectsPage = () => {
           {t('no_projects_published')}
         </span>
       )}
-      {user?.role != "admin" && projects && projects?.length !== 0 && (
+      {/* {user?.role != "admin" && projects && projects?.length !== 0 && (
         <div className='space-y-5 space-x-0 lg:space-y-0 flex flex-1 flex-col lg:flex-row w-full mb-9 lg:space-x-4 items-end'>
           <span className='min-w-full lg:min-w-[368px]'>
             <InputMaterial
@@ -156,7 +156,7 @@ const ProjectsPage = () => {
             ]}
           />
         </div>
-      )}
+      )} */}
       {
         user?.role === "admin" ? (
             <div>
