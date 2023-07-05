@@ -12,6 +12,7 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { LocationSuggestsData } from 'api/types';
 import LocationInput from './LocationInput';
+import Link from 'next/link';
 
 const SignupSchema = Yup.object().shape({
   name: Yup.string().required('err_missing_fields'),
@@ -205,9 +206,11 @@ const AboutModal = () => {
             </div>
           </div>
           <div className='flex justify-between mt-11 items-center'>
-            <span className='font-bodyLight hidden lg:inline-block text-tetriary max-w-[205px] text-a-ss leading-4'>
-              {t('agree_policy')}
-            </span>
+            <Link href="/HENAR_Privacy-Policy_eng.pdf">
+                <span className='font-bodyLight hidden lg:inline-block text-tetriary max-w-[205px] text-a-ss leading-4'>
+                {t('agree_policy')}
+                </span>
+            </Link>
             <ButtonPrimary
               type='submit'
               busy={updateUserMutation.isLoading}
