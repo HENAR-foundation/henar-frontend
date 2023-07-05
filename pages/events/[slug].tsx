@@ -62,7 +62,7 @@ const EventPage = () => {
               </span>
             </div>
             <div className='bg-white rounded-s px-5 pt-5 pb-9 lg:pb-5'>
-              <h3 className='text-a-l mb-3'>{t('org')}</h3>
+              <h3 className='text-a-l mb-3'>{t('org_event')}</h3>
               <span className='font-bodyLight'>
                 {event?.orgs}
               </span>

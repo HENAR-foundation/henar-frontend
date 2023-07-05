@@ -258,9 +258,9 @@ const CreateProjectModal: FC<{ onClose: VoidFunction }> = ({ onClose }) => {
               </div>
               <div className='lg:flex-row flex-col flex justify-between'>
                 <div className='flex flex-col lg:w-[170px]'>
-                  <span className='text-l'>{t('org')}</span>
+                  <span className='text-l'>{t('org_project')}</span>
                   <span className='font-bodyLight text-a-ss'>
-                    {t('orgs')}
+                    {t('org_project_descr')}
                   </span>
                 </div>
                 <div className='w-full max-w-[480px]'>

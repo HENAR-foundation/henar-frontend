@@ -33,7 +33,7 @@ const links = [
   },
   {
     link: '/researches',
-    label: 'researches',
+    label: 'analytics',
   },
 ];
 

@@ -1,7 +1,7 @@
 import { User } from 'api/types';
 
 export enum ProjectPhases {
-  idetation = 'Idetation',
+  idetation = 'Ideation',
   implementation = 'Implementation',
   launch = 'Launch & Execution',
   performance = 'Perfomance & Control',

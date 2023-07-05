@@ -123,9 +123,11 @@
   "under_1500": "До 1500 символов",
   "err_missing_fields": "Пропущены обязательные поля. Пожалуйста, заполните все обязательные поля.",
   "event": "Событие",
-  "org": "Организатор",
+  "org_event": "Кто рганизатор мероприятия",
+  "org_project": "Кто организатор проекта",
+  "org_project_descr": "Введите организацию, если не вы владелец проекта",
   "notifications_contact_request": "отправил запрос на обмен контактами",
-  "notifications_contact_request_approved": "поделился с вами своими своими контактами",
+  "notifications_contact_request_approved": "поделился с вами своими контактами",
   "notifications_project_request": "откликнулся на ваш проект",
   "notifications_project_request_approved": "Вам дали доступ к проекту",
   "link": "Ссылка",
@@ -137,5 +139,13 @@
   "contacts_approved": "Одобрили заявку",
   "contacts_declined": "Отклонили заявку",
   "no_notifications": "У вас нет новых уведомлений",
-  "notifications": "Уведомления"
+  "notifications": "Уведомления",
+  "alert_project_request": "Запрос отправлен. Следите за статусом проекта в личном кабинете",
+  "alert_profile_update": "Профиль успешно обновлен",
+  "alert_project_created": "Проект успешно создан",
+  "alert_login": "Вы успешно вошли",
+  "alert_logout": "Вы успешно вышли",
+  "alert_signup_success": "Регистрация прошла успешно",
+  "alert_contact_request_noauth": "Пожалуйста, зарегистрируйтесь, чтобы запросить информацию специалиста",
+  "alert_contact_request": "Запрос отправлен. Следите за статусом контакты в личном кабинете в разделе \"Специалисты\""
 }
