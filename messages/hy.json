@@ -122,5 +122,9 @@
   "under_1500": "Մինչև 1500 նիշ",
   "err_missing_fields": "Պահանջվող դաշտերը լրացված չեն: Լրացրեք բոլոր պահանջվող դաշտերը:",
   "event": "Իրադարձություն",
-  "org": "Միջոցառման կազմակերպիչ"
+  "org": "Միջոցառման կազմակերպիչ",
+  "notifications_contact_request": "",
+  "notifications_contact_request_approved": "",
+  "notifications_project_request": "",
+  "notifications_project_request_approved": ""
 }

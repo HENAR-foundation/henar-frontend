@@ -122,5 +122,9 @@
   "under_1500": "Up to 1500 characters",
   "err_missing_fields": "Missing required fields. Please fill in all the mandatory information.",
   "event": "Event",
-  "org": "Event organizer"
+  "org": "Event organizer",
+  "notifications_contact_request": "",
+  "notifications_contact_request_approved": "",
+  "notifications_project_request": "",
+  "notifications_project_request_approved": ""
 }

@@ -125,6 +125,7 @@ const Home = () => {
     <>
       <Head>
         <title>HNA</title>
+        <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
       <div className='bg-white pt-10 pb-[140px]'>
         <div className='flex w-full bg-accent1 bg-opacity-10 justify-center'>

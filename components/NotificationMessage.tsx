@@ -46,11 +46,11 @@ const NotificationProjectRequest = (body: any) => (
 const NotificationProjectRequestApprove = (body: any) => (
     <>
         <span className='ml-[9px] text-a-ss'>
-            Вам дали доступ к проекту 
+            Вам дали доступ к проекту{' '}
             <Link target="_blank" href={"/projects/" + body.projectId}>
                 <span className='text-accent1'>
                     {body.projectTitle}
-                </span>{' '}
+                </span>
             </Link>
         </span>
     </>
