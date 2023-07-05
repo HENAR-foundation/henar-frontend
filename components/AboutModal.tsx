@@ -50,10 +50,11 @@ const AboutModal = () => {
       location: '0000000000000',
       locationCode: '',
       job: '',
+      phone: '',
     },
     validateOnChange: false,
     validationSchema: SignupSchema,
-    onSubmit: async ({ job, name, lastName, locationCode }) => {
+    onSubmit: async ({ job, name, lastName, locationCode, phone }) => {
       if (user) {
         const updatedUser = { ...user };
         if (user.location !== locationCode) {
@@ -75,6 +76,10 @@ const AboutModal = () => {
                 updateUserMutation.mutate({
                   ...updatedUser,
                   job,
+                  contacts: {
+                    ...updatedUser.contacts,
+                    phone
+                  },
                   first_name: name,
                   last_name: lastName,
                 });
@@ -85,6 +90,10 @@ const AboutModal = () => {
           updateUserMutation.mutate({
             ...updatedUser,
             job,
+            contacts: {
+              ...updatedUser.contacts,
+              phone
+            },
             first_name: name,
             last_name: lastName,
           });
@@ -173,6 +182,16 @@ const AboutModal = () => {
                     ))}
                   </div>
                 )}
+            </div>
+            <div className='flex space-y-3 w-full lg:justify-between lg:items-center lg:flex-row flex-col'>
+              <span>{t('phone')}?</span>
+              <InputMaterial
+                name='phone'
+                error={t(formik.errors.phone as any)}
+                onChange={formik.handleChange}
+                className='lg:w-[295px]'
+                placeholder={t('phone')}
+              />
             </div>
             <div className='flex space-y-3 w-full lg:justify-between lg:items-center lg:flex-row flex-col'>
               <span>{t('your_occupation')}?</span>

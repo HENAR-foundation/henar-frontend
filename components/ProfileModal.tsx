@@ -27,7 +27,7 @@ import { approveApplicant, rejectApplicant } from 'api/mutations/projects';
 enum tabTypes {
   Profile = 'profile',
   Projects = 'projects',
-  People = 'specialty',
+  People = 'expert_network',
   Password = 'reset_your_password',
 }
 type IS = keyof typeof tabTypes;
@@ -55,6 +55,7 @@ const AboutTab: FC = () => {
         description: user.description,
         lastName: user.last_name,
         location: user.location,
+        phone: user.contacts.phone,
         job: user.job,
         avatar: user.avatar,
         locationCode: user.location,
@@ -92,6 +93,7 @@ const AboutTab: FC = () => {
       name: '',
       avatar: '',
       lastName: '',
+      phone: '',
       location: '',
       locationCode: '',
       description: '',
@@ -118,7 +120,7 @@ const AboutTab: FC = () => {
   });
 
   const handlUpdateUser = (newAvatar?: string) => {
-    const { name, lastName, job, description, avatar } = formik.values;
+    const { name, lastName, job, description, avatar, phone } = formik.values;
     if (user) {
       const updatedUser = { ...user };
       const { data, value } = selectedSuggest || {};
@@ -140,6 +142,10 @@ const AboutTab: FC = () => {
               updateUserMutation.mutate({
                 ...updatedUser,
                 job,
+                contacts: {
+                    ...updatedUser.contacts,
+                    phone
+                },
                 avatar: newAvatar || avatar,
                 description: description,
                 first_name: name,
@@ -153,6 +159,10 @@ const AboutTab: FC = () => {
         updateUserMutation.mutate({
           ...updatedUser,
           job,
+          contacts: {
+              ...updatedUser.contacts,
+              phone
+          },
           avatar: newAvatar || avatar,
           description: description,
           first_name: name,
@@ -210,6 +220,20 @@ const AboutTab: FC = () => {
               }}
               label={t('input_city')}
               locationId={user?.location}
+            />
+          </div>
+        </div>
+        <div className='flex w-full lg:flex-row flex-col'>
+          <span className='w-[230px] mt-2 lg:mb-0 mb-3'>
+            {t('phone')}
+          </span>
+          <div className='flex flex-1 flex-col w-full'>
+            <InputMaterial
+              name='phone'
+              value={formik.values.phone}
+              error={t(formik.errors.phone as any)}
+              onChange={formik.handleChange}
+              label={t('phone')}
             />
           </div>
         </div>
