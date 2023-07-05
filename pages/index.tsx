@@ -125,7 +125,7 @@ const Home = () => {
     <>
       <Head>
         <title>HNA</title>
-        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel='shortcut icon' href='/favicon.ico' />
       </Head>
       <div className='bg-white pt-10 pb-[140px]'>
         <div className='flex w-full bg-accent1 bg-opacity-10 justify-center'>
@@ -175,9 +175,13 @@ const Home = () => {
                 {t('createprojects')}
               </h3>
               <span className='text-m mb-10'>{t('collaborate')}</span>
-              <Link href="projects">
-                <ButtonPrimary className='lg:mb-0 mb-6' color='cream' kind='M'>
-                    {t('toprojects')}
+              <Link href='projects'>
+                <ButtonPrimary
+                  className='lg:mb-0 mb-6 lg:w-[225px] w-full'
+                  color='cream'
+                  kind='M'
+                >
+                  {t('toprojects')}
                 </ButtonPrimary>
               </Link>
             </div>
@@ -223,13 +227,10 @@ const Home = () => {
                 pic='/fish-expert-armen.png'
               />
             </div>
-            <Link href="specialists">
-                <ButtonPrimary
-                kind='M'
-                className='mt-10 mb-6 lg:mb-12 lg:w-[206px] w-full'
-                >
+            <Link href='specialists' className='lg:w-[206px] w-full'>
+              <ButtonPrimary kind='M' className='mt-10 mb-6 lg:mb-12 w-full'>
                 {t('toexperts')}
-                </ButtonPrimary>
+              </ButtonPrimary>
             </Link>
           </div>
           <div className='hidden lg:flex w-full bg-mint rounded-l-xl'></div>
@@ -267,14 +268,14 @@ const Home = () => {
             <span className='font-bodyLight text-m mt-[15px] lg:mt-[20px] text-center'>
               {t('stayinformed')}
             </span>
-            <Link href="researches">
-                <ButtonPrimary
+            <Link href='researches' className='lg:w-[206px] w-full'>
+              <ButtonPrimary
                 kind='M'
                 color='cream'
-                className='lg:w-[206px] w-full mt-[38px] lg:mt-8'
-                >
+                className='w-full mt-[38px] lg:mt-8'
+              >
                 {t('toanalytics')}
-                </ButtonPrimary>
+              </ButtonPrimary>
             </Link>
           </div>
           <div className='hidden lg:flex flex-1 bg-accent2 bg-opacity-20 rounded-l-xll items-center justify-start'>
