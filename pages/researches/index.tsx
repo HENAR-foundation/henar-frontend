@@ -45,14 +45,15 @@ const ResearchesPage = () => {
     sortType: 'popularity',
   });
 
-  const filteredResearches = researches?.filter(({ title, description }) => {
+  const filteredResearches = researches?.filter(({ title }) => {
     return (
-      title.en.toLowerCase().includes(filters.search.toLowerCase()) ||
-      description.en.toLowerCase().includes(filters.search.toLowerCase())
+      title.toLowerCase().includes(filters.search.toLowerCase())
     );
   });
 
   const t = useTranslations();
+
+  console.log(researches)
 
   return (
     <>

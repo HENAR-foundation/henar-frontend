@@ -35,14 +35,9 @@ export interface Translations {
 
 export interface Research {
     _id: string;
-  author: string;
-  description: Translations;
   link: string;
-  moderation_status: number;
-  reason_of_reject: string;
-  slug: string;
-  tags: string[];
-  title: Translations;
+  title: string;
+  source: string;
 }
 
 export interface Event {

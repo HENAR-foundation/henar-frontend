@@ -123,8 +123,9 @@
   "err_missing_fields": "Պահանջվող դաշտերը լրացված չեն: Լրացրեք բոլոր պահանջվող դաշտերը:",
   "event": "Իրադարձություն",
   "org": "Միջոցառման կազմակերպիչ",
-  "notifications_contact_request": "",
-  "notifications_contact_request_approved": "",
-  "notifications_project_request": "",
-  "notifications_project_request_approved": ""
+  "notifications_contact_request": "-ն ուղարկել է կոնտակտների փոխանակման հարցում",
+  "notifications_contact_request_approved": "-ը կիսվել է իր կոնտակտներով ձեզ հետ",
+  "notifications_project_request": "-ը պատասխանել է ձեր նախագծին",
+  "notifications_project_request_approved": "Ձեզ տրվել է մուտք դեպի",
+  "link": "Հղում"
 }

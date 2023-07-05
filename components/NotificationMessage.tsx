@@ -3,8 +3,11 @@ import PubSub from 'pubsub-js';
 import { useToggle } from 'usehooks-ts';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
-const NotificationContactRequest = (body: any) => (
+const NotificationContactRequest = (body: any) => {
+    const t = useTranslations()
+    return (
     <>
         <span className='ml-[9px] text-a-ss'>
             <Link target="_blank" href={"/persons/" + body.personId}>
@@ -12,12 +15,15 @@ const NotificationContactRequest = (body: any) => (
                     {body.personFullName}
                 </span>{' '}
             </Link>
-            отправил запрос на обмен контактами
+            {t("notifications_contact_request")}
         </span>
     </>
-)
+    )
+}
 
-const NotificationContactRequestApprove = (body: any) => (
+const NotificationContactRequestApprove = (body: any) => {
+    const t = useTranslations()
+    return (
     <>
         <span className='ml-[9px] text-a-ss'>
             <Link target="_blank" href={"/persons/" + body.personId}>
@@ -25,12 +31,15 @@ const NotificationContactRequestApprove = (body: any) => (
                     {body.personFullName}
                 </span>{' '}
             </Link>
-            поделился с вами своими своими контактами
+            {t("notifications_contact_request_approved")}
         </span>
     </>
-)
+    )
+}
 
-const NotificationProjectRequest = (body: any) => (
+const NotificationProjectRequest = (body: any) => {
+    const t = useTranslations()
+    return (
     <>
         <span className='ml-[9px] text-a-ss'>
             <Link target="_blank" href={"/persons/" + body.personId}>
@@ -38,15 +47,18 @@ const NotificationProjectRequest = (body: any) => (
                     {body.personFullName}
                 </span>{' '}
             </Link>
-            откликнулся на ваш проект
+            {t("notifications_project_request")}
         </span>
     </>
-)
+    )
+}
 
-const NotificationProjectRequestApprove = (body: any) => (
+const NotificationProjectRequestApprove = (body: any) => {
+    const t = useTranslations()
+    return (
     <>
         <span className='ml-[9px] text-a-ss'>
-            Вам дали доступ к проекту{' '}
+            {t("notifications_project_request_approved")}{' '}
             <Link target="_blank" href={"/projects/" + body.projectId}>
                 <span className='text-accent1'>
                     {body.projectTitle}
@@ -54,7 +66,8 @@ const NotificationProjectRequestApprove = (body: any) => (
             </Link>
         </span>
     </>
-)
+    )
+}
 
 function getNotificationByType(type: string, body: any) {
     switch (type) {

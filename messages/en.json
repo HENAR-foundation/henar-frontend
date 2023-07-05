@@ -123,8 +123,9 @@
   "err_missing_fields": "Missing required fields. Please fill in all the mandatory information.",
   "event": "Event",
   "org": "Event organizer",
-  "notifications_contact_request": "",
-  "notifications_contact_request_approved": "",
-  "notifications_project_request": "",
-  "notifications_project_request_approved": ""
+  "notifications_contact_request": "sent a contact exchange request",
+  "notifications_contact_request_approved": "shared his contacts with you",
+  "notifications_project_request": "responded to your project",
+  "notifications_project_request_approved": "You have been given access to the",
+  "link": "Link"
 }

@@ -127,5 +127,6 @@
   "notifications_contact_request": "отправил запрос на обмен контактами",
   "notifications_contact_request_approved": "поделился с вами своими своими контактами",
   "notifications_project_request": "откликнулся на ваш проект",
-  "notifications_project_request_approved": "Вам дали доступ к проекту"
+  "notifications_project_request_approved": "Вам дали доступ к проекту",
+  "link": "Ссылка"
 }
