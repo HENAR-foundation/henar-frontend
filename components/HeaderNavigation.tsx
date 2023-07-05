@@ -91,7 +91,7 @@ const NavNotifications: FC<{ onClose: () => void, t: any, notifications: any[] }
       </div>
       <div className='flex flex-col mt-4'>
         {!notifications
-          ? 'Нет новых уведомлений'
+          ? t("no_notifications")
           : notifications.map(
               (notification, index) => (
                 <NotificationMessage notification={notification} first={index === 0} key={index} />

@@ -134,5 +134,7 @@
   "are_you_sure": "Are you sure?",
   "contacts_requested": "Contact requested",
   "contacts_approved": "Contact approved",
-  "contacts_declined": "Contact declined"
+  "contacts_declined": "Contact declined",
+  "no_notifications": "You haven't new notifications",
+  "notifications": "Notifications"
 }

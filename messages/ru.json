@@ -136,6 +136,6 @@
   "contacts_requested": "Запросили контакт",
   "contacts_approved": "Одобрили заявку",
   "contacts_declined": "Отклонили заявку",
-  "no_notifications": "У вас нет новых уведомлений"
-
+  "no_notifications": "У вас нет новых уведомлений",
+  "notifications": "Уведомления"
 }
