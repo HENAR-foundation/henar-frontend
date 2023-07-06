@@ -316,6 +316,8 @@ export const HeaderNavigationM: FC<{
 
   const t = useTranslations();
 
+  console.log(links)
+
   return (
     <header className='sticky top-0 w-full bg-white h-[55px] shadow-l lg:hidden px-5 z-50'>
       {opened && (
@@ -371,11 +373,19 @@ export const HeaderNavigationM: FC<{
               </>
             )}
             <span className='text-accent1 text-xl leading-[140%] text-center'>
-              +7 800 555 35 35
+              info@henar.am
             </span>
             <span className='font-bodyLight text-s text-secondary text-center '>
-              Ответим на любой вопрос
+              Powered by HENAR
             </span>
+            <div className='flex mt-5 w-full h-full font-bodyLight text-accent1 lg:font-thin lg:leading-3 flex-col lg:text-left text-center lg:space-y-0 items-center justify-end mb-10 '>
+                <Link target='_blank' href="/HENAR_Terms-and-Conditions_eng.pdf">
+                    <span>{t('terms_and_conditions')}</span>
+                </Link>
+                <Link target='_blank' href="/HENAR_Privacy-Policy_eng.pdf">
+                    <span>{t('privacy_policy')}</span>
+                </Link>
+            </div>
             <div className='flex justify-center mb-[40px] mt-6'>
               <LangToggle />
             </div>

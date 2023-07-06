@@ -14,7 +14,7 @@ const Footer = () => {
           </div>
           <Link href="mailto:info@henar.am"><span className='text-accent1 text-a-xl'>info@henar.am</span></Link>
           <span className='text-secondary font-bodyLight font-thin'>
-            Powored by HENAR
+            Powered by HENAR
           </span>
         </div>
         <div className='flex flex-col mb-14 lg:mb-0 w-full'>
