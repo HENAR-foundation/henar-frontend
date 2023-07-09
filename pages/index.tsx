@@ -127,19 +127,6 @@ const Home = () => {
       <Head>
         <title>HNA</title>
         <link rel='shortcut icon' href='/favicon.ico' />
-        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-BT9NS4PZ1Q"  />
-        <Script
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-            __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-    
-            gtag('config', 'G-BT9NS4PZ1Q');
-            `,
-        }}
-        />
       </Head>
       <div className='bg-white pt-10 pb-[140px]'>
         <div className='flex w-full bg-accent1 bg-opacity-10 justify-center'>

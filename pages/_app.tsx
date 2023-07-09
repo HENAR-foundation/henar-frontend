@@ -18,6 +18,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import Notification from 'components/Notification';
 import { NextIntlProvider } from 'next-intl';
 import ContactInfoModal from 'components/ContactInfoModal';
+import Script from 'next/script';
 
 const PtRoot = localFont({
   variable: '--font-pt-root',
@@ -128,6 +129,13 @@ const App = ({ Component, pageProps }: AppProps) => {
             />
             <link rel='icon' href='/favicon.ico' />
           </Head>
+          <Script
+            async
+            src='https://www.googletagmanager.com/gtag/js?id=G-BT9NS4PZ1Q'
+          />
+          <Script strategy='afterInteractive'>
+            {`window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-BT9NS4PZ1Q');`}
+          </Script>
           <InterfaceContext.Provider
             value={{ interfaceState, setInterfaceState }}
           >
