@@ -4,7 +4,7 @@ import ButtonPrimary from './ButtonPrimary';
 import InputMaterial from './InputMaterial';
 import TextAreaMaterial from './TextAreaMaterial';
 import * as Yup from 'yup';
-import { useFormik } from 'formik';
+import { FormikState, useFormik } from 'formik';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslations } from 'next-intl';
 import SelectMaterial from './SelectMaterial';
@@ -16,96 +16,90 @@ import { uploadPhotos } from 'api/mutations/files';
 import { ProjectHelpTypes, ProjectPhases, formatFullName } from 'helpers';
 import { createEvent } from 'api/mutations/events';
 import { getEvents } from 'api/events';
-import { createResearch, deleteResearch, updateResearch } from 'api/mutations/researches';
-import { getResearch, getResearches } from 'api/researches';
+import ButtonBase from './ButtonBase';
+import ButtonOutline from './ButtonOutline';
+import { useToggle } from 'usehooks-ts';
+import { createStatisticsCategory, deleteStatisticsCategory, updateStatisticsCategory } from 'api/mutations/statisticsCategories';
+import { getStatisticsCategory } from 'api/statisticsCategories';
 import ButtonWhite from './ButtonWhite';
 
-const CreateResearchSchema = Yup.object().shape({
+const CreateProjectSchema = Yup.object().shape({
     title: Yup.string()
         .min(5, 'Название должно содержать минимум 5 символов')
         .max(50, 'Название может содержать максимум 50 символов')
         .required('err_missing_fields'),
-    source: Yup.string().required('err_missing_fields'),
-    link: Yup.string().required('err_missing_fields'),
+    steps: Yup.array().of(Yup.string()).required('err_missing_fields'),
 });
 
-const CreateResearchModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onClose, id }) => {
+const CreateCategoryModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onClose, id }) => {
     const queryClient = useQueryClient();
+    const [categoriesModal, toogleCategoriesModal] = useToggle()
     const { data: user } = useQuery({
         queryFn: checkSignIn,
         queryKey: ['isSignedIn'],
     });
-
-    const { data: researches, refetch: refetchResearches } = useQuery({
-        queryKey: ['researches'],
-        queryFn: getResearches,
-    });
-
-    const { data: research } = useQuery({
-        queryKey: ['research'],
-        queryFn: () => getResearch(id!),
+    const { data: category, isFetched } = useQuery({
         enabled: !!id,
-        onSuccess: (data) => {
-            console.log(data)
-            formik.setValues(data)
+        queryFn: () => getStatisticsCategory(id!),
+        queryKey: ['statisticsCategory'],
+        onSuccess: data => {
+            formik.setValues({ title: data.title, steps: data.steps })
         }
     });
-
-    const mutationCreateResearch = useMutation({
-        mutationFn: (values: any) => createResearch(values),
+    const mutationDeleteCategory = useMutation({
+        mutationFn: (id: string) => deleteStatisticsCategory(id),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['researches'] });
-            refetchResearches()
-            PubSub.publish('notification', t("alert_create_research"));
+            queryClient.refetchQueries({ queryKey: ['statisticsCategories'] });
+            PubSub.publish('notification', t("alert_category_deleted"));
             onClose();
-        }
+        },
     })
-    const mutationUpdateResearch = useMutation({
-        mutationFn: (values: any) => updateResearch(values, id!),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['researches'] });
-            refetchResearches()
-            PubSub.publish('notification', t("alert_update_research"));
-            onClose();
-        }
-    })
-    const mutationDeleteResearch = useMutation({
-        mutationFn: () => deleteResearch(id!),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['researches'] });
-            refetchResearches()
-            PubSub.publish('notification', t("alert_delete_research"));
-            onClose();
-        }
+    const { refetch: refetchCategories } = useQuery({
+        queryKey: ["statisticsCategories"]
     })
 
-    const handleCreateResearch = () => {
+    const handleCreateCategory = () => {
+        const { title, steps } =
+            formik.values;
         if (user) {
-            mutationCreateResearch.mutate(formik.values)
+            createStatisticsCategory({
+                title,
+                steps
+            }).then(() => {
+                queryClient.invalidateQueries({ queryKey: ['statisticsCategories'] });
+                refetchCategories();
+                PubSub.publish('notification', 'Категория успешно создана');
+                onClose();
+            });
         }
     };
-    const handleUpdateResearch = () => {
+
+    const handleUpdateCategory = () => {
+        const { title, steps } =
+            formik.values;
         if (user) {
-            mutationUpdateResearch.mutate(formik.values)
-        }
-    };
-    const handleDeleteResearch = () => {
-        if (user) {
-            mutationDeleteResearch.mutate()
+            updateStatisticsCategory({
+                title,
+                steps
+            }, id!).then(() => {
+                queryClient.invalidateQueries({ queryKey: ['statisticsCategories'] });
+                refetchCategories();
+                PubSub.publish('notification', 'alert_category_created');
+                onClose();
+            });
         }
     };
 
     const formik = useFormik({
         initialValues: {
             title: '',
-            source: '',
-            link: '',
+            steps: [''],
         },
         validateOnChange: false,
-        validationSchema: CreateResearchSchema,
+        validationSchema: CreateProjectSchema,
         onSubmit: () => {
             if (user) {
-                id ? handleUpdateResearch() : handleCreateResearch();
+                id ? handleUpdateCategory() : handleCreateCategory();
             }
         },
     });
@@ -129,7 +123,7 @@ const CreateResearchModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onClo
                 data-overlay='true'
                 className='flex w-full h-full items-center justify-center opacity-1 overflow-auto'
             >
-                <div className='flex-col h-full w-full flex items-center overflow-auto  lg:mt-0 relative'>
+                <div className='flex-col h-full w-full flex items-center overflow-auto lg:mt-0 relative'>
                     <div className=' lg:w-[850px] mt-[100px] min-h-full relative'>
                         <Image
                             src='/cross-white.svg'
@@ -142,10 +136,10 @@ const CreateResearchModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onClo
                         <div className='rounded-t-xl overflow-hidden flex lg:flex-row flex-col justify-between  bg-accent1  w-full pb-6 pt-10 lg:px-8 px-4'>
                             <div className='text-white flex flex-col'>
                                 <h3 className='lg:leading-8 leading-7 font-bold text-h-m-m lg:text-h-m-d mb-2'>
-                                    {t('new_research')}
+                                    {t('new_project')}
                                 </h3>
                                 <span className='font-bodyLight'>
-                                    {t('new_research_desc')}
+                                    {t('fill_form_for_project')}
                                 </span>
                             </div>
                             <div className='lg:mt-0 mt-7'>
@@ -154,12 +148,12 @@ const CreateResearchModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onClo
                                         ? (
                                             <div className='flex flex-row'>
                                                 <ButtonWhite
-                                                    onClick={handleDeleteResearch}
+                                                    onClick={() => mutationDeleteCategory.mutate(id)}
                                                     className='mr-4'
                                                     kind='M'
                                                     color='inverted'
                                                 >
-                                                    {t('delete_research')}
+                                                    {t('delete_category')}
                                                 </ButtonWhite>
                                                 <ButtonPrimary
                                                     onClick={formik.submitForm}
@@ -168,7 +162,7 @@ const CreateResearchModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onClo
                                                     icon='arrow'
                                                     color='inverted'
                                                 >
-                                                    {t('update_research')}
+                                                    {t('update_category')}
                                                 </ButtonPrimary>
                                             </div>
                                         )
@@ -180,13 +174,14 @@ const CreateResearchModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onClo
                                                 icon='arrow'
                                                 color='inverted'
                                             >
-                                                {t('create_research')}
+                                                {t('create_category')}
                                             </ButtonPrimary>
                                         )
                                 }
+
                             </div>
                         </div>
-                        <div className='rounded-b-xl overflow-hidden  space-y-10 flex flex-col bg-white lg:px-8 px-4 py-6'>
+                        <div className='rounded-b-xl overflow-hidden  space-y-10 flex flex-col bg-white lg:px-8 px-4 py-6 pb-14'>
                             <div className='flex justify-between lg:flex-row flex-col'>
                                 <div className='flex flex-col lg:w-[170px]'>
                                     <span className='text-l'>{t('title')}</span>
@@ -201,32 +196,36 @@ const CreateResearchModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onClo
                                     />
                                 </div>
                             </div>
-                            <div className='lg:flex-row flex-col flex justify-between'>
+
+                            <div className='flex justify-between lg:flex-row flex-col'>
                                 <div className='flex flex-col lg:w-[170px]'>
-                                    <span className='text-l'>{t('link')}</span>
+                                    <span className='text-l'>{t('steps')}</span>
                                 </div>
                                 <div className='w-full max-w-[480px]'>
-                                    <InputMaterial
-                                        name='link'
-                                        error={t(formik.errors.link as any)}
-                                        onChange={formik.handleChange}
-                                        value={formik.values.link}
-                                        placeholder={t('link')}
-                                    />
-                                </div>
-                            </div>
-                            <div className='lg:flex-row flex-col flex justify-between'>
-                                <div className='flex flex-col lg:w-[170px]'>
-                                    <span className='text-l'>{t('source')}</span>
-                                </div>
-                                <div className='w-full max-w-[480px]'>
-                                    <InputMaterial
-                                        name='source'
-                                        error={t(formik.errors.source as any)}
-                                        onChange={formik.handleChange}
-                                        value={formik.values.source}
-                                        placeholder={t('source')}
-                                    />
+
+                                    {
+                                        formik.values.steps.map((step, index) => (
+                                            <div className='w-full max-w-[480px] mb-4' key={index}>
+                                                <Image
+                                                    className='absolute'
+                                                    style={{ marginRight: 5, right: 0 }}
+                                                    src='/cross-grey.svg'
+                                                    width={20}
+                                                    height={20}
+                                                    alt='slected option icon'
+                                                    onClick={() => formik.setFieldValue("steps", formik.values.steps.filter((_, _index) => index != _index))}
+                                                />
+                                                <TextAreaMaterial
+                                                    name={`steps[${index}]`}
+                                                    error={t(formik.errors.steps as any)}
+                                                    onChange={formik.handleChange}
+                                                    value={formik.values.steps[index]}
+                                                    placeholder={`${index + 1}.`}
+                                                />
+                                            </div>
+                                        ))
+                                    }
+                                    <ButtonOutline onClick={() => formik.setFieldValue("steps", [...formik.values.steps, ""])} className='w-full mt-5'>{t("add_step")}</ButtonOutline>
                                 </div>
                             </div>
                         </div>
@@ -237,4 +236,4 @@ const CreateResearchModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onClo
     );
 };
 
-export default CreateResearchModal;
+export default CreateCategoryModal;

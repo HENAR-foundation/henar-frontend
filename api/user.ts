@@ -2,15 +2,15 @@ import axios from './axios';
 import { User } from './types';
 
 export const checkSignIn: () => Promise<User> = async () => {
-  const { data } = await axios.get('/auth/check');
+    const { data } = await axios.get('/auth/check');
 
-  return data.message ? false : data;
+    return data.message ? false : data;
 };
 
 export const getUsers: () => Promise<User[]> = async () => {
-  const { data } = await axios.get('/users');
+    const { data } = await axios.get('/users');
 
-  return data;
+    return data;
 };
 
 export const getCurrentUsers: (ids: string[]) => Promise<User[]> = async (ids: string[]) => {
@@ -24,8 +24,8 @@ export const getCurrentUsers: (ids: string[]) => Promise<User[]> = async (ids: s
 }
 
 export const getUser: (id: string) => Promise<User> = async (id) => {
-  const { data } = await axios.get('/users/' + id);
+    const { data } = await axios.get('/users/' + id);
 
-  return data;
+    return data;
 };
 
