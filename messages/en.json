@@ -14,6 +14,8 @@
     "name": "First name",
     "last_name": "Last name",
     "submit": "Submit",
+    "all_types": "All types",
+    "all_phases": "All phases",
     "agree_policy": "By pressing the \"Submit\" button, you agree to the privacy policy",
     "where_current_job": "Where are you from and what is your current job?",
     "dont_have_account": "Don't have an account, yet?",

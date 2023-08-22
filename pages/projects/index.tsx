@@ -133,7 +133,7 @@ const ProjectsPage = () => {
                             label: ProjectPhases[val],
                             val,
                         }))}
-                        defaultVal='Все стадии'
+                        defaultVal={t('all_phases')}
                         label={t('project_phase')}
                     />
                     <SelectMaterial
@@ -150,7 +150,7 @@ const ProjectsPage = () => {
                                 help,
                             }));
                         }}
-                        defaultVal='Все виды'
+                        defaultVal={t('all_types')}
                         label={t('help_project')}
                     />
                 </div>
