@@ -104,7 +104,7 @@ const ResearchesPage = () => {
                         />
                     ))}
                 </div>
-                <h2 className='mt-[70px] mb-10 text-h-m-d font-bold'>{t('researches')}</h2>
+                <h2 className='mt-[70px] mb-10 text-h-m-d font-bold'>{t('research')}</h2>
                 <div className='mb-8'>
 
                     <InputMaterial
