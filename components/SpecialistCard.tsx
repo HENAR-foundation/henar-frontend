@@ -12,6 +12,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { getLocationById } from 'api/location';
 import { useQuery } from '@tanstack/react-query';
+import { checkSignIn } from 'api/user';
 
 const SpecialistCard: FC<any> = (user) => {
     const {
@@ -33,8 +34,17 @@ const SpecialistCard: FC<any> = (user) => {
         queryKey: ['userLocation', user?.location],
     });
 
+    const { data: auth } = useQuery({
+        queryFn: checkSignIn,
+        queryKey: ['isSignedIn'],
+    });
+
     const handleRequestContactModal = () => {
-        push('/persons/' + _id);
+        if (!!auth) {
+            push('/persons/' + _id);
+        } else {
+            push('/login');
+        }
     };
     return (
         <Link href={'/persons/' + _id}>
