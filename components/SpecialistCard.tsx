@@ -39,8 +39,10 @@ const SpecialistCard: FC<any> = (user) => {
         queryKey: ['isSignedIn'],
     });
 
-    const handleRequestContactModal = () => {
-        if (!!auth) {
+    const handleRequestContactModal = (e: Event) => {
+        e.preventDefault()
+        console.log(auth)
+        if (auth) {
             push('/persons/' + _id);
         } else {
             push('/login');

@@ -232,7 +232,7 @@ const SpecialistPage: FC<{ locale: string }> = ({ locale }) => {
                         })}
                     </h2>
                     <div className='w-full grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-4 mb-[85px]'>
-                        {userConfirmedProjects && userConfirmedProjects?.map((item, index) => (
+                        {userConfirmedProjects?.map && userConfirmedProjects?.map((item, index) => (
                             <ProjectCard key={index} data={item} />
                         ))}
                     </div>
