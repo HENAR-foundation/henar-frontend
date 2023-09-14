@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import React, { FC } from 'react';
+import React, { FC, MouseEventHandler } from 'react';
 import ButtonOutline from './ButtonOutline';
 import FishImage from './FishImage';
 import Icon, { Icons } from './Icon';
@@ -103,7 +103,7 @@ const SpecialistCard: FC<any> = (user) => {
                     <div className='flex items-start lg:pt-4 lg:justify-end flex-1'>
                         <ButtonOutline
                             icon='mail'
-                            onClick={handleRequestContactModal}
+                            onClick={(e: any) => handleRequestContactModal(e as Event)}
                             className='lg:w-auto w-full lg:mr-8'
                         >
                             {t('request_contacts')}
