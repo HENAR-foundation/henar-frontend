@@ -35,7 +35,10 @@ export const verifyEmail = async (secret_code: string) => {
   return data;
 };
 
-export const resendVerificationEmail = async (email: string) => {
-  const { data } = await axios.get(`/auth/resend-verification-email/?email=${email}`);
+export const resendVerificationEmail = async ({ code, email }: { code?: string, email?: string }) => {
+  const { data } = await axios.post(`/auth/resend-verification-email/`, {
+    ...email && { email },
+    ...code && { token: code },
+  });
   return data;
 };

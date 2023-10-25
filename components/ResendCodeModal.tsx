@@ -6,15 +6,16 @@ import { useTranslations } from 'next-intl';
 import ButtonOutline from 'components/ButtonOutline';
 
 const ResendCodeModal: FC<{
-    onClose: VoidFunction, email: string, isLoading: boolean, onClick: UseMutationResult<any, unknown, {
-        email: string;
+    onClose: VoidFunction, code: string, email: string, isLoading: boolean, onClick: UseMutationResult<any, unknown, {
+        code?: string;
+        email?: string;
     }, unknown>
-}> = ({ onClose, isLoading, email, onClick }) => {
+}> = ({ onClose, isLoading, code, email, onClick }) => {
     const queryClient = useQueryClient();
 
     const t = useTranslations();
 
-    const handleClick = () => onClick.mutate({ email })
+    const handleClick = () => onClick.mutate({ code, email })
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';

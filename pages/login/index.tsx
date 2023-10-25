@@ -35,7 +35,7 @@ const LoginPage = () => {
     onError: (error: any, variables) => {
       if (error?.response?.data?.message === 'email not verified') {
         PubSub.publish('notification', t("email_not_verified"));
-        push({ pathname: '/verify-email', query: { email: variables?.email } });
+        push({ pathname: '/verify-email', query: { email: variables?.email } }, '/verify-email');
       } else {
         formik.setErrors({ password: 'Пароль или email введены неверно' });
       }

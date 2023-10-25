@@ -76,8 +76,8 @@ const VerifyEmailPage = () => {
                 PubSub.publish('notification', t("error_email_send"));
             }
         },
-        mutationFn: ({ email }: { email: string; }) =>
-            resendVerificationEmail(email),
+        mutationFn: ({ email, code }: { email?: string; code?: string }) =>
+            resendVerificationEmail({ email, code }),
     });
 
     const formik = useFormik({
@@ -122,16 +122,16 @@ const VerifyEmailPage = () => {
                         >
                             {t('continue')}
                         </ButtonPrimary>
-                        {email ? <div className="flex justify-center items-center mt-5 " >
+                        {email || code ? <div className="flex justify-center items-center mt-5 " >
                             <p className='text-m'>{t('didnt_received_email')}</p>
-                            <div onClick={() => resendVerificationEmaillMutation.mutate({ email: email })} className='text-m ml-2 cursor-pointer text-accent1'>
+                            <div onClick={() => resendVerificationEmaillMutation.mutate({ email, code })} className='text-m ml-2 cursor-pointer text-accent1'>
                                 {t('resend')}
                             </div>
                         </div> : null}
                     </div>
                 </form>
             </div>
-            {modal && <ResendCodeModal onClose={toggleModal} onClick={resendVerificationEmaillMutation} isLoading={resendVerificationEmaillMutation.isLoading} email={email} />}
+            {modal && <ResendCodeModal onClose={toggleModal} onClick={resendVerificationEmaillMutation} isLoading={resendVerificationEmaillMutation.isLoading} code={code} email={email} />}
         </>
     );
 };
