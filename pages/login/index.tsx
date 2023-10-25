@@ -7,6 +7,7 @@ import React from 'react';
 import { signIn } from 'api/mutations/auth';
 import { GetServerSideProps } from 'next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/router';
 
@@ -31,8 +32,13 @@ const LoginPage = () => {
         push('/projects');
       }
     },
-    onError: () => {
-      formik.setErrors({ password: 'Пароль или email введены неверно' });
+    onError: (error: any, variables) => {
+      if (error?.response?.data?.message === 'email not verified') {
+        PubSub.publish('notification', t("email_not_verified"));
+        push({ pathname: '/verify-email', query: { email: variables?.email } });
+      } else {
+        formik.setErrors({ password: 'Пароль или email введены неверно' });
+      }
     },
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       signIn(email, password),

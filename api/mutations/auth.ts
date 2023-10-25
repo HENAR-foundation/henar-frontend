@@ -29,3 +29,13 @@ export const signOut = async () => {
     throw error;
   }
 };
+
+export const verifyEmail = async (secret_code: string) => {
+  const { data } = await axios.get(`/auth/verify-email/?secret_code=${secret_code}`);
+  return data;
+};
+
+export const resendVerificationEmail = async (email: string) => {
+  const { data } = await axios.get(`/auth/resend-verification-email/?email=${email}`);
+  return data;
+};

@@ -1,11 +1,9 @@
 import axios from 'axios';
 const env = process.env.NODE_ENV;
+export const baseURL = env === 'production' ? 'https://healthnet.am/api/v1' : 'http://localhost:8080/v1'
 
 const instance = axios.create({
-  baseURL:
-    env === 'production'
-      ? 'https://healthnet.am/api/v1'
-      : 'http://localhost:8080/v1',
+  baseURL,
   withCredentials: true,
   timeout: 5000,
 });
