@@ -208,5 +208,7 @@
     "email_used": "Email already used",
     "registered_successfully": "Registered successfully",
     "code_expired": "Verification code expired",
-    "invalid_code": "Code is invalid"
+    "invalid_code": "Code is invalid",
+    "please_verify_email_to_login": "To complete the login process, please check your email for a confirmation link and verify your email address.",
+    "verificating_email": "Verificating email address, please wait"
 }

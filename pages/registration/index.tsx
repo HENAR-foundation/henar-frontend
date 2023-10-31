@@ -31,7 +31,7 @@ const RegistrationPage = () => {
   const signUpMutation = useMutation({
     onSuccess: (_data, variables) => {
       PubSub.publish('notification', t('registered_successfully'))
-      push({ pathname: '/verify-email', query: { email: variables?.email } }, '/verify-email');
+      push({ pathname: '/not-verified', query: { email: variables?.email } }, '/not-verified');
     },
     onError: () => {
       formik.setErrors({ passwordConfirmation: t('email_used') })

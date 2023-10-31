@@ -204,5 +204,7 @@
   "email_used": "Электронная почта уже используется",
   "registered_successfully": "Регистрация прошла успешно",
   "code_expired": "Срок действия кода подтверждения истек",
-  "invalid_code": "Code is invalid"
+  "invalid_code": "Code is invalid",
+  "please_verify_email_to_login": "To complete the login process, please check your email for a confirmation link and verify your email address.",
+  "verificating_email": "Verificating email address, please wait"
 }

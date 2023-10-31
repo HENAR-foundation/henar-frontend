@@ -171,5 +171,7 @@
     "email_used": "Էլփոստն արդեն օգտագործվել է",
     "registered_successfully": "գրանցումը հաջողությամբ ավարտվեց",
     "code_expired": "Հաստատման կոդը ժամկետանց է",
-    "invalid_code": "Կոդն անվավեր է"
+    "invalid_code": "Կոդն անվավեր է",
+    "please_verify_email_to_login": "To complete the login process, please check your email for a confirmation link and verify your email address.",
+    "verificating_email": "Verificating email address, please wait"
 }
