@@ -13,12 +13,12 @@ import { useRouter } from 'next/router';
 
 const SignupSchema = Yup.object().shape({
   password: Yup.string()
-    .min(5, 'Пароль должен содержать минимум 5 символов')
-    .max(50, 'Пароль может содержать максимум 50 символов')
+    .min(5, 'err_password')
+    .max(50, 'err_password')
     .required('err_missing_fields'),
   passwordConfirmation: Yup.string().oneOf(
     [Yup.ref('password')],
-    'Пароли не совпадают'
+    'pasword_not_match'
   ),
   email: Yup.string()
     .email('err_invalid_email_format')

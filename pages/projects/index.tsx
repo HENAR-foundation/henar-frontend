@@ -130,7 +130,7 @@ const ProjectsPage = () => {
                         options={(
                             Object.keys(ProjectPhases) as (keyof typeof ProjectPhases)[]
                         ).map((val) => ({
-                            label: ProjectPhases[val],
+                            label: t(`${ProjectPhases[val]}`) ,
                             val,
                         }))}
                         defaultVal={t('all_phases')}
@@ -140,7 +140,7 @@ const ProjectsPage = () => {
                         options={(
                             Object.keys(ProjectHelpTypes) as (keyof typeof ProjectHelpTypes)[]
                         ).map((val) => ({
-                            label: ProjectHelpTypes[val],
+                            label: t(`${ProjectHelpTypes[val]}`),
                             val,
                         }))}
                         name='help'

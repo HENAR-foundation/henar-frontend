@@ -37,7 +37,7 @@ const ResearchesPage = () => {
         queryFn: getStatisticsCategories,
         queryKey: ['statisticsCategories'],
         onSuccess: (categories) => {
-            setCategory(categories[0].id)
+            categories.length && setCategory(categories[0].id)
         }
     });
 
