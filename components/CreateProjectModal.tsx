@@ -219,7 +219,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction, slug?: string }> = ({ onCl
                                                 ProjectPhases
                                             ) as (keyof typeof ProjectPhases)[]
                                         ).map((val) => ({
-                                            label: ProjectPhases[val],
+                                            label: t(`${ProjectPhases[val]}`),
                                             val,
                                         }))}
                                         defaultVal='Select project stadia'
@@ -279,7 +279,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction, slug?: string }> = ({ onCl
                                                 ProjectHelpTypes
                                             ) as (keyof typeof ProjectHelpTypes)[]
                                         ).map((val) => ({
-                                            label: ProjectHelpTypes[val],
+                                            label: t(`${ProjectHelpTypes[val]}`),
                                             val,
                                         }))}
                                         defaultVal={t('help_project_question')}

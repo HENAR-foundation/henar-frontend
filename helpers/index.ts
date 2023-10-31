@@ -1,17 +1,16 @@
 import { User } from 'api/types';
 
 export enum ProjectPhases {
-    idetation = 'Idetation',
-    implementation = 'Implementation',
-    launch = 'Launch & Execution',
-    performance = 'Perfomance & Control',
-    closed = 'Project Closed',
+    ideation = 'ideation',
+    implementation = 'implementation',
+    launch = 'launch',
+    closed = 'closed',
 }
 
 export enum ProjectHelpTypes {
-    financing = 'Financing',
-    expertise = 'Expertise',
-    resources = 'Resources',
+    financing = 'financing',
+    expertise = 'expertise',
+    resources = 'resources',
 }
 
 export const formatFullName = (user?: User) => {

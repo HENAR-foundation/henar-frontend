@@ -285,14 +285,14 @@ const PasswordTab: FC<{ t: any }> = ({ t }) => (
         <div className='flex w-full lg:flex-row flex-col'>
             <span className='w-[230px] mt-2 lg:mb-0 mb-3'>{t('old_password')}</span>
             <div className='flex flex-1 space-y-3 w-full flex-col'>
-                <InputMaterial label={t('password')} type='password' />
+                <InputMaterial label={t('old_password')} type='password' />
             </div>
         </div>
         <div className='flex w-full lg:flex-row flex-col'>
             <span className='w-[230px] mt-2 lg:mb-0 mb-3'>{t('new_password')}</span>
             <div className='flex flex-1 space-y-3 w-full flex-col'>
-                <InputMaterial label={t('password')} type='password' />
                 <InputMaterial label={t('new_password')} type='password' />
+                <InputMaterial label={t('reenter_password')} type='password' />
             </div>
         </div>
         <div className='flex justify-end items-end h-[100px]'>
