@@ -218,5 +218,10 @@
     "closed": "Project Closed",
     "financing": "Financing",
     "expertise": "Expertise",
-    "resources": "Resources"
+    "resources": "Resources",
+    "alert_password_changed": "Password was successfully updated now you can login with new password",
+    "alert_password_change_error": "There was an error during password change, please try again",
+    "update_password": "Enter new password",
+    "alert_reset_password_email_sent": "An email with a password reset link was sent successfully, please check your email",
+    "alert_reset_password_error": "There was an error sending password reset email, please try again"
 }

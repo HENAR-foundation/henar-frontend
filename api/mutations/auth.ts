@@ -42,3 +42,19 @@ export const resendVerificationEmail = async ({ code, email }: { code?: string, 
   });
   return data;
 };
+
+export const forgotPassword = async ({ email }: { email: string }) => {
+  const { data } = await axios.post(`/auth/forgot-password/`, {
+    ...email && { email },
+  });
+  return data;
+};
+
+export const resetPassword = async ({ password, passwordConfirm, code }: { password: string, passwordConfirm: string, code: string }) => {
+  const { data } = await axios.post(`/auth/reset-password/`, {
+    password,
+    password_confirm: passwordConfirm,
+    token: code,
+  });
+  return data;
+};

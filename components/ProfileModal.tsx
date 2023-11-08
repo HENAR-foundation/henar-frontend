@@ -18,6 +18,7 @@ import { formatFullName } from 'helpers';
 import { getLocationById } from 'api/location';
 import LocationInput from './LocationInput';
 import { LocationSuggestsData, User } from 'api/types';
+import { forgotPassword } from 'api/mutations/auth';
 import { createLocation } from 'api/mutations/location';
 import SpecialistCard from './SpecialistCard';
 import { useRouter } from 'next/router';
@@ -41,6 +42,12 @@ const UpdateProfileSchema = Yup.object().shape({
     locationCode: Yup.string(),
     job: Yup.string().required('err_missing_fields'),
     description: Yup.string().required('err_missing_fields'),
+});
+
+const ForgotPasswordSchema = Yup.object().shape({
+    email: Yup.string()
+        .email('err_invalid_email_format')
+        .required('err_missing_fields'),
 });
 
 const AboutTab: FC = () => {
@@ -280,26 +287,57 @@ const AboutTab: FC = () => {
     );
 };
 
-const PasswordTab: FC<{ t: any }> = ({ t }) => (
-    <div className='flex flex-col lg:space-y-8 space-y-[20px]'>
-        <div className='flex w-full lg:flex-row flex-col'>
-            <span className='w-[230px] mt-2 lg:mb-0 mb-3'>{t('old_password')}</span>
-            <div className='flex flex-1 space-y-3 w-full flex-col'>
-                <InputMaterial label={t('old_password')} type='password' />
-            </div>
+const PasswordTab: FC<{ t: any }> = ({ t }) => {
+    const forgotPasswordMutation = useMutation({
+        onSuccess: (result) => {
+            if (result) {
+                PubSub.publish('notification', t("alert_reset_password_email_sent"));
+            }
+        },
+        onError: (error: any) => {
+            PubSub.publish('notification', t('alert_reset_password_error'));
+        },
+        mutationFn: ({ email }: { email: string }) =>
+            forgotPassword({ email }),
+    });
+
+    const formik = useFormik({
+        initialValues: {
+            email: '',
+        },
+        validateOnChange: false,
+        validationSchema: ForgotPasswordSchema,
+        onSubmit: (data) => {
+            forgotPasswordMutation.mutate(data);
+        },
+    });
+
+    return (
+        <div className='flex flex-col lg:space-y-8 space-y-[20px]'>
+            <form onSubmit={formik.handleSubmit}>
+                <div className='flex w-full lg:flex-row flex-col'>
+                    <span className='w-[230px] mt-2 lg:mb-0 mb-3'>{t('email')}</span>
+                    <div className='flex flex-1 space-y-3 w-full flex-col'>
+                        <InputMaterial
+                            error={t(formik.errors.email as any)}
+                            name='email'
+                            label={t('email')!}
+                            onChange={formik.handleChange}
+                            value={formik.values.email}
+                        />
+                    </div>
+                </div>
+                <div className='flex justify-end items-end h-[100px]'>
+                    <ButtonPrimary
+                        type='submit'
+                        busy={forgotPasswordMutation.isLoading}
+                    >{t("reset_password")}</ButtonPrimary>
+                </div>
+            </form>
         </div>
-        <div className='flex w-full lg:flex-row flex-col'>
-            <span className='w-[230px] mt-2 lg:mb-0 mb-3'>{t('new_password')}</span>
-            <div className='flex flex-1 space-y-3 w-full flex-col'>
-                <InputMaterial label={t('new_password')} type='password' />
-                <InputMaterial label={t('reenter_password')} type='password' />
-            </div>
-        </div>
-        <div className='flex justify-end items-end h-[100px]'>
-            <ButtonPrimary>{t("reset_password")}</ButtonPrimary>
-        </div>
-    </div>
-);
+    )
+}
+
 
 const PeopleTab: FC<{ t: any }> = ({ t }) => {
     const { push } = useRouter();
