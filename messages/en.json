@@ -222,6 +222,7 @@
     "alert_password_changed": "Password was successfully updated now you can login with new password",
     "alert_password_change_error": "There was an error during password change, please try again",
     "update_password": "Enter new password",
-    "alert_reset_password_email_sent": "An email with a password reset link was sent successfully, please check your email",
-    "alert_reset_password_error": "There was an error sending password reset email, please try again"
+    "alert_reset_password_email_sent": "If the entered email is associated with an account, an email has been sent with instructions of how to reset your password.",
+    "alert_reset_password_error": "There was an error sending password reset email, please try again",
+    "too_many_requests": "Too many requests, please try again later"
 }

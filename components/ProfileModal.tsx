@@ -295,7 +295,11 @@ const PasswordTab: FC<{ t: any }> = ({ t }) => {
             }
         },
         onError: (error: any) => {
-            PubSub.publish('notification', t('alert_reset_password_error'));
+            if (error.response?.status === 429) {
+                PubSub.publish('notification', t('too_many_requests'));
+            } else {
+                PubSub.publish('notification', t('alert_reset_password_error'));
+            }
         },
         mutationFn: ({ email }: { email: string }) =>
             forgotPassword({ email }),
