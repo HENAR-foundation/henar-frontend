@@ -41,7 +41,7 @@ const Tabs: FC<{
             >
                 {
                     options.map((option, index) => (
-                        <div className={`mr-10 py-2 cursor-pointer  border-accent1 ${option.value === tab && 'border-b-2'}`} onClick={() => handleTabChange(option.value)} key={index}>
+                        <div className={`mr-10 py-2 cursor-pointer  border-accent1 ${option.value === tab && 'border-b-2'}`} onClick={() => handleTabChange(option.value)} key={option.value}>
                             <span className={option.value === tab ? 'text-accent1' : 'text-legacyGraphit'}>{option.label}</span>
                         </div>
                     ))

@@ -6,7 +6,7 @@ import CreateStatisticsModal from './CreateStatisticsModal';
 
 const StatisticCard: FC<{
     id: string;
-    value: number;
+    value: string;
     title: string;
     source: string;
 }> = ({ title, value, source, id }) => {

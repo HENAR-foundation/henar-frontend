@@ -24,7 +24,7 @@ export interface Project {
 
 export interface StatisticItem {
     _id: string;
-    value: number;
+    value: string;
     title: string;
     source: string;
     category: string;

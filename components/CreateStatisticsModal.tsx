@@ -27,14 +27,15 @@ import { getStatistic, getStatistics } from 'api/statistics';
 const CreateStatisticsSchema = Yup.object().shape({
     title: Yup.string()
         .min(5, 'Название должно содержать минимум 5 символов')
-        .max(50, 'Название может содержать максимум 50 символов')
+        .max(100, 'Название может содержать максимум 100 символов')
         .required('err_missing_fields'),
     category: Yup.string().required('err_missing_fields'),
-    value: Yup.number().required('err_missing_fields'),
+    value: Yup.string().required('err_missing_fields').max(50, 'Название может содержать максимум 50 символов'),
     source: Yup.string().required('err_missing_fields'),
 });
 
 const CreateStatisticsModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onClose, id }) => {
+
     const [categoryOnEdit, setCategoryOnEdit] = useState<string | undefined>(undefined)
     const [categoriesModal, toogleCategoriesModal] = useToggle()
     const { data: user } = useQuery({
@@ -46,6 +47,10 @@ const CreateStatisticsModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onC
     const { data: categories } = useQuery({
         queryFn: getStatisticsCategories,
         queryKey: ['statisticsCategories'],
+        retry: false,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false
     });
 
     const { data: stat } = useQuery({
@@ -57,7 +62,7 @@ const CreateStatisticsModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onC
                 title: stat.title,
                 value: stat.value,
                 source: stat.source,
-                category: stat.category
+                category: stat.category,
             })
         }
     })
@@ -115,16 +120,14 @@ const CreateStatisticsModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onC
     const formik = useFormik({
         initialValues: {
             title: '',
-            value: 0,
+            value: '',
             source: '',
             category: ''
         },
         validateOnChange: false,
         validationSchema: CreateStatisticsSchema,
         onSubmit: () => {
-            console.log(123)
             if (user) {
-                console.log(123)
                 handleCreateStatistics();
             }
         },

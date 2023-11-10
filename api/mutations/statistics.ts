@@ -6,7 +6,6 @@ export const createStatistics = async (stat: any) => {
             '/statistics',
             {
                 ...stat,
-                value: Number(stat.value)
             },
             { withCredentials: true }
         );
@@ -27,7 +26,6 @@ export const updateStatistics = async (stat: {
             '/statistics/' + id,
             {
                 ...stat,
-                value: Number(stat.value)
             },
             { withCredentials: true }
         );

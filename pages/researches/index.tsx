@@ -31,11 +31,19 @@ const ResearchesPage = () => {
     const { data: stats } = useQuery({
         queryFn: getStatistics,
         queryKey: ['statistics'],
+        retry: false,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false
     });
 
     const { data: categories } = useQuery({
         queryFn: getStatisticsCategories,
         queryKey: ['statisticsCategories'],
+        retry: false,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
         onSuccess: (categories) => {
             categories.length && setCategory(categories[0].id)
         }
@@ -71,8 +79,7 @@ const ResearchesPage = () => {
             <Head>
                 <title>{t('analytics')}</title>
             </Head>
-            {researchModalVisible && <CreateResearchModal onClose={toggleResearchModal} />}
-            {statisticsModalVisible && <CreateStatisticsModal onClose={toggleStatisticsModal} />}
+
             <div>
                 <div className='flex flex-row justify-between items-center mb-4 mt-14'>
                     <h1 className=' text-h-xl-m font-bold '>{t('analytics')}</h1>
@@ -157,6 +164,8 @@ const ResearchesPage = () => {
                     ))}
                 </div>
             </div>
+            {researchModalVisible && <CreateResearchModal onClose={toggleResearchModal} />}
+            {statisticsModalVisible && <CreateStatisticsModal onClose={toggleStatisticsModal} />}
         </>
     );
 };
