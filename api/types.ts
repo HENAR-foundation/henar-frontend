@@ -21,14 +21,19 @@ export interface Project {
     phase: string;
 }
 
-
-export interface StatisticItem {
-    _id: string;
-    value: string;
+export interface StatisticItemTranslation {
     title: string;
+    value: string;
     source: string;
+  }
+  
+  export interface StatisticItem {
+    _id: string;
+    en: StatisticItemTranslation;
+    hy: StatisticItemTranslation;
+    ru: StatisticItemTranslation;
     category: string;
-}
+  }
 
 export interface Translations {
     en: string;

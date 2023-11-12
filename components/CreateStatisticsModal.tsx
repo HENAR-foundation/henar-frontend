@@ -25,13 +25,30 @@ import { createStatistics, deleteStatistics, updateStatistics } from 'api/mutati
 import { getStatistic, getStatistics } from 'api/statistics';
 
 const CreateStatisticsSchema = Yup.object().shape({
-    title: Yup.string()
-        .min(5, 'Название должно содержать минимум 5 символов')
-        .max(100, 'Название может содержать максимум 100 символов')
-        .required('err_missing_fields'),
     category: Yup.string().required('err_missing_fields'),
-    value: Yup.string().required('err_missing_fields').max(50, 'Название может содержать максимум 50 символов'),
-    source: Yup.string().required('err_missing_fields'),
+
+    en: Yup.object({
+        title: Yup.string()
+            .min(5, 'Название должно содержать минимум 5 символов')
+            .max(100, 'Название может содержать максимум 100 символов')
+            .required('err_missing_fields'),
+        value: Yup.string().required('err_missing_fields').max(50, 'Название может содержать максимум 50 символов'),
+        source: Yup.string().required('err_missing_fields'),
+    }),
+    hy: Yup.object({
+        title: Yup.string()
+            .min(5, 'Название должно содержать минимум 5 символов')
+            .max(100, 'Название может содержать максимум 100 символов'),
+        value: Yup.string().max(50, 'Название может содержать максимум 50 символов'),
+        source: Yup.string(),
+    }),
+    ru: Yup.object({
+        title: Yup.string()
+            .min(5, 'Название должно содержать минимум 5 символов')
+            .max(100, 'Название может содержать максимум 100 символов'),
+        value: Yup.string().max(50, 'Название может содержать максимум 50 символов'),
+        source: Yup.string(),
+    }),
 });
 
 const CreateStatisticsModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onClose, id }) => {
@@ -59,9 +76,21 @@ const CreateStatisticsModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onC
         enabled: !!id,
         onSuccess: stat => {
             formik.setValues({
-                title: stat.title,
-                value: stat.value,
-                source: stat.source,
+                en: {
+                    title: stat.en.title,
+                    value: stat.en.value,
+                    source: stat.en.source,
+                },
+                hy: {
+                    title: stat.hy.title,
+                    value: stat.hy.value,
+                    source: stat.hy.source,
+                },
+                ru: {
+                    title: stat.ru.title,
+                    value: stat.ru.value,
+                    source: stat.ru.source,
+                },
                 category: stat.category,
             })
         }
@@ -119,10 +148,22 @@ const CreateStatisticsModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onC
 
     const formik = useFormik({
         initialValues: {
-            title: '',
-            value: '',
-            source: '',
-            category: ''
+            en: {
+                title: '',
+                value: '',
+                source: '',
+            },
+            hy: {
+                title: '',
+                value: '',
+                source: '',
+            },
+            ru: {
+                title: '',
+                value: '',
+                source: '',
+            },
+            category: '',
         },
         validateOnChange: false,
         validationSchema: CreateStatisticsSchema,
@@ -215,21 +256,7 @@ const CreateStatisticsModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onC
                             </div>
                         </div>
                         <div className='rounded-b-xl overflow-hidden  space-y-10 flex flex-col bg-white lg:px-8 px-4 py-6 pb-14'>
-                            <div className='flex justify-between lg:flex-row flex-col'>
-                                <div className='flex flex-col lg:w-[170px]'>
-                                    <span className='text-l'>{t('title')}</span>
-                                </div>
-                                <div className='w-full max-w-[480px]'>
-                                    <InputMaterial
-                                        name='title'
-                                        error={t(formik.errors.title as any)}
-                                        onChange={formik.handleChange}
-                                        value={formik.values.title}
-                                        placeholder={t('title')}
-                                    />
-                                </div>
-                            </div>
-                            <div className='lg:flex-row flex-col flex justify-between'>
+                            <div className='lg:flex-row flex-col flex justify-between items-center'>
                                 <div className='flex flex-col lg:w-[170px]'>
                                     <span className='text-l'>{t('category')}</span>
                                 </div>
@@ -244,34 +271,149 @@ const CreateStatisticsModal: FC<{ onClose: VoidFunction, id?: string }> = ({ onC
                                     />
                                 </div>
                             </div>
-                            <div className='lg:flex-row flex-col flex justify-between'>
-                                <div className='flex flex-col lg:w-[170px]'>
-                                    <span className='text-l'>{t('value')}</span>
+
+                            <div className='rounded-b-xl overflow-hidden space-y-10 flex flex-col bg-white  py-3 pb-6'>
+
+                                <div className='flex justify-between items-center lg:flex-row flex-col'>
+                                    <div className='flex flex-col lg:w-[170px]'>
+                                        <span className='text-l'>{t('en_statistics_title')}</span>
+                                    </div>
+                                    <div className='w-full max-w-[480px]'>
+                                        <InputMaterial
+                                            name='en.title'
+                                            error={t(formik.errors.en?.title as any)}
+                                            onChange={formik.handleChange}
+                                            value={formik.values.en.title}
+                                            placeholder={t('en_statistics_title')}
+                                        />
+                                    </div>
                                 </div>
-                                <div className='w-full max-w-[480px]'>
-                                    <InputMaterial
-                                        name='value'
-                                        error={t(formik.errors.value as any)}
-                                        onChange={formik.handleChange}
-                                        value={formik.values.value}
-                                        placeholder={t('value')}
-                                    />
+
+                                <div className='lg:flex-row flex-col flex justify-between items-center'>
+                                    <div className='flex flex-col lg:w-[170px]'>
+                                        <span className='text-l'>{t('en_statistics_value')}</span>
+                                    </div>
+                                    <div className='w-full max-w-[480px]'>
+                                        <InputMaterial
+                                            name='en.value'
+                                            error={t(formik.errors.en?.value as any)}
+                                            onChange={formik.handleChange}
+                                            value={formik.values.en?.value}
+                                            placeholder={t('en_statistics_value')}
+                                        />
+                                    </div>
+                                </div>
+                                <div className='lg:flex-row flex-col flex justify-between items-center'>
+                                    <div className='flex flex-col lg:w-[170px]'>
+                                        <span className='text-l'>{t('en_statistics_source')}</span>
+                                    </div>
+                                    <div className='w-full max-w-[480px]'>
+                                        <InputMaterial
+                                            name='en.source'
+                                            error={t(formik.errors.en?.source as any)}
+                                            onChange={formik.handleChange}
+                                            value={formik.values.en?.source}
+                                            placeholder={t('en_statistics_source')}
+                                        />
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div className='rounded-b-xl overflow-hidden  space-y-10 flex flex-col bg-white  py-3 pb-6'>
+
+                                <div className='flex justify-between items-center lg:flex-row flex-col'>
+                                    <div className='flex flex-col lg:w-[170px]'>
+                                        <span className='text-l'>{t('hy_statistics_title')}</span>
+                                    </div>
+                                    <div className='w-full max-w-[480px]'>
+                                        <InputMaterial
+                                            name='hy.title'
+                                            error={t(formik.errors.hy?.title as any)}
+                                            onChange={formik.handleChange}
+                                            value={formik.values.hy?.title}
+                                            placeholder={t('hy_statistics_title')}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className='lg:flex-row flex-col flex justify-between items-center'>
+                                    <div className='flex flex-col lg:w-[170px]'>
+                                        <span className='text-l'>{t('hy_statistics_value')}</span>
+                                    </div>
+                                    <div className='w-full max-w-[480px]'>
+                                        <InputMaterial
+                                            name='hy.value'
+                                            error={t(formik.errors.hy?.value as any)}
+                                            onChange={formik.handleChange}
+                                            value={formik.values.hy?.value}
+                                            placeholder={t('hy_statistics_value')}
+                                        />
+                                    </div>
+                                </div>
+                                <div className='lg:flex-row flex-col flex justify-between items-center'>
+                                    <div className='flex flex-col lg:w-[170px]'>
+                                        <span className='text-l'>{t('hy_statistics_source')}</span>
+                                    </div>
+                                    <div className='w-full max-w-[480px]'>
+                                        <InputMaterial
+                                            name='hy.source'
+                                            error={t(formik.errors.hy?.source as any)}
+                                            onChange={formik.handleChange}
+                                            value={formik.values.hy?.source}
+                                            placeholder={t('hy_statistics_source')}
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                            <div className='lg:flex-row flex-col flex justify-between'>
-                                <div className='flex flex-col lg:w-[170px]'>
-                                    <span className='text-l'>{t('source')}</span>
+
+                            <div className='rounded-b-xl overflow-hidden  space-y-10 flex flex-col bg-white  py-3 pb-6'>
+
+                                <div className='flex justify-between items-center lg:flex-row flex-col'>
+                                    <div className='flex flex-col lg:w-[170px]'>
+                                        <span className='text-l'>{t('ru_statistics_title')}</span>
+                                    </div>
+                                    <div className='w-full max-w-[480px]'>
+                                        <InputMaterial
+                                            name='ru.title'
+                                            error={t(formik.errors.ru?.title as any)}
+                                            onChange={formik.handleChange}
+                                            value={formik.values.ru?.title}
+                                            placeholder={t('ru_statistics_title')}
+                                        />
+                                    </div>
                                 </div>
-                                <div className='w-full max-w-[480px]'>
-                                    <InputMaterial
-                                        name='source'
-                                        error={t(formik.errors.source as any)}
-                                        onChange={formik.handleChange}
-                                        value={formik.values.source}
-                                        placeholder={t('source')}
-                                    />
+
+                                <div className='lg:flex-row flex-col flex justify-between items-center'>
+                                    <div className='flex flex-col lg:w-[170px]'>
+                                        <span className='text-l'>{t('ru_statistics_value')}</span>
+                                    </div>
+                                    <div className='w-full max-w-[480px]'>
+                                        <InputMaterial
+                                            name='ru.value'
+                                            error={t(formik.errors.ru?.value as any)}
+                                            onChange={formik.handleChange}
+                                            value={formik.values.ru?.value}
+                                            placeholder={t('ru_statistics_value')}
+                                        />
+                                    </div>
+                                </div>
+                                <div className='lg:flex-row flex-col flex justify-between items-center'>
+                                    <div className='flex flex-col lg:w-[170px]'>
+                                        <span className='text-l'>{t('ru_statistics_source')}</span>
+                                    </div>
+                                    <div className='w-full max-w-[480px]'>
+                                        <InputMaterial
+                                            name='ru.source'
+                                            error={t(formik.errors.ru?.source as any)}
+                                            onChange={formik.handleChange}
+                                            value={formik.values.ru?.source}
+                                            placeholder={t('ru_statistics_source')}
+                                        />
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>

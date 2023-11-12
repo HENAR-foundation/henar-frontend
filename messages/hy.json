@@ -188,5 +188,14 @@
     "update_password": "Մուտքագրեք նոր գաղտնաբառ",
     "alert_reset_password_email_sent": "Եթե ​​մուտքագրված էլփոստը կապված է հաշվի հետ, ապա ուղարկվել է նամակ՝ ձեր գաղտնաբառը վերականգնելու հրահանգներով:",
     "alert_reset_password_error": "Սխալ է տեղի ունեցել գաղտնաբառի վերակայման նամակ ուղարկելիս, խնդրում ենք նորից փորձել",
-    "too_many_requests": "Չափազանց շատ հարցումներ, խնդրում ենք փորձել ավելի ուշ"
+    "too_many_requests": "Չափազանց շատ հարցումներ, խնդրում ենք փորձել ավելի ուշ",
+    "en_statistics_source": "English source",
+    "en_statistics_value": "English value",
+    "en_statistics_title": "English title",
+    "hy_statistics_source": "Armenian source",
+    "hy_statistics_value": "Armenian value",
+    "hy_statistics_title": "Armenian title",
+    "ru_statistics_source": "Russian source",
+    "ru_statistics_value": "Russian value",
+    "ru_statistics_title": "Russian title"
 }

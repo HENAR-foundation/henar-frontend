@@ -102,13 +102,8 @@ const ResearchesPage = () => {
                     categories && categories.find(cat => cat.id === category)?.steps.map((step: string, index: number) => <p>{step}</p>)
                 }
                 <div className='grid gap-x-6 gap-y-4 grid-cols-1 lg:grid-cols-4 mt-8'>
-                    {stats?.filter(stat => stat.category === category).map(({ title, value, source, _id }) => (
-                        <StatisticCard
-                            id={_id}
-                            title={title}
-                            value={value}
-                            source={source}
-                        />
+                    {stats?.filter(stat => stat.category === category).map(stat => (
+                        <StatisticCard key={stat._id} stat={stat} />
                     ))}
                 </div>
                 <h2 className='mt-[70px] mb-10 text-h-m-d font-bold'>{t('research')}</h2>
