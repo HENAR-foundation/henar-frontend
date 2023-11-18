@@ -26,6 +26,16 @@ const CreateEventSchema = Yup.object().shape({
     links: Yup.string().required('Required'),
 });
 
+const convertToDate = (value: any) => {
+    try {
+        let dateValue = value instanceof Date ? value : new Date(value);
+        return dateValue.toISOString().split('T')[0];
+    } catch (error) {
+        console.error('Invalid date value:', value);
+        return null;
+    }
+}
+
 const CreateEventModal: FC<{ onClose: VoidFunction, id?: string, slug?: string }> = ({ onClose, id, slug }) => {
     const { data: user } = useQuery({
         queryFn: checkSignIn,
@@ -269,7 +279,7 @@ const CreateEventModal: FC<{ onClose: VoidFunction, id?: string, slug?: string }
                                         className='min-h-[120px]'
                                         name='date'
                                         onChange={formik.handleChange}
-                                        value={formik.values?.date as any}
+                                        value={convertToDate(formik.values.date) || ''}
                                         placeholder={t('date')}
                                     />
                                 </div>
