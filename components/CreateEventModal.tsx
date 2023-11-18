@@ -269,7 +269,7 @@ const CreateEventModal: FC<{ onClose: VoidFunction, id?: string, slug?: string }
                                         className='min-h-[120px]'
                                         name='date'
                                         onChange={formik.handleChange}
-                                        value={formik.values.date.toISOString().split('T')[0]}
+                                        value={formik.values?.date as any}
                                         placeholder={t('date')}
                                     />
                                 </div>

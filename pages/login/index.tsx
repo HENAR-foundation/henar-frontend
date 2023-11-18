@@ -82,9 +82,9 @@ const LoginPage = () => {
                 onChange={formik.handleChange}
                 value={formik.values.password}
               />
-              <div className='mt-5 text-m text-accent1'>
+              {/* <div className='mt-5 text-m text-accent1'>
                 {t('forgot_password')}
-              </div>
+              </div> */}
             </div>
 
             <ButtonPrimary
