@@ -197,7 +197,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction, slug?: string }> = ({ onCl
                                 </div>
                                 <div className='w-full max-w-[480px]'>
                                     <ProjectFilesUploader
-                                        onChange={formik.setFieldValue}
+                                        onChange={formik.setFieldValue as any}
                                         name='photos'
                                     />
                                 </div>

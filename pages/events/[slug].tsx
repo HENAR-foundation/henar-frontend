@@ -15,6 +15,21 @@ import ButtonOutline from 'components/ButtonOutline';
 import { useToggle } from 'usehooks-ts';
 import CreateEventModal from 'components/CreateEventModal';
 
+const formatLink = (link: string) => {
+    // If the link already starts with http:// or https://, return it as is
+    if (link.startsWith('http://') || link.startsWith('https://')) {
+        return link;
+    }
+
+    // If the link starts with www., prepend it with https://
+    if (link.startsWith('www.')) {
+        return 'https://' + link;
+    }
+
+    // In all other cases, prepend the link with https://
+    return 'https://' + link;
+}
+
 const EventPage = () => {
     const router = useRouter()
     const t = useTranslations();
@@ -120,7 +135,7 @@ const EventPage = () => {
                             <div className='space-x-1 flex'>
                                 <Image src='/external-link-alt.svg' width={16} height={16} alt='' />
                                 <Link
-                                    href={event?.links || "test"}
+                                    href={event?.links ? formatLink(event?.links) : ""}
                                     target='_blank'
                                     className='font-bodyLight text-h-m-m'
                                 >

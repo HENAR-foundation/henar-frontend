@@ -72,16 +72,18 @@ const ProjectFilesUploader: FC<{
                 description: string;
                 tasks: string;
                 request: string;
-                photos: never[];
+                photos: string;
             }>
         >;
     name: string;
 }> = ({ onChange, name }) => {
+    const t = useTranslations();
     const hiddenFileInput = useRef<any>(null);
     const [selectedFiles, setSelectedFile] = useState<any>();
     const [preview, setPreview] = useState<any[]>();
 
     useEffect(() => {
+
         if (!selectedFiles) {
             setPreview(undefined);
             return;
@@ -108,8 +110,6 @@ const ProjectFilesUploader: FC<{
         // I've kept this example simple by using the first image instead of multiple
         setSelectedFile(e.target.files);
     };
-
-    const t = useTranslations();
 
     return (
         <>

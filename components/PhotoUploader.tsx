@@ -54,7 +54,7 @@ const PhotoUploader: FC<{
         )}
         {url && !selectedFiles && (
           <figure className='brightness-50 w-[150px] h-[150px] relative rounded-s overflow-hidden bg-black'>
-            <Image src={url} fill alt='avatar' className='object-cover' />
+            <Image src={url} fill alt='image' className='object-cover' />
           </figure>
         )}
         <div className='absolute top-0 left-0 w-full h-full flex justify-center items-center'>

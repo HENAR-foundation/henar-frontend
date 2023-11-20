@@ -2,6 +2,7 @@ import Image from 'next/image';
 import React, { FC, useEffect } from 'react';
 import ButtonPrimary from './ButtonPrimary';
 import InputMaterial from './InputMaterial';
+import PhotoUploader from './PhotoUploader';
 import TextAreaMaterial from './TextAreaMaterial';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
@@ -14,6 +15,8 @@ import { uploadPhotos } from 'api/mutations/files';
 import { getEvent, getEvents } from 'api/events';
 import { Event } from 'api/types';
 
+const re = /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm
+
 const CreateEventSchema = Yup.object().shape({
     title: Yup.string()
         .min(5, 'Название должно содержать минимум 5 символов')
@@ -22,8 +25,10 @@ const CreateEventSchema = Yup.object().shape({
     description: Yup.string().required('err_missing_fields'),
     date: Yup.date().required('err_missing_fields'),
     orgs: Yup.string().required('err_missing_fields'),
-    photos: Yup.mixed(),
-    links: Yup.string().required('Required'),
+    cover: Yup.mixed(),
+    links: Yup.string().matches(re,
+        'Enter correct url'
+    ).required('Required'),
 });
 
 const convertToDate = (value: any) => {
@@ -47,28 +52,33 @@ const CreateEventModal: FC<{ onClose: VoidFunction, id?: string, slug?: string }
         queryFn: getEvents,
     });
 
-    const { data: event } = useQuery({
-        enabled: !!(id && slug),
+
+    const { refetch: refetchEvent, data: event } = useQuery({
+        // enabled: !!(id && slug),
         queryKey: ['event'],
         queryFn: () => getEvent(slug!),
-        onSuccess: (data: Event & { photos: never[] }) => {
+    })
+
+    useEffect(() => {
+        if (event && id && slug) {
             formik.setValues({
-                date: new Date(data.date),
-                description: data.description.en,
-                links: data.links,
-                orgs: data.orgs,
-                photos: data.photos,
-                title: data.title.en
+                date: new Date(event.date),
+                description: event.description.en,
+                links: event.links,
+                orgs: event.orgs,
+                cover: event.cover,
+                title: event.title.en
             })
         }
-    })
+    }, [event]);
 
     const mutationCreateEvent = useMutation({
         mutationFn: (values: any) => createEvent(values),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['events'] });
             refetchEvents();
-
+            queryClient.invalidateQueries({ queryKey: ['event'] });
+            refetchEvent();
             PubSub.publish('notification', t("alert_event_created"));
             onClose();
         }
@@ -78,6 +88,8 @@ const CreateEventModal: FC<{ onClose: VoidFunction, id?: string, slug?: string }
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['events'] });
             refetchEvents()
+            queryClient.invalidateQueries({ queryKey: ['event'] });
+            refetchEvent()
             PubSub.publish('notification', t("alert_update_event"));
             onClose();
         },
@@ -85,21 +97,51 @@ const CreateEventModal: FC<{ onClose: VoidFunction, id?: string, slug?: string }
 
     const queryClient = useQueryClient();
 
-    const handleCreateEvent = (photos: string[] = []) => {
+    const handleCreateEvent = (newCover?: string[]) => {
         if (user) {
-            mutationCreateEvent.mutate(formik.values)
+            const { date,
+                description,
+                links,
+                orgs,
+                cover,
+                title } = formik.values
+            mutationCreateEvent.mutate({
+                date,
+                description,
+                links,
+                orgs,
+                cover: newCover || cover,
+                title
+            })
         }
     };
-    const handleUpdateEvent = (photos: string[] = []) => {
-        console.log(123)
+    const handleUpdateEvent = (newCover?: string[]) => {
         if (user) {
-            mutationUpdateEvent.mutate(formik.values)
+            const { date,
+                description,
+                links,
+                orgs,
+                cover,
+                title } = formik.values
+            mutationUpdateEvent.mutate({
+                date,
+                description,
+                links,
+                orgs,
+                cover: newCover || cover,
+                title
+            })
         }
     };
 
     const mutationPhotos = useMutation({
         mutationFn: (photos: FileList) => uploadPhotos(photos),
-        onSuccess: (data) => id ? handleUpdateEvent(data) : handleCreateEvent(data),
+        onSuccess: (data) => {
+            formik.setFieldValue('cover', data[0]);
+            formik.setFieldTouched('cover', true, false);
+            console.log("mutationPhotosdata", data)
+            id ? handleUpdateEvent(data[0]) : handleCreateEvent(data[0])
+        },
     });
     const formik = useFormik({
         initialValues: {
@@ -107,28 +149,25 @@ const CreateEventModal: FC<{ onClose: VoidFunction, id?: string, slug?: string }
             description: '',
             date: new Date(),
             links: '',
-            photos: [],
+            cover: '',
             orgs: '',
         },
         validateOnChange: false,
         validationSchema: CreateEventSchema,
-        onSubmit: ({ photos }) => {
-            if (user) {
-                console.log(123)
-                if (photos && photos.length) {
-                    mutationPhotos.mutate(photos as unknown as FileList);
-                } else {
-                    id
-                        ? handleUpdateEvent()
-                        : handleCreateEvent();
-                }
+        onSubmit: async ({ cover, ...rest }) => {
+            if (user && cover && cover !== event!.cover as any) {
+                await mutationPhotos.mutate(cover as unknown as FileList);
+            } else {
+                id
+                    ? handleUpdateEvent()
+                    : handleCreateEvent();
             }
         },
     });
 
-    const t = useTranslations();
-
     console.log(formik.values)
+
+    const t = useTranslations();
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
@@ -205,9 +244,10 @@ const CreateEventModal: FC<{ onClose: VoidFunction, id?: string, slug?: string }
                                     </span>
                                 </div>
                                 <div className='w-full max-w-[480px]'>
-                                    <ProjectFilesUploader
-                                        onChange={(name, value) => formik.setFieldValue(name, value)}
-                                        name='photos'
+                                    <PhotoUploader
+                                        url={formik.values.cover}
+                                        onChange={formik.setFieldValue as any}
+                                        name='cover'
                                     />
                                 </div>
                             </div>
