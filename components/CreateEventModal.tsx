@@ -15,7 +15,7 @@ import { uploadPhotos } from 'api/mutations/files';
 import { getEvent, getEvents } from 'api/events';
 import { Event } from 'api/types';
 
-const re = /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm
+const re = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/gm
 
 const CreateEventSchema = Yup.object().shape({
     title: Yup.string()
@@ -155,7 +155,7 @@ const CreateEventModal: FC<{ onClose: VoidFunction, id?: string, slug?: string }
         validateOnChange: false,
         validationSchema: CreateEventSchema,
         onSubmit: async ({ cover, ...rest }) => {
-            if (user && cover && cover !== event!.cover as any) {
+            if (user && cover && cover !== event?.cover as any) {
                 await mutationPhotos.mutate(cover as unknown as FileList);
             } else {
                 id
