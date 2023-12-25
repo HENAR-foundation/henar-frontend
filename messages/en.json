@@ -233,5 +233,6 @@
   "hy_statistics_title": "Armenian title",
   "ru_statistics_source": "Russian source",
   "ru_statistics_value": "Russian value",
-  "ru_statistics_title": "Russian title"
+  "ru_statistics_title": "Russian title",
+  "select_project_stadia" : "Select project stage"
 }

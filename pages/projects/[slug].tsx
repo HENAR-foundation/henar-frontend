@@ -133,7 +133,7 @@ const ProjectPage: FC<{ locale: string }> = ({ locale, ...rest }) => {
                         <div className='lg:order-2 col-span-1 space-y-4 lg:space-y-5 z-20'>
                             <div className='bg-white rounded-s py-5 px-4 overflow-hidden'>
                                 <div className='flex items-center space-x-4 mb-6'>
-                                    <AvatarCircle src={createdBy?.avatar || '/avatar.jpg'} />
+                                    <AvatarCircle src={createdBy?.avatar || '/default-avatar.svg'} />
                                     <div className='flex flex-col font-bodyLight'>
                                         <span className='text-s'>{formatFullName(createdBy)}</span>
                                         <span className='text-a-ss'>{createdBy?.job}</span>

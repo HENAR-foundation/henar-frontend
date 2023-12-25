@@ -133,6 +133,8 @@ const ProfileNav: FC<{ onShowSettings: () => void }> = ({ onShowSettings }) => {
 
     return (
         <div className='flex relative'>
+            {/*
+            removing for now
             <div className='flex items-center'>
                 <span className='mr-[14px] cursor-pointer relative'>
                     {requests && (
@@ -146,7 +148,7 @@ const ProfileNav: FC<{ onShowSettings: () => void }> = ({ onShowSettings }) => {
                         onClick={toggleNotifications}
                     />
                 </span>
-            </div>
+            </div> */}
             {notificationsOpened && (
                 <NavNotifications onClose={toggleNotifications} t={t} notifications={notifications || []} />
             )}

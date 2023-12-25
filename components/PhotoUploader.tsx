@@ -4,7 +4,7 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 
 const PhotoUploader: FC<{
   onChange: any;
-  url?: string;
+  url?: any;
   name: string;
 }> = ({ name, url, onChange }) => {
   const t = useTranslations();

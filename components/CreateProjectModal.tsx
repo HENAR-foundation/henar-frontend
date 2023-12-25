@@ -12,6 +12,8 @@ import { createProject, updateProject } from 'api/mutations/projects';
 import { checkSignIn } from 'api/user';
 import { getProject, getProjects } from 'api/projects';
 import ProjectFilesUploader from './ProjectFilesUploader';
+import { useRouter } from 'next/router';
+import PhotoUploader from './PhotoUploader';
 import { uploadPhotos } from 'api/mutations/files';
 import { ProjectHelpTypes, ProjectPhases, formatFullName } from 'helpers';
 import { t } from 'i18next';
@@ -32,6 +34,7 @@ const CreateProjectSchema = Yup.object().shape({
 
 const CreateProjectModal: FC<{ onClose: VoidFunction, slug?: string }> = ({ onClose, slug }) => {
     const t = useTranslations();
+    const router = useRouter()
     const { data: user } = useQuery({
         queryFn: checkSignIn,
         queryKey: ['isSignedIn'],
@@ -41,8 +44,10 @@ const CreateProjectModal: FC<{ onClose: VoidFunction, slug?: string }> = ({ onCl
         queryKey: ['project'],
         queryFn: () => getProject(slug as string),
         enabled: !!slug,
+        retry: false,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
         onSuccess: (data) => {
-            console.log(data)
             formik.setValues({
                 title: data.title.en,
                 description: data.description.en,
@@ -60,22 +65,26 @@ const CreateProjectModal: FC<{ onClose: VoidFunction, slug?: string }> = ({ onCl
         mutationFn: (values: any) => createProject(values),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['projects'] });
+            queryClient.invalidateQueries({ queryKey: ['project'] });
             PubSub.publish('notification', t("alert_project_created"));
             onClose();
         }
     })
     const mutationUpdateProject = useMutation({
         mutationFn: (values: any) => updateProject(values, project!._id),
-        onSuccess: () => {
+        onSuccess: (response) => {
             queryClient.invalidateQueries({ queryKey: ['projects'] });
+            queryClient.invalidateQueries({ queryKey: ['project'] });
             PubSub.publish('notification', t("alert_update_project"));
+            router.push(`/projects/${ response.data?.slug}`);
             onClose();
         }
     })
 
     const queryClient = useQueryClient();
 
-    const handleCreateProject = (photos: string[] = []) => {
+    const handleCreateUpdateProject = (photos: string[] = []) => {
+
         if (user) {
             if (slug) {
                 mutationUpdateProject.mutate({
@@ -93,8 +102,13 @@ const CreateProjectModal: FC<{ onClose: VoidFunction, slug?: string }> = ({ onCl
 
     const mutationPhotos = useMutation({
         mutationFn: (photos: FileList) => uploadPhotos(photos),
-        onSuccess: (data) => handleCreateProject(data),
+        onSuccess: (data : any) => {
+            formik.setFieldValue('photos', data[0]);
+            formik.setFieldTouched('photos', true, false);
+            handleCreateUpdateProject(data)
+        },
     });
+
     const formik = useFormik({
         initialValues: {
             title: '',
@@ -109,18 +123,14 @@ const CreateProjectModal: FC<{ onClose: VoidFunction, slug?: string }> = ({ onCl
         validateOnChange: false,
         validationSchema: CreateProjectSchema,
         onSubmit: ({ photos }) => {
-            console.log(photos)
-            if (user) {
-                if (photos.length > 0 && typeof photos[0] != 'string') {
+                if (photos.length > 0 && photos[0] != project?.covers?.[0]) {
                     mutationPhotos.mutate(photos as unknown as FileList);
                 } else {
-                    handleCreateProject();
+                    handleCreateUpdateProject();
                 }
-            }
         },
     });
-
-
+    
     useEffect(() => {
         document.body.style.overflow = 'hidden';
         return () => {
@@ -196,8 +206,9 @@ const CreateProjectModal: FC<{ onClose: VoidFunction, slug?: string }> = ({ onCl
                                     </span>
                                 </div>
                                 <div className='w-full max-w-[480px]'>
-                                    <ProjectFilesUploader
+                                    <PhotoUploader
                                         onChange={formik.setFieldValue as any}
+                                        url={formik?.values?.photos  || ''}
                                         name='photos'
                                     />
                                 </div>
@@ -222,7 +233,7 @@ const CreateProjectModal: FC<{ onClose: VoidFunction, slug?: string }> = ({ onCl
                                             label: t(`${ProjectPhases[val]}`),
                                             val,
                                         }))}
-                                        defaultVal='Select project stadia'
+                                        defaultVal={t('select_project_stadia')}
                                     />
                                 </div>
                             </div>

@@ -164,7 +164,6 @@ const AboutTab: FC = () => {
                     }
                 );
             } else {
-                console.info(newAvatar)
                 updateUserMutation.mutate({
                     ...updatedUser,
                     job,
