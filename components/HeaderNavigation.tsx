@@ -378,10 +378,10 @@ export const HeaderNavigationM: FC<{
                             Powered by HENAR
                         </span>
                         <div className='flex mt-5 w-full h-full font-bodyLight text-accent1 lg:font-thin lg:leading-3 flex-col lg:text-left text-center lg:space-y-0 items-center justify-end mb-10 '>
-                            <Link target='_blank' href="/HENAR_Terms-and-Conditions_eng.pdf">
+                            <Link target='_blank' href="/terms-and-conditions">
                                 <span>{t('terms_and_conditions')}</span>
                             </Link>
-                            <Link target='_blank' href="/HENAR_Privacy-Policy_eng.pdf">
+                            <Link target='_blank' href="/privacy-policy">
                                 <span>{t('privacy_policy')}</span>
                             </Link>
                         </div>

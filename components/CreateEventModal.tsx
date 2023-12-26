@@ -163,9 +163,7 @@ const CreateEventModal: FC<{ onClose: VoidFunction, id?: string, slug?: string }
                     : handleCreateEvent();
             }
         },
-    });
-
-    console.log(formik.values)
+    }); 
 
     const t = useTranslations();
 
